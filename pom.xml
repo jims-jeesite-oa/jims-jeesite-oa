@@ -896,7 +896,7 @@
 								<!--&lt;!&ndash;&lt;!&ndash; oracle &ndash;&gt;&ndash;&gt;-->
 								<!--&lt;!&ndash;<property name="dbunit.datatype" value="org.dbunit.ext.oracle.Oracle10DataTypeFactory" />&ndash;&gt;-->
 								<!--&lt;!&ndash;&ndash;&gt;-->
-								<!--&lt;!&ndash;<property file="src/main/resources/jeesite.properties" />&ndash;&gt;-->
+								<!--&lt;!&ndash;<property file="src/main/resources/jims.properties" />&ndash;&gt;-->
 								<!--&lt;!&ndash;<sql driver="${jdbc.driver}" url="${jdbc.url}" userid="${jdbc.username}" password="${jdbc.password}" &ndash;&gt;-->
 									<!--&lt;!&ndash;onerror="continue" encoding="${project.build.sourceEncoding}">&ndash;&gt;-->
 									<!--&lt;!&ndash;<classpath refid="maven.test.classpath" />&ndash;&gt;-->

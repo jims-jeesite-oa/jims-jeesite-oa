@@ -34,7 +34,7 @@ public class Global {
 	/**
 	 * 属性文件加载对象
 	 */
-	private static PropertiesLoader loader = new PropertiesLoader("jeesite.properties");
+	private static PropertiesLoader loader = new PropertiesLoader("jims.properties");
 
 	/**
 	 * 显示/隐藏
