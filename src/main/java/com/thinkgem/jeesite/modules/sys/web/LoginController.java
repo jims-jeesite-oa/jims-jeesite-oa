@@ -46,7 +46,7 @@ public class LoginController extends BaseController{
 	/**
 	 * 管理登录
 	 */
-	@RequestMapping(value = "${adminPath}/login", method = RequestMethod.GET)
+	@RequestMapping(value = "${adminPath}/login", method = {RequestMethod.GET,RequestMethod.HEAD})
 	public String login(HttpServletRequest request, HttpServletResponse response, Model model) {
 		Principal principal = UserUtils.getPrincipal();
 
