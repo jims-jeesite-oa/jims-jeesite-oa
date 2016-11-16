@@ -60,7 +60,7 @@ create table oa_summary
 (
    ID                   national varchar(64) not null,
    content              varchar(2000) comment '总结',
-   type                 char(1) comment '总结类型（1日总结，2 月总结）',
+   type                 char(1) comment '总结类型（1日总结，2周总结）',
    year                 int comment '年份（类型为2时填写）',
    week                 int comment '周数（类型为2时填写）',
    sum_date             date comment '总结日期（类型为1时填写数据）',
