@@ -102,6 +102,12 @@
 				wSizeWidth();
 				return false;
 			});
+
+            $('#mianPage').click(function(){
+                $("#menu li.menu").removeClass("active");
+                $("#left,#openClose").hide();
+                wSizeWidth();
+            })
 			// 初始化点击第一个一级菜单
 			$("#menu a.menu:first span").click();
 			// <c:if test="${tabmode eq '1'}"> 下拉菜单以选项卡方式打开
@@ -151,7 +157,7 @@
 			<div class="navbar-inner">
 				<div class="brand"><span id="productName">${fns:getConfig('productName')}</span></div>
 				<ul id="userControl" class="nav pull-right">
-					<li><a href="${pageContext.request.contextPath}${fns:getFrontPath()}/index-${fnc:getCurrentSiteId()}.html" target="_blank" title="访问网站主页"><i class="icon-home"></i></a></li>
+					<li id="mianPage"><a href="${ctx}/sys/main/info" target="mainFrame" title="首页"><i class="icon-home"></i></a></li>
 					<li id="themeSwitch" class="dropdown">
 						<a class="dropdown-toggle" data-toggle="dropdown" href="#" title="主题切换"><i class="icon-th-large"></i></a>
 						<ul class="dropdown-menu">
@@ -213,8 +219,8 @@
 	    </div>
 	    <div class="container-fluid">
 			<div id="content" class="row-fluid">
-				<div id="left"><%-- 
-					<iframe id="menuFrame" name="menuFrame" src="" style="overflow:visible;" scrolling="yes" frameborder="no" width="100%" height="650"></iframe> --%>
+				<div id="left"><%--
+					1<iframe id="menuFrame" name="menuFrame" src="" style="overflow:visible;" scrolling="yes" frameborder="no" width="100%" height="650"></iframe> --%>
 				</div>
 				<div id="openClose" class="close">&nbsp;</div>
 				<div id="right">
