@@ -89,7 +89,6 @@ alter table oa_summary_day comment '日工作总结表';
 create table oa_summary_permission
 (
    evaluate_id          varchar(64) comment '可评阅用户id',
-   evaluate_by_id       varchar(64) comment '评阅人id'
 );
 
 alter table oa_summary_permission comment '日程总结评阅权限表';
