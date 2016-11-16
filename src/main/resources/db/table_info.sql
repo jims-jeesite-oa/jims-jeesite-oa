@@ -56,21 +56,35 @@ CREATE TABLE oa_schedule
 
 alter table oa_schedule comment '日程表';
 
-create table oa_summary
+create table oa_summary_week
 (
    ID                   national varchar(64) not null,
-   content              varchar(2000) comment '总结',
-   type                 char(1) comment '总结类型（1日总结，2周总结）',
-   year                 int comment '年份（类型为2时填写）',
-   week                 int comment '周数（类型为2时填写）',
-   sum_date             date comment '总结日期（类型为1时填写数据）',
+   content              varchar(2000) comment '本周总结',
+   year                 int comment '年份',
+   week                 int comment '周数',
+   next_plan_content    varchar(2000) comment '下周工作计划综述',
+   sum_date             date comment '总结日期',
+   next_plan_title      varchar(1000) comment '下周工作计划',
    evaluate             varchar(2000) comment '评阅内容',
    evaluate_man         varchar(40) comment '评阅人',
    evaluate_man_id      varchar(64) comment '评阅人id',
    primary key (ID)
 );
 
-alter table oa_summary comment '日程总结表';
+alter table oa_summary_week comment '周工作总结表';
+
+create table oa_summary_day
+(
+   ID                   national varchar(64) not null,
+   content              varchar(2000) comment '总结',
+   sum_date             date comment '总结日期',
+   evaluate             varchar(2000) comment '评阅内容',
+   evaluate_man         varchar(40) comment '评阅人',
+   evaluate_man_id      varchar(64) comment '评阅人id',
+   primary key (ID)
+);
+
+alter table oa_summary_day comment '日工作总结表';
 
 create table oa_summary_permission
 (
