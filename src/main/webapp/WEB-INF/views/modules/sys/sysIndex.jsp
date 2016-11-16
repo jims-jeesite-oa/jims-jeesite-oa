@@ -109,7 +109,8 @@
                 wSizeWidth();
             })
 			// 初始化点击第一个一级菜单
-			$("#menu a.menu:first span").click();
+//			$("#menu a.menu:first span").click();
+            $("#mianPage a i").click();
 			// <c:if test="${tabmode eq '1'}"> 下拉菜单以选项卡方式打开
 			$("#userInfo .dropdown-menu a").mouseup(function(){
 				return addTab($(this), true);
