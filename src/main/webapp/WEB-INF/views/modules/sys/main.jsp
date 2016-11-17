@@ -29,17 +29,17 @@
         <div class="accordion-body">
             <div class="accordion-inner">
                 <ul>
-                    <li>1</li>
-                    <li>2</li>
+                    <c:forEach items="${page.list}" var="oaNotify">
+                        <li>
+                            a
+                        </li>
+                    </c:forEach>
+                    <li><a href="javascript:cookie('tabmode','${tabmode eq '1' ? '0' : '1'}');location=location.href">${tabmode eq '1' ? '关闭' : '开启'}页签模式</a></li>
+                    <li><a href="${ctx}/sys/user/info" target="mainFrame"><i class="icon-user"></i>&nbsp; 个人信息</a></li>
+                    <li><a href="${ctx}/sys/user/info" target="mainFrame"><i class="icon-user"></i>&nbsp; 个人信息</a></li>
                     <li>3</li>
                     <li>4</li>
                     <li>5</li>
-                    <li> </li>
-                    <li> </li>
-                    <li> </li>
-                    <li> </li>
-                    <li> </li>
-                    <li> </li>
                 </ul>
             </div>
         </div>
