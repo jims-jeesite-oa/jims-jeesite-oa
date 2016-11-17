@@ -4,6 +4,11 @@
 <head>
 	<title>日程管理</title>
 	<meta name="decorator" content="default"/>
+    <style>
+        #contentTable tr th,#contentTable tr td{
+            text-align: center;
+        }
+    </style>
 	<script type="text/javascript">
 		$(document).ready(function() {
 			
@@ -26,9 +31,9 @@
 		<input id="pageSize" name="pageSize" type="hidden" value="${page.pageSize}"/>
         <ul class="ul-form">
             <li><label>日期：</label>
-                <input name="scheduleDate" type="text" readonly="readonly" maxlength="20" class="input-medium Wdate "
-                       value="<fmt:formatDate value="${oaSchedule.scheduleDate}" pattern="yyyy-MM-dd HH:mm:ss"/>"
-                       onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',isShowClear:false});"/>
+                <input name="scheduleDate" type="text" maxlength="20" class="input-medium Wdate "
+                       value="<fmt:formatDate value="${oaSchedule.scheduleDate}" pattern="yyyy-MM-dd"/>"
+                       onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
             </li>
             <li><label>完成状态：</label>
                 <form:select path="flag" class="input-medium">
@@ -48,7 +53,7 @@
             <th>重要等级</th>
             <th>缓急程度</th>
             <th>完成状态</th>
-            <th>更新时间</th>
+            <th>日志日期</th>
             <shiro:hasPermission name="oa:oaSchedule:edit"><th>操作</th></shiro:hasPermission>
            <%-- <c:if test="${!oaNotify.self}"><shiro:hasPermission name="oa:oaNotify:edit"><th>操作</th></shiro:hasPermission></c:if>--%>
         </tr>
@@ -56,7 +61,7 @@
 		<tbody>
 		<c:forEach items="${page.list}" var="oaSchedule">
 			<tr>
-                <td style="width:200px " align="center">
+                <td style="width:200px;text-align: left;" align="center">
                     <a href="${ctx}/oa/oaSchedule/form?id=${oaSchedule.id}">${fns:abbr(oaSchedule.content,50)}</a>
                 </td>
                 <td align="center">
@@ -69,7 +74,7 @@
                         ${fns:getDictLabel(oaSchedule.flag, 'oa_schedule_status', '')}
                 </td>
                 <td align="center">
-                    <fmt:formatDate value="${oaSchedule.scheduleDate}" pattern="yyyy-MM-dd HH:mm:ss"/>
+                    <fmt:formatDate value="${oaSchedule.scheduleDate}" pattern="yyyy-MM-dd"/>
                 </td>
 				<shiro:hasPermission name="oa:oaSchedule:edit"><td>
     				<a href="${ctx}/oa/oaSchedule/form?id=${oaSchedule.id}">修改</a>

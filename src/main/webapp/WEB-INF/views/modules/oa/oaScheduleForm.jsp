@@ -58,8 +58,8 @@
 			<label class="control-label">日志日期：</label>
 			<div class="controls">
 				<input name="scheduleDate" type="text" readonly="readonly" maxlength="20" class="input-medium Wdate "
-					value="<fmt:formatDate value="${oaSchedule.scheduleDate}" pattern="yyyy-MM-dd HH:mm:ss"/>"
-					onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',isShowClear:false});"/>
+					value="<fmt:formatDate value="${oaSchedule.scheduleDate}" pattern="yyyy-MM-dd"/>"
+					onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
                 <span class="help-inline"><font color="red">*</font> </span>
 			</div>
 		</div>
