@@ -44,6 +44,18 @@ public class OaScheduleService extends CrudService<OaScheduleDao, OaSchedule> {
         oaSchedule.setFlag("1");
         return dao.update(oaSchedule);
     }
+
+
+    /**
+     * 查询已经完成的任务
+     * @param oaSchedule
+     * @return
+     */
+    @Transactional(readOnly = false)
+    public List<OaSchedule> completeBy(OaSchedule oaSchedule) {
+        oaSchedule.setFlag("1");
+        return dao.findList(oaSchedule);
+    }
 	
 	@Transactional(readOnly = false)
 	public void save(OaSchedule oaSchedule) {

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.oa.dao.OaSummaryDayDao">
+
+    <sql id="oaSummaryDayColumns">
+		a.id AS "id",
+		a.content AS "content",
+		a.sum_date AS "sumDate",
+		a.evaluate AS "evaluate",
+		a.evaluate_man AS "evaluateMan",
+		a.evaluate_man_id AS "evaluateManId"
+	</sql>
+
+    <sql id="oaSummaryDayJoins">
+    </sql>
+
+    <select id="get" resultType="OaSummaryDay">
+        SELECT
+        <include refid="oaSummaryDayColumns"/>
+        FROM oa_summary_day a
+        <include refid="oaSummaryDayJoins"/>
+        WHERE a.id = #{id}
+    </select>
+
+    <select id="findList" resultType="OaSummaryDay">
+        SELECT
+        <include refid="oaSummaryDayColumns"/>
+        FROM oa_summary_day a
+        <include refid="oaSummaryDayJoins"/>
+        <where>
+            <if test="sumDate!=null and sumDate !=''">
+                a.sum_date=#{sumDate}
+            </if>
+        </where>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="findByDate" resultType="OaSummaryDay">
+        SELECT
+        <include refid="oaSummaryDayColumns"/>
+        FROM oa_summary_day a
+        <include refid="oaSummaryDayJoins"/>
+        <where>
+            <if test="sumDate!=null and sumDate !=''">
+                a.sum_date=#{sumDate}
+            </if>
+        </where>
+    </select>
+
+    <select id="findAllList" resultType="OaSummaryDay">
+        SELECT
+        <include refid="oaSummaryDayColumns"/>
+        FROM oa_summary_day a
+        <include refid="oaSummaryDayJoins"/>
+        <where>
+
+        </where>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+    </select>
+
+    <insert id="insert">
+		INSERT INTO oa_summary_day(
+			id,
+			content,
+			sum_date,
+			evaluate,
+			evaluate_man,
+			evaluate_man_id
+		) VALUES (
+			#{id},
+			#{content},
+			#{sumDate},
+			#{evaluate},
+			#{evaluateMan},
+			#{evaluateManId}
+		)
+	</insert>
+
+    <update id="update">
+		UPDATE oa_summary_day SET 	
+			content = #{content},
+			sum_date = #{sumDate},
+			evaluate = #{evaluate},
+			evaluate_man = #{evaluateMan},
+			evaluate_man_id = #{evaluateManId}
+		WHERE id = #{id}
+	</update>
+
+    <update id="delete">
+		DELETE FROM oa_summary_day
+		WHERE id = #{id}
+	</update>
+
+</mapper>
