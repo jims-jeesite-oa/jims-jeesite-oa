@@ -17,7 +17,8 @@
 		a.update_date AS "updateDate",
 		a.remarks AS "remarks",
 		a.del_flag AS "delFlag",
-		o2.name AS "office.name"
+		o2.name AS "office.name",
+		a.master_table_id as "masterTableId"
 	</sql>
 	
 	<sql id="oaPersonDefineTableJoins">
@@ -86,7 +87,8 @@
 			update_by,
 			update_date,
 			remarks,
-			del_flag
+			del_flag,
+			master_table_id
 		) VALUES (
 			#{id},
 			#{office.id},
@@ -101,7 +103,8 @@
 			#{updateBy.id},
 			#{updateDate},
 			#{remarks},
-			#{delFlag}
+			#{delFlag},
+			#{masterTableId}
 		)
 	</insert>
 	
