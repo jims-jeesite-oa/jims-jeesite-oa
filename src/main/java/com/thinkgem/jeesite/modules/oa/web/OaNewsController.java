@@ -6,6 +6,7 @@ package com.thinkgem.jeesite.modules.oa.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -81,7 +82,9 @@ public class OaNewsController extends BaseController {
     @RequiresPermissions("oa:oaNews:edit")
     @RequestMapping(value = "toUp")
     public String toUp(String id, String type, HttpServletRequest request, HttpServletResponse response, Model model) {
-        oaNewsService.toUp(id, type);
+        OaNews oaNews = get(id);
+        oaNews.setIsTopic(type);
+        oaNewsService.save(oaNews);
         return "redirect:"+Global.getAdminPath()+"/oa/oaNews/?repage";
     }
 	
@@ -93,4 +96,32 @@ public class OaNewsController extends BaseController {
 		return "redirect:"+Global.getAdminPath()+"/oa/oaNews/?repage";
 	}
 
+    /**
+     * 根据ID获取审核新闻信息
+     * @param id
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = "getAuditNews")
+    public String getAuditNews(String id,Model model){
+        OaNews oaNews = get(id);
+        oaNews.setAuditManName(UserUtils.get(oaNews.getAuditMan()).getName());
+        oaNews.setCreateManName(UserUtils.get(oaNews.getCreateBy().getId()).getName());
+        model.addAttribute("oaNews", oaNews);
+        return "modules/oa/oaNewsView";
+    }
+
+    /**
+     *
+     * @param id
+     * @param auditFlag
+     * @return
+     */
+    @RequestMapping(value = "auditNews")
+    public String auditNews(String id,String auditFlag){
+        OaNews oaNews = get(id);
+        oaNews.setAuditFlag(auditFlag);
+        oaNewsService.save(oaNews);
+        return "modules/sys/main";
+    }
 }

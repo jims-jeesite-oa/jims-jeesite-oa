@@ -49,8 +49,4 @@ public class OaNewsService extends CrudService<OaNewsDao, OaNews> {
 		super.delete(oaNews);
 	}
 
-    @Transactional(readOnly = false)
-    public int toUp(String id,String type){
-        return dao.toUp(id,type);
-    }
 }

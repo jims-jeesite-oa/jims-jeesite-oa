@@ -243,5 +243,20 @@
     <function-signature>java.lang.String toJsonString(java.lang.Object)</function-signature>
     <example>${fns:toJson(object)}</example>  
   </function>
-  
+
+    <function>
+        <description>获取当前用户可审核的新闻公告</description>
+        <name>getAuditNews</name>
+        <function-class>com.thinkgem.jeesite.modules.sys.utils.NoticeUnits</function-class>
+        <function-signature>java.util.List getAuditNews()</function-signature>
+        <example>${fns:getAuditNews()}</example>
+    </function>
+
+    <function>
+        <description>获取所有已发布新闻公告</description>
+        <name>getAllNews</name>
+        <function-class>com.thinkgem.jeesite.modules.sys.utils.NoticeUnits</function-class>
+        <function-signature>java.util.List getAllNews()</function-signature>
+        <example>${fns:getAllNews()}</example>
+    </function>
 </taglib>

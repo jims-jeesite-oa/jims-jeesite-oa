@@ -50,6 +50,9 @@
             <if test="auditFlag != null and auditFlag != ''">
                 AND a.audit_flag = #{auditFlag}
             </if>
+            <if test="auditMan != null and auditMan != ''">
+                AND a.audit_man = #{auditMan}
+            </if>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
@@ -130,10 +133,4 @@
 			del_flag = #{DEL_FLAG_DELETE}
 		WHERE id = #{id}
 	</update>
-
-    <update id="toUp">
-        UPDATE oa_news SET
-			is_topic = #{1}
-		WHERE id = #{0}
-    </update>
 </mapper>

@@ -15,11 +15,4 @@ import com.thinkgem.jeesite.modules.oa.entity.OaNews;
 @MyBatisDao
 public interface OaNewsDao extends CrudDao<OaNews> {
 
-    /**
-     * 置顶操作
-     * @param id
-     * @param type 0不置顶，1置顶
-     * @return
-     */
-    public int toUp(String id,String type);
 }
