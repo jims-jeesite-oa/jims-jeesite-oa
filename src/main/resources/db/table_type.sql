@@ -36,3 +36,4 @@ INSERT INTO `sys_dict` VALUES ('sf34asd234a', false, '否', 'is_process', '是�
 -- INSERT INTO `sys_dict` VALUES ('rrrr33333', '数字', '数字', 'column_type', '列的类型', '103', '0', '1', '2016-11-15 13:48:22', '1', '2016-11-15 13:48:22', '', '0');
 INSERT INTO `sys_dict` VALUES ('ADMIN111', '1', '已生成', 'table_status', '表是否生成', '103', '0', '1', '2016-11-15 13:48:22', '1', '2016-11-15 13:48:22', '', '0');
 INSERT INTO `sys_dict` VALUES ('ADMIN112', '2', '未生成', 'table_status', '表是否生成', '103', '0', '1', '2016-11-15 13:48:22', '1', '2016-11-15 13:48:22', '', '0');
+--todo 控件类型字典表数据
