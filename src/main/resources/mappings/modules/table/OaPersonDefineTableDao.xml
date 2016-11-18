@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.table.dao.OaPersonDefineTableDao">
+    
+	<sql id="oaPersonDefineTableColumns">
+		a.id AS "id",
+		a.office_id AS "office.id",
+		a.table_name AS "tableName",
+		a.table_comment AS "tableComment",
+		a.table_property AS "tableProperty",
+		a.table_status AS "tableStatus",
+		a.is_master AS "isMaster",
+		a.is_detail AS "isDetail",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		o2.name AS "office.name"
+	</sql>
+	
+	<sql id="oaPersonDefineTableJoins">
+		LEFT JOIN sys_office o2 ON o2.id = a.office_id
+	</sql>
+    
+	<select id="get" resultType="OaPersonDefineTable">
+		SELECT 
+			<include refid="oaPersonDefineTableColumns"/>
+		FROM oa_person_define_table a
+		<include refid="oaPersonDefineTableJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="OaPersonDefineTable">
+		SELECT 
+			<include refid="oaPersonDefineTableColumns"/>
+		FROM oa_person_define_table a
+		<include refid="oaPersonDefineTableJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="tableName != null and tableName != ''">
+				AND a.table_name = #{tableName}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="OaPersonDefineTable">
+		SELECT 
+			<include refid="oaPersonDefineTableColumns"/>
+		FROM oa_person_define_table a
+		<include refid="oaPersonDefineTableJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO oa_person_define_table(
+			id,
+			office_id,
+			table_name,
+			table_comment,
+			table_property,
+			table_status,
+			is_master,
+			is_detail,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{office.id},
+			#{tableName},
+			#{tableComment},
+			#{tableProperty},
+			#{tableStatus},
+			#{isMaster},
+			#{isDetail},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE oa_person_define_table SET 	
+			office_id = #{office.id},
+			table_name = #{tableName},
+			table_comment = #{tableComment},
+			table_property = #{tableProperty},
+			table_status = #{tableStatus},
+			is_master = #{isMaster},
+			is_detail = #{isDetail},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE oa_person_define_table SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

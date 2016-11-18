@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.table.dao.OaPersonDefineTableColumnDao">
+    
+	<sql id="oaPersonDefineTableColumnColumns">
+		a.id AS "id",
+		a.table_id AS "tableId",
+		a.column_name AS "columnName",
+		a.column_comment AS "columnComment",
+		a.column_type AS "columnType",
+		a.table_status AS "tableStatus",
+		a.is_required AS "isRequired",
+		a.is_show AS "isShow",
+		a.is_process AS "isProcess",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="oaPersonDefineTableColumnJoins">
+		LEFT JOIN oa_person_define_table b ON b.id = a.table_id
+	</sql>
+    
+	<select id="get" resultType="OaPersonDefineTableColumn">
+		SELECT 
+			<include refid="oaPersonDefineTableColumnColumns"/>
+		FROM oa_person_define_table_column a
+		<include refid="oaPersonDefineTableColumnJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="OaPersonDefineTableColumn">
+		SELECT 
+			<include refid="oaPersonDefineTableColumnColumns"/>
+		FROM oa_person_define_table_column a
+		<include refid="oaPersonDefineTableColumnJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="tableId != null and tableId != ''">
+				AND a.table_id = #{tableId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date ASC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="OaPersonDefineTableColumn">
+		SELECT 
+			<include refid="oaPersonDefineTableColumnColumns"/>
+		FROM oa_person_define_table_column a
+		<include refid="oaPersonDefineTableColumnJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date ASC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO oa_person_define_table_column(
+			id,
+			table_id,
+			column_name,
+			column_comment,
+			column_type,
+			table_status,
+			is_required,
+			is_show,
+			is_process,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{tableId},
+			#{columnName},
+			#{columnComment},
+			#{columnType},
+			#{tableStatus},
+			#{isRequired},
+			#{isShow},
+			#{isProcess},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE oa_person_define_table_column SET 	
+			table_id = #{tableId},
+			column_name = #{columnName},
+			column_comment = #{columnComment},
+			column_type = #{columnType},
+			table_status = #{tableStatus},
+			is_required = #{isRequired},
+			is_show = #{isShow},
+			is_process = #{isProcess},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE oa_person_define_table_column SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		<choose>
+			<when test="id !=null and id != ''">
+				WHERE id = #{id}
+			</when>
+			<otherwise>
+				WHERE table_id = #{tableId}
+			</otherwise>
+		</choose>
+	</update>
+	
+</mapper>
