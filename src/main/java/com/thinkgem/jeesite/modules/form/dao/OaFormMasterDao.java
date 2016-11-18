@@ -10,7 +10,7 @@ import com.thinkgem.jeesite.modules.form.entity.OaFormMaster;
 /**
  * 编辑器设计表单DAO接口
  * @author chenxy
- * @version 2016-11-17
+ * @version 2016-11-18
  */
 @MyBatisDao
 public interface OaFormMasterDao extends CrudDao<OaFormMaster> {

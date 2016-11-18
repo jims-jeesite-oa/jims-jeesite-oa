@@ -12,7 +12,7 @@ import com.thinkgem.jeesite.common.persistence.DataEntity;
 /**
  * 编辑器设计表单Entity
  * @author chenxy
- * @version 2016-11-17
+ * @version 2016-11-18
  */
 public class OaFormMaster extends DataEntity<OaFormMaster> {
 	

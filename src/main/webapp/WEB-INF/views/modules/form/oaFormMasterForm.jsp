@@ -6,12 +6,7 @@
 	<meta name="decorator" content="default"/>
 	<script type="text/javascript">
 		$(document).ready(function() {
-
-
-
-                CKEDITOR.replace( 'content' );
-
-            //$("#name").focus();
+			//$("#name").focus();
 			$("#inputForm").validate({
 				submitHandler: function(form){
 					loading('正在提交，请稍等...');
@@ -91,10 +86,9 @@
 		<div class="control-group">
 			<label class="control-label">内容：</label>
 			<div class="controls">
-				<form:hidden id="content" path="content" htmlEscape="false" maxlength="2000" class="input-xlarge"/>
-				<%--<sys:ckfinder input="content" type="files" uploadPath="/form/oaFormMaster" selectMultiple="true"/>--%>
-			    <textarea id="content" name="content"></textarea>
-            </div>
+                <form:textarea id="content" htmlEscape="true"  rows="4" maxlength="200" class="input-xxlarge" path="content"/>
+                <sys:ckeditor replace="content" />
+			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label">表单描述：</label>
@@ -114,6 +108,4 @@
 		</div>
 	</form:form>
 </body>
-<script src="${ctx}/static/jquery/jquery-1.8.3.js"></script>
-<script src="${ctx}/static/ckeditor/ckeditor.js"></script>
- </html>
+</html>
