@@ -64,6 +64,9 @@ public class OaPersonDefineTableColumn extends DataEntity<OaPersonDefineTableCol
 	
 	@Length(min=0, max=80, message="列的类型长度必须介于 0 和 80 之间")
 	public String getColumnType() {
+        if(this.columnType==null || "".equals(this.columnType)){
+            return null;
+        }
         if(this.columnType.equals(ColumnType.大文本)){
             return "longtext";
         }

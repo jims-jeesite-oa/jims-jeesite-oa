@@ -65,7 +65,7 @@
 		<form:hidden path="id"/>
 		<sys:message content="${message}"/>		
 		<div class="control-group">
-			<label class="control-label">sys_office 表的主键：</label>
+			<label class="control-label">所在机构：</label>
 			<div class="controls">
 				<sys:treeselect id="office" name="office.id" value="${oaPersonDefineTable.office.id}" labelName="office.name" labelValue="${oaPersonDefineTable.office.name}"
 					title="部门" url="/sys/office/treeData?type=2" cssClass="" allowClear="true" notAllowSelectParent="true"/>
@@ -89,15 +89,15 @@
 				<form:radiobuttons path="tableProperty" items="${fns:getDictList('table_type')}" itemLabel="label" itemValue="value" htmlEscape="false" class=""/>
 			</div>
 		</div>
-		<div class="control-group">
-			<label class="control-label">状态：</label>
-			<div class="controls">
-				<form:select path="tableStatus" class="input-xlarge ">
-					<form:option value="" label=""/>
-					<form:options items="${fns:getDictList('')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
-				</form:select>
-			</div>
-		</div>
+		<%--<div class="control-group">--%>
+			<%--<label class="control-label">状态：</label>--%>
+			<%--<div class="controls">--%>
+				<%--<form:select path="tableStatus" class="input-xlarge ">--%>
+					<%--<form:option value="" label=""/>--%>
+					<%--<form:options items="${fns:getDictList('table_status')}" itemLabel="label" itemValue="value" htmlEscape="false"/>--%>
+				<%--</form:select>--%>
+			<%--</div>--%>
+		<%--</div>--%>
 		<div class="control-group">
 			<label class="control-label">是否主表：</label>
 			<div class="controls">
@@ -110,6 +110,13 @@
 				<form:radiobuttons path="isDetail" items="${fns:getDictList('is_detail')}" itemLabel="label" itemValue="value" htmlEscape="false" class=""/>
 			</div>
 		</div>
+        <div class="control-group">
+            <label class="control-label">选择主表：</label>
+            <div class="controls">
+                <!--todo 选择主表(调出当前用户所在机构的所有的表信息--org_table_infos)-->
+                <%--<form:radiobuttons path="isDetail" items="${fns:getDictList('is_detail')}" itemLabel="label" itemValue="value" htmlEscape="false" class=""/>--%>
+            </div>
+        </div>
 		<div class="control-group">
 			<label class="control-label">备注信息：</label>
 			<div class="controls">

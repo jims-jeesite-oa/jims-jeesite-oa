@@ -11,6 +11,7 @@ create table oa_person_define_table
    table_status         national varchar(10) comment '状态',
    is_master             boolean comment '是否主表',
    is_detail             boolean  comment '是否从表',
+   master_table_id       national varchar(64) comment '主表ID',
    create_by            national varchar(64) not null comment '创建者',
    create_date          datetime not null comment '创建时间',
    update_by            national varchar(64) not null comment '更新者',

@@ -68,7 +68,9 @@ public class OaPersonDefineTableController extends BaseController {
 			return form(oaPersonDefineTable, model);
 		}
 		oaPersonDefineTableService.save(oaPersonDefineTable);
+        //todo 同步修改数据库表的方法
 		addMessage(redirectAttributes, "保存自定义数据源成功");
+
 		return "redirect:"+Global.getAdminPath()+"/table/oaPersonDefineTable/?repage";
 	}
 	
@@ -76,6 +78,7 @@ public class OaPersonDefineTableController extends BaseController {
 	@RequestMapping(value = "delete")
 	public String delete(OaPersonDefineTable oaPersonDefineTable, RedirectAttributes redirectAttributes) {
 		oaPersonDefineTableService.delete(oaPersonDefineTable);
+        //todo 删除同步到数据库的表
 		addMessage(redirectAttributes, "删除自定义数据源成功");
 		return "redirect:"+Global.getAdminPath()+"/table/oaPersonDefineTable/?repage";
 	}
