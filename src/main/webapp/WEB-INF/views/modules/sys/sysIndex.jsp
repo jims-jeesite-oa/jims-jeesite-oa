@@ -103,14 +103,14 @@
 				return false;
 			});
 
-            $('#mianPage').click(function(){
-                $("#menu li.menu").removeClass("active");
-                $("#left,#openClose").hide();
-                wSizeWidth();
-            })
+//            $('#mianPage').click(function(){
+//                $("#menu li.menu").removeClass("active");
+//                $("#left,#openClose").hide();
+//                wSizeWidth();
+//            })
 			// 初始化点击第一个一级菜单
-//			$("#menu a.menu:first span").click();
-            $("#mianPage a i").click();
+			$("#menu a.menu:eq(1) span").click();
+//            $("#mianPage a i").click();
 			// <c:if test="${tabmode eq '1'}"> 下拉菜单以选项卡方式打开
 			$("#userInfo .dropdown-menu a").mouseup(function(){
 				return addTab($(this), true);
@@ -158,7 +158,7 @@
 			<div class="navbar-inner">
 				<div class="brand"><span id="productName">${fns:getConfig('productName')}</span></div>
 				<ul id="userControl" class="nav pull-right">
-					<li id="mianPage"><a href="${ctx}/sys/main/info" target="mainFrame" title="首页"><i class="icon-home"></i></a></li>
+					<li id="mianPage"><a href="${ctx}/sys/main/form" target="mainFrame" title="首页"><i class="icon-home"></i></a></li>
 					<li id="themeSwitch" class="dropdown">
 						<a class="dropdown-toggle" data-toggle="dropdown" href="#" title="主题切换"><i class="icon-th-large"></i></a>
 						<ul class="dropdown-menu">

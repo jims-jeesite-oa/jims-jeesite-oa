@@ -117,12 +117,12 @@ var KisBpmEventListenersPopupCtrl = [ '$scope', '$q', '$translate', function($sc
         };
     });
     
-    // Click handler for + button after enum value
+    // Click handler for + button after enumeration value
     $scope.addEventValue = function(index) {
         $scope.selectedListeners[0].events.splice(index + 1, 0, {event: ''});
     };
 
-    // Click handler for - button after enum value
+    // Click handler for - button after enumeration value
     $scope.removeEventValue = function(index) {
         $scope.selectedListeners[0].events.splice(index, 1);
         $scope.listenerDetailsChanged();

@@ -25,9 +25,9 @@ create table oa_news
 (
    id                   national varchar(64) not null comment '编号',
    title                national varchar(200) comment '标题',
-   content              national varchar(2000) comment '内容',
+   content              text comment '内容',
    files                national varchar(2000) comment '附件',
-   audit_flag           national char(1) comment '审核状态（0 未审核，1 已审核）',
+   audit_flag           national char(1) comment '审核状态（0待审核，1 已审核发布，2拒绝发布）',
    audit_man            varchar(64) comment '审核人ID',
    is_topic             char(1) comment '是否置顶（0不置顶，1置顶）',
    create_by            national varchar(64) not null comment '创建者',

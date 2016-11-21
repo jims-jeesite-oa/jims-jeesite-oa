@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.form.dao.OaFormMasterDao">
+    
+	<sql id="oaFormMasterColumns">
+		a.id AS "id",
+		a.office_id AS "office.id",
+		a.title AS "title",
+		a.alias AS "alias",
+		a.table_name AS "tableName",
+		a.form_type AS "formType",
+		a.publish_status AS "publishStatus",
+		a.data_templete AS "dataTemplete",
+		a.design_type AS "designType",
+		a.content AS "content",
+		a.form_desc AS "formDesc",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		o2.name AS "office.name"
+	</sql>
+	
+	<sql id="oaFormMasterJoins">
+		LEFT JOIN sys_office o2 ON o2.id = a.office_id
+	</sql>
+    
+	<select id="get" resultType="OaFormMaster">
+		SELECT 
+			<include refid="oaFormMasterColumns"/>
+		FROM oa_form_master a
+		<include refid="oaFormMasterJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="OaFormMaster">
+		SELECT 
+			<include refid="oaFormMasterColumns"/>
+		FROM oa_form_master a
+		<include refid="oaFormMasterJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="title != null and title != ''">
+				AND a.title LIKE 
+					<if test="dbName == 'oracle'">'%'||#{title}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{title}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{title},'%')</if>
+			</if>
+			<if test="alias != null and alias != ''">
+				AND a.alias = #{alias}
+			</if>
+			<if test="tableName != null and tableName != ''">
+				AND a.table_name = #{tableName}
+			</if>
+			<if test="formType != null and formType != ''">
+				AND a.form_type = #{formType}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="OaFormMaster">
+		SELECT 
+			<include refid="oaFormMasterColumns"/>
+		FROM oa_form_master a
+		<include refid="oaFormMasterJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO oa_form_master(
+			id,
+			office_id,
+			title,
+			alias,
+			table_name,
+			form_type,
+			publish_status,
+			data_templete,
+			design_type,
+			content,
+			form_desc,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{office.id},
+			#{title},
+			#{alias},
+			#{tableName},
+			#{formType},
+			#{publishStatus},
+			#{dataTemplete},
+			#{designType},
+			#{content},
+			#{formDesc},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE oa_form_master SET 	
+			office_id = #{office.id},
+			title = #{title},
+			alias = #{alias},
+			table_name = #{tableName},
+			form_type = #{formType},
+			publish_status = #{publishStatus},
+			data_templete = #{dataTemplete},
+			design_type = #{designType},
+			content = #{content},
+			form_desc = #{formDesc},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE oa_form_master SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

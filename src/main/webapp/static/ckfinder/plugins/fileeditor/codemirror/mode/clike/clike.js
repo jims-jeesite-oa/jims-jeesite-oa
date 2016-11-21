@@ -156,7 +156,7 @@
   }
   var cKeywords = "auto if break int case long char register continue return default short do sizeof " +
     "double static else struct entry switch extern typedef float union for unsigned " +
-    "goto while enum void const signed volatile";
+    "goto while enumeration void const signed volatile";
 
   function cppHook(stream, state) {
     if (!state.startOfLine) return false;
@@ -196,7 +196,7 @@
   CodeMirror.defineMIME("text/x-java", {
     name: "clike",
     keywords: words("abstract assert boolean break byte case catch char class const continue default " +
-                    "do double else enum extends final finally float for goto if implements import " +
+                    "do double else enumeration extends final finally float for goto if implements import " +
                     "instanceof int interface long native new package private protected public " +
                     "return short static strictfp super switch synchronized this throw throws transient " +
                     "try void volatile while"),
@@ -212,7 +212,7 @@
   CodeMirror.defineMIME("text/x-csharp", {
     name: "clike",
     keywords: words("abstract as base bool break byte case catch char checked class const continue decimal" +
-                    " default delegate do double else enum event explicit extern finally fixed float for" +
+                    " default delegate do double else enumeration event explicit extern finally fixed float for" +
                     " foreach goto if implicit in int interface internal is lock long namespace new object" +
                     " operator out override params private protected public readonly ref return sbyte sealed short" +
                     " sizeof stackalloc static string struct switch this throw try typeof uint ulong unchecked" +

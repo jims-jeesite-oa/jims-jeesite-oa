@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.form.dao.OaColumnShowStyleDao">
+    
+	<sql id="oaColumnShowStyleColumns">
+		a.id AS "id",
+		a.office_id AS "officeId",
+		a.is_common AS "isCommon",
+		a.table_name AS "tableName",
+		a.form_name AS "formName",
+		a.column_name AS "columnName",
+		a.column_type AS "columnType",
+		a.show_type AS "showType",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="oaColumnShowStyleJoins">
+		LEFT JOIN sys_office o2 ON o2.id = a.office_id
+	</sql>
+    
+	<select id="get" resultType="OaColumnShowStyle">
+		SELECT 
+			<include refid="oaColumnShowStyleColumns"/>
+		FROM oa_column_show_style a
+		<include refid="oaColumnShowStyleJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="OaColumnShowStyle">
+		SELECT 
+			<include refid="oaColumnShowStyleColumns"/>
+		FROM oa_column_show_style a
+		<include refid="oaColumnShowStyleJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="officeId != null and officeId != ''">
+				AND a.office_id = #{officeId}
+			</if>
+			<if test="isCommon != null and isCommon != ''">
+				AND a.is_common = #{isCommon}
+			</if>
+			<if test="tableName != null and tableName != ''">
+				AND a.table_name = #{tableName}
+			</if>
+			<if test="columnName != null and columnName != ''">
+				AND a.column_name = #{columnName}
+			</if>
+			<if test="showType != null and showType != ''">
+				AND a.show_type = #{showType}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="OaColumnShowStyle">
+		SELECT 
+			<include refid="oaColumnShowStyleColumns"/>
+		FROM oa_column_show_style a
+		<include refid="oaColumnShowStyleJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO oa_column_show_style(
+			id,
+			office_id,
+			is_common,
+			table_name,
+			form_name,
+			column_name,
+			column_type,
+			show_type,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{officeId},
+			#{isCommon},
+			#{tableName},
+			#{formName},
+			#{columnName},
+			#{columnType},
+			#{showType},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE oa_column_show_style SET 	
+			office_id = #{officeId},
+			is_common = #{isCommon},
+			table_name = #{tableName},
+			form_name = #{formName},
+			column_name = #{columnName},
+			column_type = #{columnType},
+			show_type = #{showType},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE oa_column_show_style SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

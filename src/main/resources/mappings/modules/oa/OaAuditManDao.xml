@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.oa.dao.OaAuditManDao">
+    
+	<sql id="oaAuditManColumns">
+		a.id AS "id",
+		a.audit_id AS "auditId",
+		a.audit_man AS "auditMan",
+		a.audit_job AS "auditJob"
+	</sql>
+	
+	<sql id="oaAuditManJoins">
+	</sql>
+    
+	<select id="get" resultType="OaAuditMan">
+		SELECT 
+			<include refid="oaAuditManColumns"/>
+		FROM oa_audit_man a
+		<include refid="oaAuditManJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="OaAuditMan">
+		SELECT 
+			<include refid="oaAuditManColumns"/>
+		FROM oa_audit_man a
+		<include refid="oaAuditManJoins"/>
+		<where>
+			<if test="auditMan != null and auditMan != ''">
+                and a.audit_man LIKE CONCAT('%',#{auditMan},'%')
+            </if>
+            <if test="auditJob != null and auditJob != ''">
+                and a.audit_job like CONCAT('%',#{auditJob},'%')
+            </if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="OaAuditMan">
+		SELECT 
+			<include refid="oaAuditManColumns"/>
+		FROM oa_audit_man a
+		<include refid="oaAuditManJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO oa_audit_man(
+			id,
+			audit_id,
+			audit_man,
+			audit_job
+		) VALUES (
+			#{id},
+			#{auditId},
+			#{auditMan},
+			#{auditJob}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE oa_audit_man SET 	
+			audit_id = #{auditId},
+			audit_man = #{auditMan},
+			audit_job = #{auditJob}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM oa_audit_man
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

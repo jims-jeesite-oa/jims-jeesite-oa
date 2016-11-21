@@ -49,13 +49,13 @@ var KisBpmAssignmentPopupCtrl = [ '$scope', function($scope) {
     	$scope.assignment.candidateUsers = [{value: ''}];
     }
     
-    // Click handler for + button after enum value
+    // Click handler for + button after enumeration value
     var userValueIndex = 1;
     $scope.addCandidateUserValue = function(index) {
         $scope.assignment.candidateUsers.splice(index + 1, 0, {value: 'value ' + userValueIndex++});
     };
 
-    // Click handler for - button after enum value
+    // Click handler for - button after enumeration value
     $scope.removeCandidateUserValue = function(index) {
         $scope.assignment.candidateUsers.splice(index, 1);
     };
@@ -70,7 +70,7 @@ var KisBpmAssignmentPopupCtrl = [ '$scope', function($scope) {
         $scope.assignment.candidateGroups.splice(index + 1, 0, {value: 'value ' + groupValueIndex++});
     };
 
-    // Click handler for - button after enum value
+    // Click handler for - button after enumeration value
     $scope.removeCandidateGroupValue = function(index) {
         $scope.assignment.candidateGroups.splice(index, 1);
     };
