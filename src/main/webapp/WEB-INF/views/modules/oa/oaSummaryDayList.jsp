@@ -18,8 +18,8 @@
 </head>
 <body>
 	<ul class="nav nav-tabs">
-		<li class="active"><a href="${ctx}/oa/oaSummaryDay/find">工作日志</a></li>
-
+		<li class="active"><a href="${ctx}/oa/oaSummaryDay/">日总结</a></li>
+       <li><a href="${ctx}/oa/oaSummaryDay/formId">周总结</a></li>
 	</ul>
 	<form:form id="searchForm" modelAttribute="oaSummaryDay" action="${ctx}/oa/oaSummaryDay/" method="post" class="breadcrumb form-search">
 		<ul class="ul-form">
@@ -37,10 +37,10 @@
 
     <form:form id="inputForm" modelAttribute="oaSummaryDay" action="${ctx}/oa/oaSummaryDay/save" method="post" class="form-horizontal">
 
-        <div class="control-group form-horizontal" >
+        <div class="control-group" >
             <label class="control-label">任务完成：</label>
             <div class="controls">
-                <table style="width:300px;height: 100px">
+                <table style="width:300px;">
                     <c:forEach items="${oaSummaryDay.oaScheduleList}" var="oaSchedule">
                         <tr>
                             <td>
@@ -53,6 +53,7 @@
         </div>
        <%-- <c:forEach items="${page.list}" var="oaSchedule">--%>
         <form:hidden path="id" value="${oaSummaryDay.id}"/>
+      <%--  <form:hidden path="sumDate" value="${oaSummaryDay.sumDate}"/>--%>
         <sys:message content="${message}"/>
 
         <div class="control-group">
