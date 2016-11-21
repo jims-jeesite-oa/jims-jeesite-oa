@@ -158,7 +158,7 @@
 			<div class="navbar-inner">
 				<div class="brand"><span id="productName">${fns:getConfig('productName')}</span></div>
 				<ul id="userControl" class="nav pull-right">
-					<li id="mianPage"><a href="${ctx}/sys/main/info" target="mainFrame" title="首页"><i class="icon-home"></i></a></li>
+					<li id="mianPage"><a href="${ctx}/sys/main/form" target="mainFrame" title="首页"><i class="icon-home"></i></a></li>
 					<li id="themeSwitch" class="dropdown">
 						<a class="dropdown-toggle" data-toggle="dropdown" href="#" title="主题切换"><i class="icon-th-large"></i></a>
 						<ul class="dropdown-menu">

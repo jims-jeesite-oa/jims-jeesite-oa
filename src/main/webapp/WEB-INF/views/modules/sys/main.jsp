@@ -29,14 +29,16 @@
         <div class="accordion-body">
             <div class="accordion-inner">
                 <ul>
-                    <c:forEach items="${page.list}" var="oaNotify">
+                    <c:forEach items="${fns:getAllNews()}" var="news">
                         <li>
-                            a
+                            <a href="${ctx}/oa/oaNews/getAuditNews?id=${news.id}">${news.title}
+                                （<fmt:formatDate value="${news.createDate}" pattern="yyyy-MM-dd"/>）
+                                <c:if test="${news.isTopic eq '1'}">
+                                    <i class="icon-arrow-up"></i>
+                                </c:if>
+                            </a>
                         </li>
                     </c:forEach>
-                    <li><a href="javascript:cookie('tabmode','${tabmode eq '1' ? '0' : '1'}');location=location.href">${tabmode eq '1' ? '关闭' : '开启'}页签模式</a></li>
-                    <li><a href="${ctx}/sys/user/info" target="mainFrame"><i class="icon-user"></i>&nbsp; 个人信息</a></li>
-                    <li><a href="${ctx}/sys/user/info" target="mainFrame"><i class="icon-user"></i>&nbsp; 个人信息</a></li>
                     <li>3</li>
                     <li>4</li>
                     <li>5</li>
@@ -87,13 +89,14 @@
         <div class="accordion-body">
             <div class="accordion-inner">
                 <ul>
-                    <li>1</li>
-                    <li>2</li>
-                    <li>3</li>
-                    <li>4</li>
-                    <li>5</li>
-                    <li>6</li>
-                    <li>7</li>
+                    <li>
+                        &nbsp;
+                    </li>
+                    <c:forEach items="${fns:getAuditNews()}" var="news">
+                        <li>
+                            <a href="${ctx}/oa/oaNews/getAuditNews?id=${news.id}">${news.title}</a>
+                        </li>
+                    </c:forEach>
                 </ul>
             </div>
         </div>

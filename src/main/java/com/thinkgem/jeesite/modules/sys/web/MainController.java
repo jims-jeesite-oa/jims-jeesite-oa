@@ -33,9 +33,9 @@ import java.util.Map;
 public class MainController extends BaseController {
 
 
-	@RequestMapping(value = "info")
-	public String info() {
-//		model.addAttribute("dict", dict);
+	@RequestMapping(value = "form")
+	public String form() {
+
 		return "modules/sys/main";
 	}
 
