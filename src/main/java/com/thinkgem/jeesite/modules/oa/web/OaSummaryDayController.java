@@ -25,6 +25,7 @@ import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.modules.oa.entity.OaSummaryDay;
 import com.thinkgem.jeesite.modules.oa.service.OaSummaryDayService;
+import sun.util.calendar.CalendarDate;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -130,11 +131,11 @@ public class OaSummaryDayController extends BaseController {
 
     //格式化日期
     public String formatDate(Date date) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
-        String formatDate = sdf.format(date);
-        String year = formatDate + "-";
-        String month = (date.getMonth() + 1) + "-";
-        String day = date.getDate() + "";
+        Calendar cale = Calendar.getInstance();
+        cale.setTime(date);
+        String  year=cale.get(Calendar.YEAR)+"-";
+        String month=cale.get(Calendar.MONTH)+1+"-";
+        String day=cale.get(Calendar.DATE)+"";
         String[] weekDays = {"星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"};
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
@@ -145,18 +146,21 @@ public class OaSummaryDayController extends BaseController {
     }
 
     public Date addDate(Date date, int n) {
-        date.setDate(date.getDate() + n);
-        return date;
+        Calendar cale = Calendar.getInstance();
+        cale.setTime(date);
+        cale.add(Calendar.DAY_OF_MONTH,n);
+        return cale.getTime();
     }
 
     public List setDate(Date date) {
-        int week = date.getDay();
-        date = addDate(date, week * -1);
+        Calendar cale1 = Calendar.getInstance();
+        cale1.setTime(date);
+        int week= cale1.get(Calendar.DAY_OF_WEEK);
+        date = addDate(date, 1 - week);
         currentFirstDate = date;
         dd = new ArrayList();
         for (int i = 0; i < 7; i++) {
-
-            dd.add(formatDate(i == 0 ? date : addDate(date, 1)));
+            dd.add(formatDate(i == 0 ? date : addDate(date, i)));
         }
         return dd;
     }
