@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.oa.dao.OaSummaryWeekDao">
+    
+	<sql id="oaSummaryWeekColumns">
+		a.id AS "id",
+		a.content AS "content",
+		a.year AS "year",
+		a.week AS "week",
+		a.next_plan_content AS "nextPlanContent",
+		a.sum_date AS "sumDate",
+		a.next_plan_title AS "nextPlanTitle",
+		a.evaluate AS "evaluate",
+		a.evaluate_man AS "evaluateMan",
+		a.evaluate_man_id AS "evaluateManId"
+	</sql>
+	
+	<sql id="oaSummaryWeekJoins">
+	</sql>
+    
+	<select id="get" resultType="OaSummaryWeek">
+		SELECT 
+			<include refid="oaSummaryWeekColumns"/>
+		FROM oa_summary_week a
+		<include refid="oaSummaryWeekJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="OaSummaryWeek">
+		SELECT 
+			<include refid="oaSummaryWeekColumns"/>
+		FROM oa_summary_week a
+		<include refid="oaSummaryWeekJoins"/>
+		<where>
+
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+
+    <select id="findByWeek" resultType="OaSummaryWeek">
+        SELECT
+        <include refid="oaSummaryWeekColumns"/>
+        FROM oa_summary_week a
+        <include refid="oaSummaryWeekJoins"/>
+        <where>
+            <if test="weekOfYear != null and weekOfYear != ''">
+                a.week = #{weekOfYear}
+            </if>
+        </where>
+    </select>
+	
+	<select id="findAllList" resultType="OaSummaryWeek">
+		SELECT 
+			<include refid="oaSummaryWeekColumns"/>
+		FROM oa_summary_week a
+		<include refid="oaSummaryWeekJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO oa_summary_week(
+			id,
+			content,
+			year,
+			week,
+			next_plan_content,
+			sum_date,
+			next_plan_title,
+			evaluate,
+			evaluate_man,
+			evaluate_man_id
+		) VALUES (
+			#{id},
+			#{content},
+			#{year},
+			#{week},
+			#{nextPlanContent},
+			#{sumDate},
+			#{nextPlanTitle},
+			#{evaluate},
+			#{evaluateMan},
+			#{evaluateManId}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE oa_summary_week SET 	
+			content = #{content},
+			year = #{year},
+			week = #{week},
+			next_plan_content = #{nextPlanContent},
+			sum_date = #{sumDate},
+			next_plan_title = #{nextPlanTitle},
+			evaluate = #{evaluate},
+			evaluate_man = #{evaluateMan},
+			evaluate_man_id = #{evaluateManId}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM oa_summary_week
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

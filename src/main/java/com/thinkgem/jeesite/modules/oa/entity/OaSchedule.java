@@ -22,7 +22,27 @@ public class OaSchedule extends DataEntity<OaSchedule> {
 	private String importantLevel;		// 重要等级(0不重要，1重要)
 	private String emergencyLevel;		// 缓急程度（0不紧急，1紧急）
 	private Date scheduleDate;		// 日志日期
+
 	private String flag;		// 完成状态（0未完成，1完成）
+
+    private Date startDate;
+    private Date endDate;
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
 
     private boolean isSelf;		// 是否只查询自己的日程
 
