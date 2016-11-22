@@ -72,7 +72,6 @@ public class OaSummaryDayController extends BaseController {
         DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String s = sdf.format(new Date());
         Date date = sdf.parse(s);
-
         //如果有日期，点击查询时的操作
         if (oaSummaryDay.getSumDate() != null) {
             Date before = oaSummaryDay.getSumDate();
@@ -119,6 +118,7 @@ public class OaSummaryDayController extends BaseController {
         model.addAttribute("oaSummaryDay", oaSummaryDay);
         return "modules/oa/oaSummaryDayForm";
     }
+
     @RequestMapping(value = "form1")
     public String form1(OaSummaryWeek oaSummaryWeek, Model model) {
         model.addAttribute("OaSummaryWeek", oaSummaryWeek);
@@ -130,7 +130,9 @@ public class OaSummaryDayController extends BaseController {
 
     //格式化日期
     public String formatDate(Date date) {
-        String year = Calendar.getInstance().get(Calendar.YEAR) + "-";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
+        String formatDate = sdf.format(date);
+        String year = formatDate + "-";
         String month = (date.getMonth() + 1) + "-";
         String day = date.getDate() + "";
         String[] weekDays = {"星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"};
@@ -146,18 +148,20 @@ public class OaSummaryDayController extends BaseController {
         date.setDate(date.getDate() + n);
         return date;
     }
+
     public List setDate(Date date) {
         int week = date.getDay();
         date = addDate(date, week * -1);
         currentFirstDate = date;
-        dd=new ArrayList();
+        dd = new ArrayList();
         for (int i = 0; i < 7; i++) {
 
             dd.add(formatDate(i == 0 ? date : addDate(date, 1)));
         }
         return dd;
     }
-    //查询周总结
+
+    //查询本周周总结
     @RequestMapping(value = "formId")
     public String form(OaSummaryWeek oaSummaryWeek, Model model) throws Exception {
 
@@ -170,31 +174,19 @@ public class OaSummaryDayController extends BaseController {
         calendar.setFirstDayOfWeek(Calendar.SUNDAY);
         calendar.setTime(date);
         List date1 = setDate(new Date());
-        //calendar.get(Calendar.WEEK_OF_YEAR),获取当前日期是一年中的第几周
-        //本周
-
-
-      /*  if (oaSummaryWeek.getFlag()!=null) {
-           //上一周
-            date1=null;
-            oaSummaryWeek.setWeekOfYear(calendar.get(Calendar.WEEK_OF_YEAR)-1);
-            date1 = setDate(addDate(currentFirstDate, -7));
-        }else{
-            //下一周
-            oaSummaryWeek.setWeekOfYear(calendar.get(Calendar.WEEK_OF_YEAR)+1);
-            date1 = setDate(addDate(currentFirstDate, 7));
-        }*/
-        oaSummaryWeek.setWeekOfYear(calendar.get(Calendar.WEEK_OF_YEAR));
-        oaSummaryWeek=oaSummaryWeekService.findByWeek(oaSummaryWeek);
+        if (oaSummaryWeek.getWeekOfYear() != null) {
+            oaSummaryWeek.setWeekOfYear(oaSummaryWeek.getWeekOfYear());
+        } else {
+            oaSummaryWeek.setWeekOfYear(calendar.get(Calendar.WEEK_OF_YEAR));
+        }
+        oaSummaryWeek = oaSummaryWeekService.findByWeek(oaSummaryWeek);
         List<OaSchedule> list = null;
         List<OaVo> oa = new ArrayList<OaVo>();
 
         //根据日期拿到每个日期的任务完成和工作总结
         for (int j = 0; j < date1.size(); j++) {
-
             OaSchedule oaSchedule = new OaSchedule();
             String sum = date1.get(j).toString().substring(0, 10);
-
             String begin = sdf.format(DateFormat.getDateInstance().parse(sum));
             Date scheduleDate = sdf.parse(begin);
             OaVo oaVo = null;
@@ -208,7 +200,6 @@ public class OaSummaryDayController extends BaseController {
             OaSummaryDay oaSummaryDay = new OaSummaryDay();
             oaSummaryDay.setSumDate(scheduleDate);
             oaSummaryDay = oaSummaryDayService.findByDate(oaSummaryDay);
-
             oaVo = new OaVo();
             oaVo.setContent(con);
             oaVo.setDate(date1.get(j).toString());
@@ -218,13 +209,19 @@ public class OaSummaryDayController extends BaseController {
             oa.add(oaVo);
         }
         oaSummaryWeek.setOaVos(oa);
-
-
+        oaSummaryWeek.setWeekOfYear(calendar.get(Calendar.WEEK_OF_YEAR));
         model.addAttribute("oaSummaryWeek", oaSummaryWeek);
         return "modules/oa/oaSummaryDayForm";
     }
 
-
+    /**
+     * 保存日总结
+     *
+     * @param oaSummaryDay
+     * @param model
+     * @param redirectAttributes
+     * @return
+     */
     @RequiresPermissions("oa:oaSummaryDay:edit")
     @RequestMapping(value = "save")
     public String save(OaSummaryDay oaSummaryDay, Model model, RedirectAttributes redirectAttributes) {
@@ -244,6 +241,9 @@ public class OaSummaryDayController extends BaseController {
 
     }
 
+    //存放列表中的第一天的日期
+    String year;
+
     /**
      * 保存周总结
      *
@@ -252,48 +252,25 @@ public class OaSummaryDayController extends BaseController {
      * @param redirectAttributes
      * @return
      */
-//    @RequiresPermissions("oa:oaSummaryDay:edit")
     @RequestMapping(value = "saveWeek")
-    public String saveWeek(OaSummaryWeek oaSummaryWeek, Model model, RedirectAttributes redirectAttributes) throws Exception{
+    public String saveWeek(OaSummaryWeek oaSummaryWeek, Model model, RedirectAttributes redirectAttributes) throws Exception {
         if (!beanValidator(model, oaSummaryWeek)) {
             return form1(oaSummaryWeek, model);
         }
-        //获取当前想要格式的日期
+       //获取当前想要格式的日期
         DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String s = sdf.format(new Date());
-        Date date = sdf.parse(s);
-        //根据当前的日期来设置第一天从星期日开始
-        Calendar calendar = Calendar.getInstance();
-        calendar.setFirstDayOfWeek(Calendar.SUNDAY);
-        calendar.setTime(date);
-        List date1 = setDate(new Date());
-        //calendar.get(Calendar.WEEK_OF_YEAR),获取当前日期是一年中的第几周
-        //本周
-
-
-      /*  if (oaSummaryWeek.getFlag()!=null) {
-           //上一周
-            date1=null;
-            oaSummaryWeek.setWeekOfYear(calendar.get(Calendar.WEEK_OF_YEAR)-1);
-            date1 = setDate(addDate(currentFirstDate, -7));
-        }else{
-            //下一周
-            oaSummaryWeek.setWeekOfYear(calendar.get(Calendar.WEEK_OF_YEAR)+1);
-            date1 = setDate(addDate(currentFirstDate, 7));
-        }*/
-        oaSummaryWeek.setWeekOfYear(calendar.get(Calendar.WEEK_OF_YEAR));
-        oaSummaryWeek.setWeek(calendar.get(Calendar.WEEK_OF_YEAR) + "");
-        oaSummaryWeek.setSumDate(date);
-
+        //拿到当前的年
+        String currentYear=year.substring(0, 10);
+        Date date=sdf.parse(currentYear);
+        List date1 = setDate(date);
+        oaSummaryWeek.setWeek(oaSummaryWeek.getWeekOfYear() + "");
+        oaSummaryWeek.setSumDate(new Date());
         List<OaSchedule> list = null;
         List<OaVo> oa = new ArrayList<OaVo>();
-
         //根据日期拿到每个日期的任务完成和工作总结
         for (int j = 0; j < date1.size(); j++) {
-
             OaSchedule oaSchedule = new OaSchedule();
             String sum = date1.get(j).toString().substring(0, 10);
-
             String begin = sdf.format(DateFormat.getDateInstance().parse(sum));
             Date scheduleDate = sdf.parse(begin);
             OaVo oaVo = null;
@@ -303,6 +280,95 @@ public class OaSummaryDayController extends BaseController {
             StringBuffer cons = new StringBuffer();
             for (int i = 0; i < list1.size(); i++) {
                 con = cons.append(list1.get(i).getContent()).append("<br>").toString();
+            }
+            OaSummaryDay oaSummaryDay = new OaSummaryDay();
+            oaSummaryDay.setSumDate(scheduleDate);
+            oaSummaryDay = oaSummaryDayService.findByDate(oaSummaryDay);
+            oaVo = new OaVo();
+            oaVo.setContent(con);
+            oaVo.setDate(date1.get(j).toString());
+            if (oaSummaryDay != null) {
+                oaVo.setStatus(oaSummaryDay.getContent());
+            }
+            oa.add(oaVo);
+        }
+        oaSummaryWeek.setOaVos(oa);
+        oaSummaryWeekService.save(oaSummaryWeek);
+        addMessage(redirectAttributes, "保存工作日志成功");
+        model.addAttribute("oaSummaryWeek", oaSummaryWeek);
+        return "modules/oa/oaSummaryDayForm";
+    }
+
+    @RequiresPermissions("oa:oaSummaryDay:edit")
+    @RequestMapping(value = "delete")
+    public String delete(OaSummaryDay oaSummaryDay, RedirectAttributes redirectAttributes) {
+        oaSummaryDayService.delete(oaSummaryDay);
+        addMessage(redirectAttributes, "删除工作日志成功");
+        return "redirect:" + Global.getAdminPath() + "/oa/oaSummaryDay/?repage";
+    }
+
+    /**
+     *上一周   本周   下一周
+     * @param flag
+     * @param weekOfYear
+     * @param model
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "lackWeek")
+    public String lackWeek(@RequestParam("flag") String flag, @RequestParam("weekOfYear") Integer weekOfYear, Model model) throws Exception {
+        OaSummaryWeek oaSummaryWeek = new OaSummaryWeek();
+        //获取当前想要格式的日期
+        DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String s = sdf.format(new Date());
+        Date date = sdf.parse(s);
+        //根据当前的日期来设置第一天从星期日开始
+        Calendar calendar = Calendar.getInstance();
+        calendar.setFirstDayOfWeek(Calendar.SUNDAY);
+        calendar.setTime(date);
+        List date1 = new ArrayList();
+        //本周
+        if (StringUtils.equals(flag, "1")) {
+            oaSummaryWeek.setWeekOfYear(weekOfYear - 1);
+            date1 = setDate(addDate(currentFirstDate, -7));
+            year=date1.get(0).toString();
+        } else  if (StringUtils.equals(flag, "2")) {
+            if(weekOfYear==53){
+                oaSummaryWeek.setWeekOfYear(1);
+            } else{
+                oaSummaryWeek.setWeekOfYear(weekOfYear + 1);
+            }
+
+            date1 = setDate(addDate(currentFirstDate, 7));
+            year=date1.get(0).toString();
+        }else{
+            oaSummaryWeek.setWeekOfYear(calendar.get(Calendar.WEEK_OF_YEAR));
+            date1 = setDate(new Date());
+        }
+
+        OaSummaryWeek oaSummaryWeek1 = oaSummaryWeekService.findByWeek(oaSummaryWeek);
+        if (oaSummaryWeek1 != null) {
+            oaSummaryWeek.setContent(oaSummaryWeek1.getContent());
+            oaSummaryWeek.setNextPlanContent(oaSummaryWeek1.getNextPlanContent());
+            oaSummaryWeek.setNextPlanTitle(oaSummaryWeek1.getNextPlanTitle());
+            oaSummaryWeek.setId(oaSummaryWeek1.getId());
+        }
+        List<OaVo> oa = new ArrayList<OaVo>();
+        //根据日期拿到每个日期的任务完成和工作总结
+        for (int j = 0; j < date1.size(); j++) {
+            OaSchedule oaSchedule = new OaSchedule();
+            String sum = date1.get(j).toString().substring(0, 10);
+            String begin = sdf.format(DateFormat.getDateInstance().parse(sum));
+            Date scheduleDate = sdf.parse(begin);
+            OaVo oaVo = null;
+            oaSchedule.setScheduleDate(scheduleDate);
+            List<OaSchedule> list1 = oaScheduleService.completeBy(oaSchedule);
+            String con = null;
+            StringBuffer cons = new StringBuffer();
+            if (list1.size() > 0) {
+                for (int i = 0; i < list1.size(); i++) {
+                    con = cons.append(list1.get(i).getContent()).append("<br>").toString();
+                }
             }
             OaSummaryDay oaSummaryDay = new OaSummaryDay();
             oaSummaryDay.setSumDate(scheduleDate);
@@ -317,20 +383,9 @@ public class OaSummaryDayController extends BaseController {
             oa.add(oaVo);
         }
         oaSummaryWeek.setOaVos(oa);
-        oaSummaryWeekService.save(oaSummaryWeek);
-       /* String id = oaSummaryWeek.getId();
-        oaSummaryWeek=oaSummaryWeekService.get(id);*/
-        addMessage(redirectAttributes, "保存工作日志成功");
         model.addAttribute("oaSummaryWeek", oaSummaryWeek);
         return "modules/oa/oaSummaryDayForm";
     }
 
-    @RequiresPermissions("oa:oaSummaryDay:edit")
-    @RequestMapping(value = "delete")
-    public String delete(OaSummaryDay oaSummaryDay, RedirectAttributes redirectAttributes) {
-        oaSummaryDayService.delete(oaSummaryDay);
-        addMessage(redirectAttributes, "删除工作日志成功");
-        return "redirect:" + Global.getAdminPath() + "/oa/oaSummaryDay/?repage";
-    }
 
 }

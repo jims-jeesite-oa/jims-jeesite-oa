@@ -35,8 +35,10 @@
 <br/>
 <form:form id="inputForm" modelAttribute="oaSummaryWeek" action="${ctx}/oa/oaSummaryDay/saveWeek" method="post"
            class="form-horizontal">
+  <%--  <form:hidden path="oaVos" value="${oaSummaryWeek.oaVos}"/>--%>
     <form:hidden path="id" value="${oaSummaryWeek.id}"/>
-    第 <font color="red">${oaSummaryWeek.weekOfYear}</font> 周
+    <form:hidden path="weekOfYear" value="${oaSummaryWeek.weekOfYear}"/>
+    第 <font color="red">${oaSummaryWeek.weekOfYear} </font> 周
     <table id="contentTable" class="table  table-bordered table-condensed">
         <tr>
             <td colspan="2" style="width: 250px;text-align: center;">下周工作目标</td>
@@ -91,10 +93,10 @@
 
 
     <div align="center">
-        <input id="btnSubmit" class="btn-primary" type="submit" value="保 存"/>&nbsp;
-       <%-- <button >上一周</button>
-        <button id="next-week">下一周</button>--%>
-            <%--<input id="btnCancel" class="btn" type="button" value="返 回" onclick="history.go(-1)"/>--%>
+        <input id="btnSubmit"  class="btn btn-primary"  type="submit" value="保 存"/>&nbsp;
+        <input id="okBtnSubmit" onclick="location='${ctx}/oa/oaSummaryDay/lackWeek?flag=1&weekOfYear=${oaSummaryWeek.weekOfYear}'" class="btn btn-primary" type="button" value="上一周"/>
+        <input id="okBtnSubmit" onclick="location='${ctx}/oa/oaSummaryDay/lackWeek?flag=3&weekOfYear=${oaSummaryWeek.weekOfYear}'" class="btn btn-primary" type="button" value="本  周"/>
+        <input id="blackSubmit" onclick="location='${ctx}/oa/oaSummaryDay/lackWeek?flag=2&weekOfYear=${oaSummaryWeek.weekOfYear}'" class="btn btn-warning" type="button" value="下一周"/>
     </div>
 </form:form>
 </body>
