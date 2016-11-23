@@ -65,7 +65,7 @@
 		<form:hidden path="id"/>
 		<sys:message content="${message}"/>		
 		<div class="control-group">
-			<label class="control-label">所在机构：</label>
+			<label class="control-label">sys_office 表的主键：</label>
 			<div class="controls">
 				<sys:treeselect id="office" name="office.id" value="${oaPersonDefineTable.office.id}" labelName="office.name" labelValue="${oaPersonDefineTable.office.name}"
 					title="部门" url="/sys/office/treeData?type=2" cssClass="" allowClear="true" notAllowSelectParent="true"/>
@@ -89,15 +89,15 @@
 				<form:radiobuttons path="tableProperty" items="${fns:getDictList('table_type')}" itemLabel="label" itemValue="value" htmlEscape="false" class=""/>
 			</div>
 		</div>
-		<%--<div class="control-group">--%>
-			<%--<label class="control-label">状态：</label>--%>
-			<%--<div class="controls">--%>
-				<%--<form:select path="tableStatus" class="input-xlarge ">--%>
-					<%--<form:option value="" label=""/>--%>
-					<%--<form:options items="${fns:getDictList('table_status')}" itemLabel="label" itemValue="value" htmlEscape="false"/>--%>
-				<%--</form:select>--%>
-			<%--</div>--%>
-		<%--</div>--%>
+		<div class="control-group">
+			<label class="control-label">状态：</label>
+			<div class="controls">
+				<form:select path="tableStatus" class="input-xlarge ">
+					<form:option value="" label=""/>
+					<form:options items="${fns:getDictList('')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+				</form:select>
+			</div>
+		</div>
 		<div class="control-group">
 			<label class="control-label">是否主表：</label>
 			<div class="controls">
@@ -110,13 +110,6 @@
 				<form:radiobuttons path="isDetail" items="${fns:getDictList('is_detail')}" itemLabel="label" itemValue="value" htmlEscape="false" class=""/>
 			</div>
 		</div>
-        <div class="control-group">
-            <label class="control-label">选择主表：</label>
-            <div class="controls">
-                <!--todo 选择主表(调出当前用户所在机构的所有的表信息--org_table_infos)-->
-                <%--<form:radiobuttons path="isDetail" items="${fns:getDictList('is_detail')}" itemLabel="label" itemValue="value" htmlEscape="false" class=""/>--%>
-            </div>
-        </div>
 		<div class="control-group">
 			<label class="control-label">备注信息：</label>
 			<div class="controls">
@@ -134,7 +127,7 @@
 								<th>注释</th>
 								<th>列的类型</th>
 								<th>列的长度</th>
-								<th>&nbsp;&nbsp;是否必填&nbsp;&nbsp;</th>
+								<th>是否必填</th>
 								<th>是否显示到列表</th>
 								<th>是否流程变量</th>
 								<th>备注信息</th>
@@ -147,8 +140,7 @@
 							<tr><td colspan="10"><a href="javascript:" onclick="addRow('#oaPersonDefineTableColumnList', oaPersonDefineTableColumnRowIdx, oaPersonDefineTableColumnTpl);oaPersonDefineTableColumnRowIdx = oaPersonDefineTableColumnRowIdx + 1;" class="btn">新增</a></td></tr>
 						</tfoot></shiro:hasPermission>
 					</table>
-					<script type="text/template" id="oaPersonDefineTableColumnTpl">
-                        //<!--
+					<script type="text/template" id="oaPersonDefineTableColumnTpl">//<!--
 						<tr id="oaPersonDefineTableColumnList{{idx}}">
 							<td class="hide">
 								<input id="oaPersonDefineTableColumnList{{idx}}_id" name="oaPersonDefineTableColumnList[{{idx}}].id" type="hidden" value="{{row.id}}"/>
@@ -189,13 +181,9 @@
 							<td>
 								<input id="oaPersonDefineTableColumnList{{idx}}_remarks" name="oaPersonDefineTableColumnList[{{idx}}].remarks" type="text" value="{{row.remarks}}" maxlength="255" class="input-small "/>
 							</td>
-							<shiro:hasPermission name="table:oaPersonDefineTable:edit">
-							<td class="text-center" width="10">
-								{{#delBtn}}
-								<span class="close" onclick="delRow(this, '#oaPersonDefineTableColumnList{{idx}}')" title="删除">&times</span>
- 								{{/delBtn}}
-							</td>
-							</shiro:hasPermission>
+							<shiro:hasPermission name="table:oaPersonDefineTable:edit"><td class="text-center" width="10">
+								{{#delBtn}}<span class="close" onclick="delRow(this, '#oaPersonDefineTableColumnList{{idx}}')" title="删除">&times;</span>{{/delBtn}}
+							</td></shiro:hasPermission>
 						</tr>//-->
 					</script>
 					<script type="text/javascript">

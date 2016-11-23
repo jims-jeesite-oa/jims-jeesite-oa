@@ -37,7 +37,7 @@
 	</ul>
 	<c:choose>
 		<c:when test="${empty genTable.name}">
-			<form:form id="inputForm" modelAttribute="genTable" action="${ctx}/gen/genTable/form" method="post" class="form-horizontal">
+			<form:form id="inputForm" modelAttribute="genTable" action="${ctx}/gen/genTable/form?flag=${flag}" method="post" class="form-horizontal">
 				<form:hidden path="id"/>
 				<sys:message content="${message}"/>
 				<br/>
@@ -49,14 +49,14 @@
 						</form:select>
 					</div>
 					<div class="form-actions">
-						<input id="btnSubmit" class="btn btn-primary" type="submit" value="下一步"/>&nbsp;
-						<input id="btnCancel" class="btn" type="button" value="返 回" onclick="history.go(-1)"/>
+						<input  class="btn btn-primary" type="submit" value="下一步"/>&nbsp;
+						<input  class="btn" type="button" value="返 回" onclick="history.go(-1)"/>
 					</div>
 				</div>
 			</form:form>
 		</c:when>
 		<c:otherwise>
-			<form:form id="inputForm" modelAttribute="genTable" action="${ctx}/gen/genTable/save" method="post" class="form-horizontal">
+			<form:form id="inputForm" modelAttribute="genTable" action="${ctx}/gen/genTable/save?flag=${flag}" method="post" class="form-horizontal">
 				<form:hidden path="id"/>
 				<sys:message content="${message}"/>
 				<fieldset>

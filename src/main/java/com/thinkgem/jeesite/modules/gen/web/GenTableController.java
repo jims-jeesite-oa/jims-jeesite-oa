@@ -8,6 +8,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.thinkgem.jeesite.modules.gen.entity.GenScheme;
+import com.thinkgem.jeesite.modules.gen.service.GenSchemeService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -37,7 +39,10 @@ public class GenTableController extends BaseController {
 
 	@Autowired
 	private GenTableService genTableService;
-	
+	@Autowired
+    private GenSchemeService genSchemeService;
+    @Autowired
+    private HttpServletRequest request;
 	@ModelAttribute
 	public GenTable get(@RequestParam(required=false) String id) {
 		if (StringUtils.isNotBlank(id)){
@@ -50,18 +55,23 @@ public class GenTableController extends BaseController {
 	@RequiresPermissions("gen:genTable:view")
 	@RequestMapping(value = {"list", ""})
 	public String list(GenTable genTable, HttpServletRequest request, HttpServletResponse response, Model model) {
-		User user = UserUtils.getUser();
+		String flag=request.getParameter("flag");
+        User user = UserUtils.getUser();
 		if (!user.isAdmin()){
 			genTable.setCreateBy(user);
 		}
         Page<GenTable> page = genTableService.find(new Page<GenTable>(request, response), genTable); 
         model.addAttribute("page", page);
+        if(flag!=null&&!"".equals(flag)){
+            model.addAttribute("flag",flag);
+        }
 		return "modules/gen/genTableList";
 	}
 
 	@RequiresPermissions("gen:genTable:view")
 	@RequestMapping(value = "form")
 	public String form(GenTable genTable, Model model) {
+        String flag=request.getParameter("flag");
 		// 获取物理表列表
 		List<GenTable> tableList = genTableService.findTableListFormDb(new GenTable());
 		model.addAttribute("tableList", tableList);
@@ -76,13 +86,17 @@ public class GenTableController extends BaseController {
 		}
 		model.addAttribute("genTable", genTable);
 		model.addAttribute("config", GenUtils.getConfig());
+        if(flag!=null&&!"".equals(flag)){
+            model.addAttribute("flag", flag);
+        }
 		return "modules/gen/genTableForm";
 	}
 
 	@RequiresPermissions("gen:genTable:edit")
 	@RequestMapping(value = "save")
 	public String save(GenTable genTable, Model model, RedirectAttributes redirectAttributes) {
-		if (!beanValidator(model, genTable)){
+		String flag=request.getParameter("flag");
+        if (!beanValidator(model, genTable)){
 			return form(genTable, model);
 		}
 		// 验证表是否已经存在
@@ -93,7 +107,24 @@ public class GenTableController extends BaseController {
 		}
 		genTableService.save(genTable);
 		addMessage(redirectAttributes, "保存业务表'" + genTable.getName() + "'成功");
-		return "redirect:" + adminPath + "/gen/genTable/?repage";
+        if(flag!=null&&!"".equals(flag)){
+            GenScheme genScheme=new GenScheme();
+            genScheme.setGenTable(genTable);
+            genScheme.setModuleName("form");
+            genScheme.setPackageName("com.thinkgem.jeesite.modules");
+            genScheme.setCategory("curd");
+            genScheme.setFlag("1");
+            genScheme.setFunctionAuthor("chenxy");
+            genScheme.setFunctionName("自定义表单");
+            genScheme.setName("自定义表单");
+            genScheme.setReplaceFile(true);
+            genScheme.setSubModuleName("form");
+            genScheme.setFunctionNameSimple("xx");
+            genScheme.setDelFlag("0");
+            genSchemeService.save(genScheme);
+            addMessage(redirectAttributes, "生成表单'" + genTable.getName() + "'成功");
+        }
+ 		return "redirect:" + adminPath + "/gen/genTable/?repage";
 	}
 	
 	@RequiresPermissions("gen:genTable:edit")
