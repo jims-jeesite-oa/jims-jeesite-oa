@@ -112,7 +112,7 @@ public class GenTableController extends BaseController {
             genScheme.setGenTable(genTable);
             genScheme.setModuleName("form");
             genScheme.setPackageName("com.thinkgem.jeesite.modules");
-            genScheme.setCategory("curd");
+            genScheme.setCategory("create_form");
             genScheme.setFlag("1");
             genScheme.setFunctionAuthor("chenxy");
             genScheme.setFunctionName("自定义表单");
