@@ -2726,7 +2726,7 @@ create table MAIL_INFO
 (
   id          VARCHAR2(64) not null,
   theme       VARCHAR2(64) not null,
-  content     BLOB not null,
+  content     CLOB not null,
   files       VARCHAR2(2000),
   read_mark   CHAR(1),
   time        DATE not null,
@@ -2753,7 +2753,7 @@ comment on column MAIL_INFO.content
 comment on column MAIL_INFO.files
   is '附件';
 comment on column MAIL_INFO.read_mark
-  is '已读标记';
+  is '已读标记(0 未读， 1已读)';
 comment on column MAIL_INFO.time
   is '时间';
 comment on column MAIL_INFO.sender_id
