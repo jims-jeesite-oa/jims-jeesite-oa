@@ -347,6 +347,30 @@ public class UserController extends BaseController {
 		}
 		return mapList;
 	}
+
+
+    /**
+     * 修改id的格式
+     * @param officeId
+     * @param response
+     * @return
+     */
+    @RequiresPermissions("user")
+    @ResponseBody
+    @RequestMapping(value = "treeData1")
+    public List<Map<String, Object>> treeData1(@RequestParam(required=false) String officeId, HttpServletResponse response) {
+        List<Map<String, Object>> mapList = Lists.newArrayList();
+        List<User> list = systemService.findUserByOfficeId(officeId);
+        for (int i=0; i<list.size(); i++){
+            User e = list.get(i);
+            Map<String, Object> map = Maps.newHashMap();
+            map.put("id",  e.getId());
+            map.put("pId", officeId);
+            map.put("name", StringUtils.replace(e.getName(), " ", ""));
+            mapList.add(map);
+        }
+        return mapList;
+    }
     
 //	@InitBinder
 //	public void initBinder(WebDataBinder b) {

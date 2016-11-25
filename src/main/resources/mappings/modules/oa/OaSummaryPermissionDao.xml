@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.oa.dao.OaSummaryPermissionDao">
+    
+	<sql id="oaSummaryPermissionColumns">
+		a.evaluate_id AS "evaluateId",
+		a.evaluate_by_id AS "evaluateById"
+	</sql>
+	
+	<sql id="oaSummaryPermissionJoins">
+	</sql>
+    
+	<select id="get" resultType="OaSummaryPermission">
+		SELECT 
+			<include refid="oaSummaryPermissionColumns"/>
+		FROM oa_summary_permission a
+		<include refid="oaSummaryPermissionJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="OaSummaryPermission">
+		SELECT 
+			<include refid="oaSummaryPermissionColumns"/>
+		FROM oa_summary_permission a
+		<include refid="oaSummaryPermissionJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="OaSummaryPermission">
+		SELECT 
+			<include refid="oaSummaryPermissionColumns"/>
+		FROM oa_summary_permission a
+		<include refid="oaSummaryPermissionJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO oa_summary_permission(
+			evaluate_id,
+			evaluate_by_id
+		) VALUES (
+			#{evaluateId},
+			#{evaluateById}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE oa_summary_permission SET 	
+			evaluate_id = #{evaluateId},
+			evaluate_by_id = #{evaluateById}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM oa_summary_permission
+		WHERE id = #{id}
+	</update>
+	
+</mapper>
