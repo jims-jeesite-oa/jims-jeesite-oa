@@ -67,19 +67,19 @@ public class OaPersonDefineTableColumn extends DataEntity<OaPersonDefineTableCol
         if(this.columnType==null || "".equals(this.columnType)){
             return null;
         }
-        if(this.columnType.equals(ColumnType.大文本)){
+        if(this.columnType.trim().equals(ColumnType.大文本)){
             return "longtext";
         }
-        if(this.columnType.equals(ColumnType.数字)){
+        if(this.columnType.trim().equals(ColumnType.数字)){
             return "int";
         }
-        if(this.columnType.equals(ColumnType.文字)){
+        if(this.columnType.trim().equals(ColumnType.文字)){
             return "varchar";
         }
-        if(this.columnType.equals(ColumnType.日期)){
+        if(this.columnType.trim().equals(ColumnType.日期)){
             return "datetime";
         }
-		return "varchar";
+		return "";
 	}
 
 	public void setColumnType(String columnType) {

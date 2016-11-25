@@ -19,6 +19,13 @@
 				<template>category-ref:dao</template>
 			</childTable>
 		</category>
+        <category value="create_form" label="自定义表单">
+            <template>curd/controller.xml</template>
+            <template>curd/service.xml</template>
+            <template>category-ref:dao</template>
+            <template>curd/viewForm2.xml</template>
+            <template>curd/viewList2.xml</template>
+        </category>
 		<category value="dao" label="仅持久层（dao/entity/mapper）">
 			<template>dao/dao.xml</template>
 			<template>dao/entity.xml</template>
