@@ -1724,7 +1724,8 @@ create table OA_SCHEDULE
   important_level CHAR(1),
   emergency_level CHAR(1),
   schedule_date   DATE,
-  flag            CHAR(1)
+  flag            CHAR(1),
+  login_id        VARCHAR2(64)
 )
 ;
 comment on table OA_SCHEDULE
@@ -1785,7 +1786,8 @@ create table OA_SUMMARY_DAY
   sum_date        DATE,
   evaluate        VARCHAR2(2000),
   evaluate_man    VARCHAR2(40),
-  evaluate_man_id VARCHAR2(64)
+  evaluate_man_id VARCHAR2(64) ,
+  login_id        VARCHAR2(64)
 )
 ;
 comment on table OA_SUMMARY_DAY
@@ -1829,7 +1831,8 @@ create table OA_SUMMARY_WEEK
   next_plan_title   VARCHAR2(1000),
   evaluate          VARCHAR2(2000),
   evaluate_man      VARCHAR2(40),
-  evaluate_man_id   VARCHAR2(64)
+  evaluate_man_id   VARCHAR2(64) ,
+  login_id          VARCHAR2(64)
 )
 ;
 comment on table OA_SUMMARY_WEEK

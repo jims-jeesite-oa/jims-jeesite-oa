@@ -60,6 +60,37 @@ public class OaSummaryPermissionController extends BaseController {
         return "modules/oa/oaSummaryPermissionList";
     }
 
+    @RequestMapping(value = "day")
+    public String summary() {
+        return "modules/oa/oaPermissionList";
+    }
+
+    /**
+     * 同事评阅日总结
+     * @param oaSummaryPermission
+     * @param model
+     * @return
+     */
+    @RequiresPermissions("oa:oaSummaryPermission:view")
+    @RequestMapping(value = "formId")
+    public String formId(OaSummaryPermission oaSummaryPermission, Model model) {
+        model.addAttribute("oaSummaryPermission", oaSummaryPermission);
+        return "modules/oa/oaPermissionList";
+    }
+
+    /**
+     * 同事评阅周总结
+     * @param oaSummaryPermission
+     * @param model
+     * @return
+     */
+    @RequiresPermissions("oa:oaSummaryPermission:view")
+    @RequestMapping(value = "formWeek")
+    public String formWeek(OaSummaryPermission oaSummaryPermission, Model model) {
+        model.addAttribute("oaSummaryPermission", oaSummaryPermission);
+        return "modules/oa/oaPermissionForm";
+    }
+
 
 
     @RequiresPermissions("oa:oaSummaryPermission:view")

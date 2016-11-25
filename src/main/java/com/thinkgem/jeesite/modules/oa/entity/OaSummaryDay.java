@@ -24,10 +24,19 @@ public class OaSummaryDay extends DataEntity<OaSummaryDay> {
 	private String evaluate;		// 评阅内容
 	private String evaluateMan;		// 评阅人
 	private String evaluateManId;		// 评阅人id
+    private String loginId;    //登录人id
 
     public OaSummaryDay(List<OaSchedule> oaScheduleList,Date sumDate) {
         this.oaScheduleList = oaScheduleList;
         this.sumDate=sumDate;
+    }
+
+    public String getLoginId() {
+        return loginId;
+    }
+
+    public void setLoginId(String loginId) {
+        this.loginId = loginId;
     }
 
     private List<OaSchedule> oaScheduleList;      //完成的任务

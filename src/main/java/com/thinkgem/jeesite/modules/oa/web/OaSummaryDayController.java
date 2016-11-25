@@ -11,6 +11,8 @@ import com.thinkgem.jeesite.modules.oa.entity.OaSummaryWeek;
 import com.thinkgem.jeesite.modules.oa.entity.OaVo;
 import com.thinkgem.jeesite.modules.oa.service.OaScheduleService;
 import com.thinkgem.jeesite.modules.oa.service.OaSummaryWeekService;
+import com.thinkgem.jeesite.modules.sys.entity.User;
+import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -53,6 +55,8 @@ public class OaSummaryDayController extends BaseController {
     @Autowired
     private OaSummaryWeekService oaSummaryWeekService;
 
+
+
     @ModelAttribute
     public OaSummaryDay get(@RequestParam(required = false) String id) {
         OaSummaryDay entity = null;
@@ -68,7 +72,8 @@ public class OaSummaryDayController extends BaseController {
     //@RequiresPermissions("oa:oaSummaryDay:view")
     @RequestMapping(value = {"list", ""})
     public String list(@ModelAttribute("oaSummaryDay") OaSummaryDay oaSummaryDay, HttpServletRequest request, HttpServletResponse response, Model model) throws Exception {
-
+        User user= UserUtils.getUser();
+        oaSummaryDay.setLoginId(user.getId());
         //当前日期
         DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String s = sdf.format(new Date());
@@ -79,6 +84,7 @@ public class OaSummaryDayController extends BaseController {
             oaSummaryDay = oaSummaryDayService.findByDate(oaSummaryDay);
             OaSchedule oaSchedule = new OaSchedule();
             oaSchedule.setScheduleDate(before);
+            oaSchedule.setLoginId(user.getId());
             List<OaSchedule> list = oaScheduleService.completeBy(oaSchedule);
             if (oaSummaryDay != null) {
                 oaSummaryDay.setOaScheduleList(list);
@@ -91,6 +97,7 @@ public class OaSummaryDayController extends BaseController {
             oaSummaryDay = oaSummaryDayService.findByDate(oaSummaryDay);
             if (oaSummaryDay != null) {
                 OaSchedule oaSchedule = new OaSchedule();
+                oaSchedule.setLoginId(user.getId());
                 oaSchedule.setScheduleDate(oaSummaryDay.getSumDate());
                 List<OaSchedule> list = oaScheduleService.completeBy(oaSchedule);
                 oaSummaryDay.setOaScheduleList(list);
@@ -168,6 +175,7 @@ public class OaSummaryDayController extends BaseController {
     //查询本周周总结
     @RequestMapping(value = "formId")
     public String form(OaSummaryWeek oaSummaryWeek, Model model) throws Exception {
+        User user= UserUtils.getUser();
 
         //获取当前想要格式的日期
         DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -195,6 +203,7 @@ public class OaSummaryDayController extends BaseController {
             Date scheduleDate = sdf.parse(begin);
             OaVo oaVo = null;
             oaSchedule.setScheduleDate(scheduleDate);
+            oaSchedule.setLoginId(user.getId());
             List<OaSchedule> list1 = oaScheduleService.completeBy(oaSchedule);
             String con = null;
             StringBuffer cons = new StringBuffer();
@@ -203,6 +212,7 @@ public class OaSummaryDayController extends BaseController {
             }
             OaSummaryDay oaSummaryDay = new OaSummaryDay();
             oaSummaryDay.setSumDate(scheduleDate);
+            oaSummaryDay.setLoginId(user.getId());
             oaSummaryDay = oaSummaryDayService.findByDate(oaSummaryDay);
             oaVo = new OaVo();
             oaVo.setContent(con);
@@ -232,9 +242,11 @@ public class OaSummaryDayController extends BaseController {
     @RequiresPermissions("oa:oaSummaryDay:edit")
     @RequestMapping(value = "save")
     public String save(OaSummaryDay oaSummaryDay, Model model, RedirectAttributes redirectAttributes) {
+        User user= UserUtils.getUser();
         if (!beanValidator(model, oaSummaryDay)) {
             return form(oaSummaryDay, model);
         }
+        oaSummaryDay.setLoginId(user.getId());
         oaSummaryDayService.save(oaSummaryDay);
         String id = oaSummaryDay.getId();
         oaSummaryDay = oaSummaryDayService.get(id);
@@ -261,6 +273,7 @@ public class OaSummaryDayController extends BaseController {
      */
     @RequestMapping(value = "saveWeek")
     public String saveWeek(OaSummaryWeek oaSummaryWeek, Model model, RedirectAttributes redirectAttributes) throws Exception {
+        User user= UserUtils.getUser();
         if (!beanValidator(model, oaSummaryWeek)) {
             return form1(oaSummaryWeek, model);
         }
@@ -284,6 +297,7 @@ public class OaSummaryDayController extends BaseController {
             Date scheduleDate = sdf.parse(begin);
             OaVo oaVo = null;
             oaSchedule.setScheduleDate(scheduleDate);
+            oaSchedule.setLoginId(user.getId());
             List<OaSchedule> list1 = oaScheduleService.completeBy(oaSchedule);
             String con = null;
             StringBuffer cons = new StringBuffer();
@@ -292,6 +306,7 @@ public class OaSummaryDayController extends BaseController {
             }
             OaSummaryDay oaSummaryDay = new OaSummaryDay();
             oaSummaryDay.setSumDate(scheduleDate);
+            oaSummaryDay.setLoginId(user.getId());
             oaSummaryDay = oaSummaryDayService.findByDate(oaSummaryDay);
             oaVo = new OaVo();
             oaVo.setContent(con);
@@ -302,6 +317,7 @@ public class OaSummaryDayController extends BaseController {
             oa.add(oaVo);
         }
         oaSummaryWeek.setOaVos(oa);
+        oaSummaryWeek.setLoginId(user.getId());
         oaSummaryWeekService.save(oaSummaryWeek);
         addMessage(redirectAttributes, "保存工作日志成功");
         model.addAttribute("oaSummaryWeek", oaSummaryWeek);
@@ -326,6 +342,7 @@ public class OaSummaryDayController extends BaseController {
      */
     @RequestMapping(value = "lackWeek")
     public String lackWeek(@RequestParam("flag") String flag, @RequestParam("weekOfYear") Integer weekOfYear, Model model) throws Exception {
+        User user= UserUtils.getUser();
         OaSummaryWeek oaSummaryWeek = new OaSummaryWeek();
         //获取当前想要格式的日期
         DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -354,7 +371,7 @@ public class OaSummaryDayController extends BaseController {
             oaSummaryWeek.setWeekOfYear(calendar.get(Calendar.WEEK_OF_YEAR));
             date1 = setDate(new Date());
         }
-
+        oaSummaryWeek.setLoginId(user.getId());
         OaSummaryWeek oaSummaryWeek1 = oaSummaryWeekService.findByWeek(oaSummaryWeek);
         if (oaSummaryWeek1 != null) {
             oaSummaryWeek.setContent(oaSummaryWeek1.getContent());
@@ -371,6 +388,7 @@ public class OaSummaryDayController extends BaseController {
             Date scheduleDate = sdf.parse(begin);
             OaVo oaVo = null;
             oaSchedule.setScheduleDate(scheduleDate);
+            oaSchedule.setLoginId(user.getId());
             List<OaSchedule> list1 = oaScheduleService.completeBy(oaSchedule);
             String con = null;
             StringBuffer cons = new StringBuffer();
@@ -381,6 +399,7 @@ public class OaSummaryDayController extends BaseController {
             }
             OaSummaryDay oaSummaryDay = new OaSummaryDay();
             oaSummaryDay.setSumDate(scheduleDate);
+            oaSummaryDay.setLoginId(user.getId());
             oaSummaryDay = oaSummaryDayService.findByDate(oaSummaryDay);
 
             oaVo = new OaVo();

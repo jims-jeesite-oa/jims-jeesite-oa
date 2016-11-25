@@ -24,9 +24,20 @@ public class OaSchedule extends DataEntity<OaSchedule> {
 	private Date scheduleDate;		// 日志日期
 
 	private String flag;		// 完成状态（0未完成，1完成）
+    private String loginId;    //当前登录人id
+
 
     private Date startDate;
     private Date endDate;
+
+
+    public String getLoginId() {
+        return loginId;
+    }
+
+    public void setLoginId(String loginId) {
+        this.loginId = loginId;
+    }
 
     public Date getStartDate() {
         return startDate;

@@ -34,7 +34,7 @@
 	</form:form>
 	<sys:message content="${message}"/>
 
-
+    <%--<form:hidden path="loginId" value=" ${fns:getUser()}"/>--%>
     <form:form id="inputForm" modelAttribute="oaSummaryDay" action="${ctx}/oa/oaSummaryDay/save" method="post" class="form-horizontal">
 
         <div class="control-group" >

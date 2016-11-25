@@ -12,7 +12,8 @@
 		a.next_plan_title AS "nextPlanTitle",
 		a.evaluate AS "evaluate",
 		a.evaluate_man AS "evaluateMan",
-		a.evaluate_man_id AS "evaluateManId"
+		a.evaluate_man_id AS "evaluateManId",
+		a.login_id AS "loginId"
 	</sql>
 	
 	<sql id="oaSummaryWeekJoins">
@@ -52,6 +53,9 @@
             <if test="weekOfYear != null and weekOfYear != ''">
                 a.week = #{weekOfYear}
             </if>
+            <if test="loginId != null and loginId != ''">
+              and  a.login_id = #{loginId}
+            </if>
         </where>
     </select>
 	
@@ -83,7 +87,8 @@
 			next_plan_title,
 			evaluate,
 			evaluate_man,
-			evaluate_man_id
+			evaluate_man_id,
+			login_id
 		) VALUES (
 			#{id},
 			#{content},
@@ -94,7 +99,8 @@
 			#{nextPlanTitle},
 			#{evaluate},
 			#{evaluateMan},
-			#{evaluateManId}
+			#{evaluateManId},
+			#{loginId}
 		)
 	</insert>
 	
@@ -109,6 +115,7 @@
 			evaluate = #{evaluate},
 			evaluate_man = #{evaluateMan},
 			evaluate_man_id = #{evaluateManId}
+            login_id=#{loginId}
 		WHERE id = #{id}
 	</update>
 	

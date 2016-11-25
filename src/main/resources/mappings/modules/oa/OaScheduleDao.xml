@@ -8,7 +8,8 @@
 		a.important_level AS "importantLevel",
 		a.emergency_level AS "emergencyLevel",
 		a.schedule_date AS "scheduleDate",
-		a.flag AS "flag"
+		a.flag AS "flag",
+		a.login_id AS "loginId"
 	</sql>
 
     <sql id="oaScheduleJoins">
@@ -35,6 +36,10 @@
 
             <if test="scheduleDate != null and scheduleDate != ''">
                 AND a.schedule_date=#{scheduleDate}
+            </if>
+
+            <if test="loginId != null and loginId != ''">
+                AND a.login_id=#{loginId}
             </if>
         </where>
 
@@ -73,14 +78,16 @@
 			important_level,
 			emergency_level,
 			schedule_date,
-			flag
+			flag,
+			login_id
 		) VALUES (
 			#{id},
 			#{content},
 			#{importantLevel},
 			#{emergencyLevel},
 			#{scheduleDate},
-			#{flag}
+			#{flag},
+			#{loginId}
 		)
 	</insert>
 
@@ -90,7 +97,8 @@
 			important_level = #{importantLevel},
 			emergency_level = #{emergencyLevel},
 			schedule_date = #{scheduleDate},
-			flag = #{flag}
+			flag = #{flag},
+			login_id=#{loginId}
 		WHERE id = #{id}
 	</update>
 
