@@ -59,9 +59,6 @@
                         //tree.selectNode(nodes[i], false);
                     }
                     // selectCheckNode();
-                },onDblClick: function(){//<c:if test="false">
-                    top.$.jBox.getBox().find("button[value='ok']").trigger("click");
-                    //$("input[type='text']", top.mainFrame.document).focus();//</c:if>
                 }
             }
         };

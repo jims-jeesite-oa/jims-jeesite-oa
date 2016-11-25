@@ -54,7 +54,7 @@ public class OaSummaryPermissionController extends BaseController {
 
 		return entity;
 	}
-    @RequiresPermissions("oa:oaSummaryPermission:view")
+//    @RequiresPermissions("oa:oaSummaryPermission:view")
     @RequestMapping(value = {"list", ""})
     public String index() {
         return "modules/oa/oaSummaryPermissionList";

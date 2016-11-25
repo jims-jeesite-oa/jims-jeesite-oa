@@ -183,7 +183,7 @@ public class OaSummaryDayController extends BaseController {
         } else {
             oaSummaryWeek.setWeekOfYear(calendar.get(Calendar.WEEK_OF_YEAR));
         }
-        oaSummaryWeek = oaSummaryWeekService.findByWeek(oaSummaryWeek);
+       // oaSummaryWeek = oaSummaryWeekService.findByWeek(oaSummaryWeek);
         List<OaSchedule> list = null;
         List<OaVo> oa = new ArrayList<OaVo>();
 
@@ -212,7 +212,10 @@ public class OaSummaryDayController extends BaseController {
             }
             oa.add(oaVo);
         }
-        oaSummaryWeek.setOaVos(oa);
+        if(oa!=null){
+            oaSummaryWeek.setOaVos(oa);
+        }
+       // oaSummaryWeek.setOaVos(oa);
         oaSummaryWeek.setWeekOfYear(calendar.get(Calendar.WEEK_OF_YEAR));
         model.addAttribute("oaSummaryWeek", oaSummaryWeek);
         return "modules/oa/oaSummaryDayForm";
@@ -265,8 +268,10 @@ public class OaSummaryDayController extends BaseController {
         DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         //拿到当前的年
         String currentYear=year.substring(0, 10);
+        String year1=year.substring(0, 4);
         Date date=sdf.parse(currentYear);
         List date1 = setDate(date);
+        oaSummaryWeek.setYear(year1);
         oaSummaryWeek.setWeek(oaSummaryWeek.getWeekOfYear() + "");
         oaSummaryWeek.setSumDate(new Date());
         List<OaSchedule> list = null;

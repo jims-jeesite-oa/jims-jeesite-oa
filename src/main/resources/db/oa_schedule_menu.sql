@@ -1,13 +1,15 @@
-INSERT INTO `sys_dict` VALUES ('3fc84b50a7a341d4ad2fe1b02d27d6a2', '1', '已完成', 'oa_schedule_status', '完成状态', '10', '0', '1', '2016-11-15 14:19:56', '1', '2016-11-15 14:19:56', '', '0');
-INSERT INTO `sys_dict` VALUES ('a86e6046ff824dd4895db4931235295c', '1', '紧急', 'oa_schedule_import', '紧急程度', '10', '0', '1', '2016-11-15 14:03:39', '1', '2016-11-15 14:03:39', '', '0');
-INSERT INTO `sys_dict` VALUES ('b0984f6547de412f95309ab3450b6031', '0', '不紧急', 'oa_schedule_import', '紧急程度', '10', '0', '1', '2016-11-15 14:03:19', '1', '2016-11-15 14:03:19', '', '0');
-INSERT INTO `sys_dict` VALUES ('c6b73af39e14425c9000be5657665b9e', '0', '不重要', 'oa_schedule', '重要等级', '10', '0', '1', '2016-11-15 13:47:25', '1', '2016-11-15 13:47:25', '', '0');
-INSERT INTO `sys_dict` VALUES ('c809846a459b4b7d8fc1448540333448', '0', '未完成', 'oa_schedule_status', '完成状态', '10', '0', '1', '2016-11-15 14:19:34', '1', '2016-11-15 14:19:34', '', '0');
-INSERT INTO `sys_dict` VALUES ('e11a95f2329a48c6953a1f3e8e7aad0a', '1', '重要', 'oa_schedule', '重要等级', '10', '0', '1', '2016-11-15 13:48:22', '1', '2016-11-15 13:48:22', '', '0');
+INSERT INTO sys_dict VALUES ('3fc84b50a7a341d4ad2fe1b02d27d6a2', '1', '已完成', 'oa_schedule_status', '完成状态', '10', '0', '1', to_date('15-11-2016 14:19:56', 'dd-mm-yyyy hh24:mi:ss'), '1', to_date('15-11-2016 14:19:56',  'dd-mm-yyyy hh24:mi:ss'),'', '0');
+INSERT INTO sys_dict VALUES ('a86e6046ff824dd4895db4931235295c', '1', '紧急', 'oa_schedule_import', '紧急程度', '10', '0', '1', to_date('15-11-2016 14:03:39', 'dd-mm-yyyy hh24:mi:ss'), '1',to_date( '15-11-2016 14:03:39', 'dd-mm-yyyy hh24:mi:ss'), '', '0');
+INSERT INTO sys_dict VALUES ('b0984f6547de412f95309ab3450b6031', '0', '不紧急', 'oa_schedule_import', '紧急程度', '10', '0', '1',to_date( '15-11-2016 14:03:19', 'dd-mm-yyyy hh24:mi:ss'), '1',to_date( '15-11-2016 14:03:19', 'dd-mm-yyyy hh24:mi:ss'), '', '0');
+INSERT INTO sys_dict VALUES ('c6b73af39e14425c9000be5657665b9e', '0', '不重要', 'oa_schedule', '重要等级', '10', '0', '1',to_date( '15-11-2016 13:47:25', 'dd-mm-yyyy hh24:mi:ss'), '1', to_date('15-11-2016 13:47:25', 'dd-mm-yyyy hh24:mi:ss'), '', '0');
+INSERT INTO sys_dict VALUES ('c809846a459b4b7d8fc1448540333448', '0', '未完成', 'oa_schedule_status', '完成状态', '10', '0', '1', to_date('15-11-2016 14:19:34', 'dd-mm-yyyy hh24:mi:ss'), '1', to_date('15-11-2016 14:19:34', 'dd-mm-yyyy hh24:mi:ss'), '', '0');
+INSERT INTO sys_dict VALUES ('e11a95f2329a48c6953a1f3e8e7aad0a', '1', '重要', 'oa_schedule', '重要等级', '10', '0', '1',to_date('15-11-2016 13:48:22', 'dd-mm-yyyy hh24:mi:ss'), '1', to_date('15-11-2016 13:48:22', 'dd-mm-yyyy hh24:mi:ss'), '', '0');
 
-INSERT INTO `sys_menu` VALUES ('536b80f08a1e42438e783213108a6f8f', '62', '0,1,62,', '日程安排', '330', '', '', '', '1', '', '1', '2016-11-15 11:07:13', '1', '2016-11-15 11:07:13', '', '0');
-INSERT INTO `sys_menu` VALUES ('97068dae2cb5414ea735bd0bd2c7d19b', '536b80f08a1e42438e783213108a6f8f', '0,1,62,536b80f08a1e42438e783213108a6f8f,', '日程管理', '30', '/oa/oaSchedule', '', '', '1', 'oa:oaSchedule:view,oa:oaSchedule:edit', '1', '2016-11-15 11:08:18', '1', '2016-11-15 11:29:34', '', '0');
+INSERT INTO sys_menu VALUES ('536b80f08a1e42438e783213108a6f8f', '62', '0,1,62,', '日程安排', '330', '', '', '', '1', '', '1', to_date('15-11-2016 11:07:13','dd-mm-yyyy hh24:mi:ss'), '1', to_date('15-11-2016 11:07:13','dd-mm-yyyy hh24:mi:ss'), '', '0');
+INSERT INTO sys_menu VALUES ('97068dae2cb5414ea735bd0bd2c7d19b', '536b80f08a1e42438e783213108a6f8f', '0,1,62,536b80f08a1e42438e783213108a6f8f,', '日程管理', '30', '/oa/oaSchedule', '', '', '1', 'oa:oaSchedule:view,oa:oaSchedule:edit', '1',to_date('15-11-2016 11:08:18','dd-mm-yyyy hh24:mi:ss'), '1', to_date('15-11-2016 11:08:18','dd-mm-yyyy hh24:mi:ss'), '', '0');
 
-INSERT INTO `sys_menu` VALUES ('c7f490ef6b4246eba52c9b80c50b71e2', '62', '0,1,62,', '工作日志', '360', '', '', '', '1', '', '1', '2016-11-16 11:23:12', '1', '2016-11-16 11:23:12', '', '0');
-INSERT INTO `sys_menu` VALUES ('2e4dfd7b0af847619cbf01b18ec0ca17', 'c7f490ef6b4246eba52c9b80c50b71e2', '0,1,62,c7f490ef6b4246eba52c9b80c50b71e2,', '我的工作日志', '30', '/oa/oaSummaryDay', '', '', '1', 'oa:oaSummaryDay:view,oa:oaSummaryDay:edit', '1', '2016-11-16 11:24:29', '1', '2016-11-16 11:24:29', '', '0');
+INSERT INTO sys_menu VALUES ('c7f490ef6b4246eba52c9b80c50b71e2', '62', '0,1,62,', '工作日志', '360', '', '', '', '1', '', '1', to_date('16-11-2016 11:23:12','dd-mm-yyyy hh24:mi:ss'), '1', to_date('16-11-2016 11:23:12','dd-mm-yyyy hh24:mi:ss'), '', '0');
+INSERT INTO sys_menu VALUES ('2e4dfd7b0af847619cbf01b18ec0ca17', 'c7f490ef6b4246eba52c9b80c50b71e2', '0,1,62,c7f490ef6b4246eba52c9b80c50b71e2,', '我的工作日志', '30', '/oa/oaSummaryDay', '', '', '1', 'oa:oaSummaryDay:view,oa:oaSummaryDay:edit', '1', to_date('16-11-2016 11:24:29','dd-mm-yyyy hh24:mi:ss'), '1', to_date('16-11-2016 11:24:29','dd-mm-yyyy hh24:mi:ss'), '', '0');
 
+
+INSERT INTO sys_menu VALUES ('f2e5858753c44fd1a98e40149c400486', '1', '0,1,', '评阅管理', '5030', '/oa/oaSummaryPermission', '', '', '1', 'oa:oaSummaryPermission:view,oa:oaSummaryPermission:edit', '1', to_date('22-11-2016 11:53:35','dd-mm-yyyy hh24:mi:ss'), '1', to_date('22-11-2016 11:53:35','dd-mm-yyyy hh24:mi:ss'), '', '1');
