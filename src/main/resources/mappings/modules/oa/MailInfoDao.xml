@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.oa.dao.MailInfoDao">
+    
+	<sql id="mailInfoColumns">
+		a.id AS "id",
+		a.theme AS "theme",
+		a.content AS "content",
+		a.files AS "files",
+		a.read_mark AS "readMark",
+		a.time AS "time",
+		a.sender_id AS "senderId",
+		a.receiver_id AS "receiverId",
+		a.cc_id AS "ccId",
+		a.own_id AS "ownId",
+		a.state AS "state",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="mailInfoJoins">
+	</sql>
+    
+	<select id="get" resultType="MailInfo">
+		SELECT 
+			<include refid="mailInfoColumns"/>
+		FROM mail_info a
+		<include refid="mailInfoJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="MailInfo">
+		SELECT 
+			<include refid="mailInfoColumns"/>
+		FROM mail_info a
+		<include refid="mailInfoJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+            and own_id = #{ownId}
+            and state = #{state}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="MailInfo">
+		SELECT 
+			<include refid="mailInfoColumns"/>
+		FROM mail_info a
+		<include refid="mailInfoJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO mail_info(
+			id,
+			theme,
+			content,
+			files,
+			read_mark,
+			time,
+			sender_id,
+			receiver_id,
+			cc_id,
+			own_id,
+			state,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{theme},
+			#{content},
+			#{files},
+			#{readMark},
+			#{time},
+			#{senderId},
+			#{receiverId},
+			#{ccId},
+			#{ownId},
+			#{state},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE mail_info SET 	
+			theme = #{theme},
+			content = #{content},
+			files = #{files},
+			read_mark = #{readMark},
+			time = #{time},
+			sender_id = #{senderId},
+			receiver_id = #{receiverId},
+			cc_id = #{ccId},
+			own_id = #{ownId},
+			state = #{state},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE mail_info SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>
