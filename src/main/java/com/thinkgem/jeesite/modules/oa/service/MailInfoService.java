@@ -65,16 +65,31 @@ public class MailInfoService extends CrudService<MailInfoDao, MailInfo> {
         mailInfo.setState("DRAFTS");
         super.save(mailInfo);
     }
-	
-	@Transactional(readOnly = false)
-	public void delete(MailInfo mailInfo) {
-        mailInfo.setState("DELETED");
-        super.save(mailInfo);
-	}
 
     @Transactional(readOnly = false)
-    public void thoroughDelete(MailInfo mailInfo) {
+    public void delete(MailInfo mailInfo) {
         super.delete(mailInfo);
+    }
+
+    /**
+     * 修改已读标志
+     * @param ids
+     * @param readMark
+     */
+    @Transactional(readOnly = false)
+    public void readMark(String ids, String readMark){
+        String[] idArr = ids.split(",");
+        MailInfo mail = null;
+        for(int i = 0; i < idArr.length; i++){
+            mail = super.get(idArr[i]);
+            mail.setReadMark(readMark);
+            super.save(mail);
+        }
+    }
+
+    @Transactional(readOnly = false)
+    public void allRead(String ownId){
+        dao.allRead(ownId);
     }
 	
 }

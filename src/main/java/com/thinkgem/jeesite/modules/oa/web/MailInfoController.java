@@ -113,15 +113,16 @@ public class MailInfoController extends BaseController {
     }
 
     /**
-     * 删除邮件
+     * 移动到
      * @param mailInfo
      * @param redirectAttributes
      * @return
      */
-	@RequestMapping(value = "delete")
-	public String delete(MailInfo mailInfo, RedirectAttributes redirectAttributes) {
-		mailInfoService.delete(mailInfo);
-		addMessage(redirectAttributes, "删除邮件成功");
+	@RequestMapping(value = "move")
+	public String move(MailInfo mailInfo, RedirectAttributes redirectAttributes) {
+        mailInfo.setState("DELETED");
+		mailInfoService.save(mailInfo);
+        addMessage(redirectAttributes, "删除邮件成功");
 		return "modules/oa/mailInfoList";
 	}
 
@@ -133,8 +134,28 @@ public class MailInfoController extends BaseController {
      */
     @RequestMapping(value = "thoroughDelete")
     public String thoroughDelete(MailInfo mailInfo, RedirectAttributes redirectAttributes) {
-        mailInfoService.thoroughDelete(mailInfo);
+        mailInfoService.delete(mailInfo);
         addMessage(redirectAttributes, "彻底删除邮件成功");
+        return "modules/oa/mailInfoList";
+    }
+
+    /**
+     * 标记为 (已读/未读)
+     * @param ids
+     * @param readMark
+     * @return
+     */
+    @RequestMapping(value = "read")
+    public String mark(String ids, String readMark){
+        if(StringUtils.isNotBlank(ids) && StringUtils.isNotBlank(readMark)){
+            mailInfoService.readMark(ids, readMark);
+        }
+        return "modules/oa/mailInfoList";
+    }
+
+    @RequestMapping(value = "allRead")
+    public String allRead(){
+        mailInfoService.allRead(UserUtils.getUser().getId());
         return "modules/oa/mailInfoList";
     }
 
