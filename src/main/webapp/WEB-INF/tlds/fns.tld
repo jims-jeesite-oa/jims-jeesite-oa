@@ -103,6 +103,14 @@
     <function-signature>java.lang.Object getCache(java.lang.String, java.lang.Object)</function-signature>
     <example>${fns:getCache(cacheName, defaultValue)}</example>  
   </function>
+
+    <function>
+        <description>获取当前用户能评阅的人</description>
+        <name>getAllPermission</name>
+        <function-class>com.thinkgem.jeesite.modules.oa.units.CommonUtils</function-class>
+        <function-signature> java.util.List getAllPermission()</function-signature>
+        <example>${fns:getAllPermission()}</example>
+    </function>
 	
   <!-- DictUtils -->
   <function>

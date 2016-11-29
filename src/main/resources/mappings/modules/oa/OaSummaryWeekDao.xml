@@ -114,7 +114,7 @@
 			next_plan_title = #{nextPlanTitle},
 			evaluate = #{evaluate},
 			evaluate_man = #{evaluateMan},
-			evaluate_man_id = #{evaluateManId}
+			evaluate_man_id = #{evaluateManId} ,
             login_id=#{loginId}
 		WHERE id = #{id}
 	</update>

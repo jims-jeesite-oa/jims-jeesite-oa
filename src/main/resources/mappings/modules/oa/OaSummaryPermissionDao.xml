@@ -34,6 +34,22 @@
 			</otherwise>
 		</choose>
 	</select>
+
+
+    <select id="findListByLoginId" resultType="OaSummaryPermission">
+        SELECT
+        <include refid="oaSummaryPermissionColumns"/>
+        FROM oa_summary_permission a
+        <include refid="oaSummaryPermissionJoins"/>
+        <where>
+            <if test="loginId!=null and loginId!=''">
+                a.evaluate_by_id=#{loginId}
+            </if>
+        </where>
+    </select>
+
+
+
 	
 	<select id="findAllList" resultType="OaSummaryPermission">
 		SELECT 

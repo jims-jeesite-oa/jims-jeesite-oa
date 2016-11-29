@@ -30,6 +30,11 @@ public class OaSummaryDay extends DataEntity<OaSummaryDay> {
         this.oaScheduleList = oaScheduleList;
         this.sumDate=sumDate;
     }
+    public OaSummaryDay(List<OaSchedule> oaScheduleList,Date sumDate,String loginId) {
+        this.oaScheduleList = oaScheduleList;
+        this.sumDate=sumDate;
+        this.loginId=loginId;
+    }
 
     public String getLoginId() {
         return loginId;

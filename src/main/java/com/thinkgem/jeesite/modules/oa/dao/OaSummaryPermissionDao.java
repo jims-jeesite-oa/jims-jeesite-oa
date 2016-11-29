@@ -6,6 +6,9 @@ package com.thinkgem.jeesite.modules.oa.dao;
 import com.thinkgem.jeesite.common.persistence.CrudDao;
 import com.thinkgem.jeesite.common.persistence.annotation.MyBatisDao;
 import com.thinkgem.jeesite.modules.oa.entity.OaSummaryPermission;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * 评阅管理DAO接口
@@ -14,5 +17,13 @@ import com.thinkgem.jeesite.modules.oa.entity.OaSummaryPermission;
  */
 @MyBatisDao
 public interface OaSummaryPermissionDao extends CrudDao<OaSummaryPermission> {
+
+
+    /**
+     *根据当前登录人的id查询  能够评阅的人
+     * @param loginId
+     * @return
+     */
+    public List<OaSummaryPermission> findListByLoginId(@Param("loginId")String loginId);
 	
 }

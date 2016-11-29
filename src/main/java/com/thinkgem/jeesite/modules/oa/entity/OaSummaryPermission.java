@@ -18,6 +18,15 @@ public class OaSummaryPermission extends DataEntity<OaSummaryPermission> {
 	private String evaluateId;		// 可评阅用户id
 	private String evaluateById;		// 评阅人id
 
+    private String loginId;
+
+    public String getLoginId() {
+        return loginId;
+    }
+
+    public void setLoginId(String loginId) {
+        this.loginId = loginId;
+    }
 
     public OaSummaryPermission() {
 		super();
