@@ -14,5 +14,11 @@ import com.thinkgem.jeesite.modules.oa.entity.MailInfo;
  */
 @MyBatisDao
 public interface MailInfoDao extends CrudDao<MailInfo> {
+
+    /**
+     * 所有邮件标记为已读
+     * @param ownId
+     */
+    public void allRead(String ownId);
 	
 }

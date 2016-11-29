@@ -134,5 +134,11 @@
 			del_flag = #{DEL_FLAG_DELETE}
 		WHERE id = #{id}
 	</update>
+
+    <update id="allRead">
+        UPDATE mail_info SET
+        read_mark = '1'
+        WHERE own_id = #{userId}
+    </update>
 	
 </mapper>
