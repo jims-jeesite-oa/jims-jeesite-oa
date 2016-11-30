@@ -20,19 +20,15 @@
         #userLogo img{
             width: 200px;
         }
-        #menu .menuImg {
-            width: 50px;
-            height: 50px;
-        }
         #menu ul,#left ul {
             list-style:none;
             margin: 0;
         }
         #menu li {
             float:left;
-            width:70px;
-            padding: 10px 10px;
+            width:65px;
             cursor: pointer;
+            padding: 10px 10px;
         }
         #menu li a,#left li a{
             font-family:Helvetica, Georgia, Arial, sans-serif, 黑体;
@@ -49,6 +45,7 @@
             overflow-y:auto;
             width: 200px;
             border-right: 1px solid #C2C3C4;
+            border-top: 3px solid #EDEFF0;
             background-color: #FFF;
         }
         #left ul {
@@ -72,17 +69,46 @@
         iframe {
             padding-top: 3px;
         }
-        .menu {
-            text-align: center;
+        .menu span{
+            margin: 0 auto;
+            display: block;
+            text-align:center;
         }
         .test-icon{
-            background:url("/static/images/icons/1.png") no-repeat;
-            width:50px;
+            display: block;
+            background:url(/static/images/1.png)  no-repeat;
+            width: 50px;
             height: 50px;
+        }
+        .add-icon{
+            display: block;
+            background:url(/static/images/add.png)  no-repeat;
+            width: 50px;
+            height: 50px;
+        }
+
+        #moreMenu {
+            width: 100%;
+            height: 200px;
+            display: none;
+        }
+        .mask {
+            position: absolute; filter: alpha(opacity=60); background-color: #777;
+            z-index: 1000; left: 0px;
+            opacity:0.5; -moz-opacity:0.5;
+            display: none;
+        }
+        #moreMenu {
+            background-color: #FFFFFF;
+            z-index: 1002;
+            filter: alpha(opacity=100);
+            opacity:1;
+            height: 400px;
         }
     </style>
 </head>
 <body>
+    <div id="mask" class="mask" onclick="hideMask()"></div>
 	<div id="main">
 		<div id="header" class="navbar navbar-fixed-top">
 			<div class="navbar-inner">
@@ -112,7 +138,7 @@
 
         <div id="menu" style="background-color: #fff">
             <div id="userLogo">
-                <img src="/static/images/icons/4.png">
+                <img src="/static/images/1.png">
             </div>
             <div>
                 <ul>
@@ -121,8 +147,8 @@
                         <c:if test="${menu.parent.id eq '1'&&menu.isShow eq '1'}">
                             <li>
                                 <a class="menu" href="javascript:" data-href="${ctx}/sys/menu/tree?parentId=${menu.id}" data-id="${menu.id}">
-                                    <span class="test-icon">&nbsp;</span><br>
-                                    <span>${menu.name}</span></a>
+                                    <span class="test-icon"></span>
+                                    <span class="tt">${menu.name}</span></a>
                             </li>
                             <c:if test="${firstMenu}">
                                 <c:set var="firstMenuId" value="${menu.id}"/>
@@ -130,10 +156,16 @@
                             <c:set var="firstMenu" value="false"/>
                         </c:if>
                     </c:forEach>
+                    <li>
+                        <a class="menu moreMenu" href="#">
+                            <span class="add-icon"></span> </a>
+                    </li>
                 </ul>
             </div>
 
         </div>
+
+        <div id="moreMenu" class="mask"></div>
 
         <div>
             <div id="left">
@@ -147,6 +179,7 @@
         var menuObj = $("#menu");
         var headerObj = $("#header");
         var frameObj = $("#left, #right, #right iframe");
+        $('.mask').css('top',headerObj.height() + menuObj.height() + 3)
         $(window).resize(function () {
             wSize()
         });
@@ -163,8 +196,30 @@
             })
         }
 
-
+        //显示遮罩层
+        function showMask(){
+            $("#mask").css("height",$('#left').height() + 5);
+            $("#mask").css("width",$(document).width());
+            $("#mask").show();
+        }
+        //隐藏遮罩层
+        function hideMask(){
+            $("#mask").hide();
+            $("#moreMenu").slideUp("fast");
+        }
         $("#menu a.menu").click(function(){
+            if($(this).hasClass('moreMenu')){
+                if($('#mask').css('display') == 'none'){
+                    $("#moreMenu").slideDown("fast");
+                    showMask()
+                } else {
+                    hideMask()
+                }
+                return false
+            }
+            if($('#mask').css('display') == 'block'){
+                hideMask()
+            }
             $.get($(this).attr("data-href"), function(data){
                 if (data.indexOf("id=\"loginForm\"") != -1){
                     alert('未登录或登录超时。请重新登录，谢谢！');
