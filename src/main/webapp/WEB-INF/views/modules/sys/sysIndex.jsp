@@ -267,6 +267,8 @@
             $('#left li:eq(0)').click()
         });
     });
+
+    $("#menu #topMenus a.menu:eq(0)").click()
 </script>
 </body>
 </html>
