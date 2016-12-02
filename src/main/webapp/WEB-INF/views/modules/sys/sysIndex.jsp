@@ -42,7 +42,7 @@
             float: left;
         }
         #loginName{
-            font-size: 16px;
+            font-size: 14px;
         }
         #userLogo div{
             position: absolute;
@@ -50,6 +50,8 @@
         }
         #userLogo ul {
             padding-top: 15px;
+            font-family:"微软雅黑","黑体","宋体";
+            font-weight: 100;
         }
         #menu ul,#left ul {
             list-style:none;
@@ -158,7 +160,7 @@
     <div id="menu">
         <div id="userLogo">
             <c:set var="user" value="${fns:getUser()}"/>
-            <img src="${user.photo}">
+            <img src="${user.photo}" class="img-circle">
             <div>
                 <ul>
                     <li id="loginName">${user.name}</li>
@@ -171,7 +173,6 @@
         </div>
         <div id="topMenus">
             <ul>
-                <c:set var="firstMenu" value="true"/>
                 <c:forEach items="${fns:getMenuList()}" var="menu" varStatus="idxStatus">
                     <c:if test="${menu.parent.id eq '1'&&menu.isShow eq '1'}">
                         <li>
@@ -179,10 +180,6 @@
                                 <span class="icons-${menu.icon}"></span>
                                 <span>${menu.name}</span></a>
                         </li>
-                        <c:if test="${firstMenu}">
-                            <c:set var="firstMenuId" value="${menu.id}"/>
-                        </c:if>
-                        <c:set var="firstMenu" value="false"/>
                     </c:if>
                 </c:forEach>
                 <li>
@@ -193,7 +190,26 @@
         </div>
     </div>
 
-    <div id="moreMenu" class="mask"></div>
+    <div id="moreMenu" class="mask">
+        <div id="myCarousel" class="carousel slide" style="width: 500px;margin:0 auto;">
+            <!-- 轮播（Carousel）项目 -->
+            <div class="carousel-inner">
+                <div class="item active">
+                    <img src="/static/images/icons/5.png" alt="First slide">
+                </div>
+                <div class="item">
+                    <img src="/static/images/icons/5.png" alt="Second slide">
+                </div>
+                <div class="item">
+                    <img src="/static/images/icons/5.png" alt="Third slide">
+                </div>
+            </div>
+        </div>
+        <a class="carousel-control left" href="#myCarousel"
+           data-slide="prev" style="float: right">&lsaquo;</a>
+        <a class="carousel-control right" href="#myCarousel"
+           data-slide="next">&rsaquo;</a>
+    </div>
 
     <div>
         <div id="left">
