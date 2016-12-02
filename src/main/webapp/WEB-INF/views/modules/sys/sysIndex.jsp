@@ -5,20 +5,34 @@
     <title>${fns:getConfig('productName')}</title>
     <meta name="decorator" content="blank"/>
     <link href="${ctxStatic}/common/icons.css" type="text/css" rel="stylesheet" />
+
     <style type="text/css">
         body {
             background-color: #EDEFF0;
+            margin: 0;
+            padding: 0;
         }
+        .mask {
+            position: absolute; filter: alpha(opacity=60); background-color: #777;
+            z-index: 1000; left: 0px;
+            opacity:0.5; -moz-opacity:0.5;
+            display: none;
+        }
+        #header {margin:0;position:static;} #header li {font-size:14px;_font-size:12px;}
+        #header .brand {font-family:Helvetica, Georgia, Arial, sans-serif, 黑体;font-size:26px;padding-left:33px;}
+        #userControl>li>a{/*color:#fff;*/text-shadow:none;}
+        #userControl>li>a:hover, #user #userControl>li.open>a{background:transparent;}
         #menu {
             width: 100%;
+            background-color: #FFFFFF;
         }
-        #menu,#userLogo{
+        #menu,#menu > div{
             height: 90px;
         }
         #userLogo {
             float: left;
             width: 200px;
-            border-right: 1px solid #C2C3C4;
+            border-right: 3px solid #EDEFF0;
         }
         #userLogo img{
             width: 70px;
@@ -41,30 +55,54 @@
             list-style:none;
             margin: 0;
         }
-        #menu #topMenus li {
+        #menu #topMenus {
+            position: absolute;
+            left: 200px;
+            width: 1000px;
+        }
+        #topMenus li {
             float:left;
             width:65px;
             cursor: pointer;
             padding: 10px 10px;
         }
-        #menu #topMenus li a,#left li a{
+        #topMenus li a,#left li a{
             font-family:Helvetica, Georgia, Arial, sans-serif, 黑体;
             text-decoration:none;
             color: #555555;
         }
-        #main {padding:0;margin:0;}
-        #header {margin:0;position:static;} #header li {font-size:14px;_font-size:12px;}
-        #header .brand {font-family:Helvetica, Georgia, Arial, sans-serif, 黑体;font-size:26px;padding-left:33px;}
-        #userControl>li>a{/*color:#fff;*/text-shadow:none;}
-        #userControl>li>a:hover, #user #userControl>li.open>a{background:transparent;}
-        #left{
+        #topMenus li a span{
+            margin: 0 auto;
+            display: block;
+            text-align:center;
+        }
+        #moreMenu {
+            width: 100%;
+            height: 200px;
+            display: none;
+        }
+        #moreMenu {
+            background-color: #FFFFFF;
+            z-index: 1002;
+            filter: alpha(opacity=100);
+            opacity:1;
+            height: 400px;
+        }
+        #left,#right{
+            position: absolute;
+            bottom: 0px;
+        }
+        #left {
+            left: 0px;
             overflow-x:hidden;
             overflow-y:auto;
             width: 200px;
-            border-right: 1px solid #C2C3C4;
-            border-top: 3px solid #EDEFF0;
-            background-color: #FFF;
+            background-color: #FFFFFF;
         }
+        #right {
+            right: 0px;
+        }
+
         #left ul {
             margin-top: 20px;
         }
@@ -76,41 +114,19 @@
             font-size: 14px;
             cursor: pointer;
         }
-        .hover {
+        #left .hover {
             background-color: #CBDBF7;
         }
-        .active {
+        #left .active {
             background-color: #30A5FF;
         }
-        iframe {
-            padding-top: 3px;
-        }
-        .menu span{
-            margin: 0 auto;
-            display: block;
-            text-align:center;
-        }
-        #moreMenu {
-            width: 100%;
-            height: 200px;
-            display: none;
-        }
-        .mask {
-            position: absolute; filter: alpha(opacity=60); background-color: #777;
-            z-index: 1000; left: 0px;
-            opacity:0.5; -moz-opacity:0.5;
-            display: none;
-        }
-        #moreMenu {
-            background-color: #FFFFFF;
-            z-index: 1002;
-            filter: alpha(opacity=100);
-            opacity:1;
-            height: 400px;
+        #mainFrame {
+            border: 0px;
         }
     </style>
 </head>
 <body>
+<%--遮罩层--%>
 <div id="mask" class="mask" onclick="hideMask()"></div>
 <div id="main">
     <div id="header" class="navbar navbar-fixed-top">
@@ -139,7 +155,7 @@
         </div>
     </div>
 
-    <div id="menu" style="background-color: #fff">
+    <div id="menu">
         <div id="userLogo">
             <c:set var="user" value="${fns:getUser()}"/>
             <img src="${user.photo}">
@@ -160,7 +176,7 @@
                     <c:if test="${menu.parent.id eq '1'&&menu.isShow eq '1'}">
                         <li>
                             <a class="menu" href="javascript:" data-href="${ctx}/sys/menu/tree?parentId=${menu.id}" data-id="${menu.id}">
-                                <span class="icon-${menu.icon}"></span>
+                                <span class="icons-${menu.icon}"></span>
                                 <span>${menu.name}</span></a>
                         </li>
                         <c:if test="${firstMenu}">
@@ -171,11 +187,10 @@
                 </c:forEach>
                 <li>
                     <a class="menu moreMenu" href="#">
-                        <span class="icon-more"></span> </a>
+                        <span class="icons-more"></span> </a>
                 </li>
             </ul>
         </div>
-
     </div>
 
     <div id="moreMenu" class="mask"></div>
@@ -199,9 +214,9 @@
     wSize()
     function wSize(){
         var strs = getWindowSize().toString().split(",");
-        $('#right').width(strs[1] - $('#left').width() - 5)
         $('html').css({overflow: 'hidden'})
-        frameObj.height(strs[0] - headerObj.height() - menuObj.height() - 5);
+        $('#right').css('width',strs[1] - $('#left').width() - 3)
+        frameObj.css('height',strs[0] - headerObj.height() - menuObj.height() - 3);
     }
     function getWindowSize() {
         return ["Height", "Width"].map(function (a) {
@@ -220,6 +235,8 @@
         $("#mask").hide();
         $("#moreMenu").slideUp("fast");
     }
+
+
     $("#menu #topMenus a.menu").click(function(){
         if($(this).hasClass('moreMenu')){
             if($('#mask').css('display') == 'none'){

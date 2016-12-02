@@ -36,7 +36,7 @@ public class MainController extends BaseController {
 	@RequestMapping(value = "form")
 	public String form() {
 
-		return "modules/sys/main";
+		return "modules/sys/main1";
 	}
 
 }
