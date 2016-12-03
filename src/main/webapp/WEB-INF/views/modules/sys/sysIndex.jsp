@@ -219,7 +219,28 @@
         </div>
     </div>
 </div>
+<div id="myModal" class="modal hide fade modal-lg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="myModalLabel">添加</h3>
+    </div>
+    <div class="modal-body">
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+        <button class="btn btn-primary">保存</button>
+    </div>
+</div>
 <script type="text/javascript">
+    function showModal(){
+        $('#myModal').modal('toggle')
+    }
+    function initModal(data){
+        $('#myModal .modal-body').html(data)
+        showModal()
+    }
+
     var menuObj = $("#menu");
     var headerObj = $("#header");
     var frameObj = $("#left, #right, #right iframe");
@@ -233,6 +254,8 @@
         $('html').css({overflow: 'hidden'})
         $('#right').css('width',strs[1] - $('#left').width() - 3)
         frameObj.css('height',strs[0] - headerObj.height() - menuObj.height() - 3);
+
+        $('#myModal').css({'left' : (strs[1] - $('#myModal').width()) / 2})
     }
     function getWindowSize() {
         return ["Height", "Width"].map(function (a) {
@@ -291,6 +314,9 @@
             $('#left li').mouseover(function(){
                 $('#left li').removeClass("hover")
                 $(this).addClass("hover")
+            })
+            $('#left li').mouseout(function(){
+                $(this).removeClass("hover")
             })
             $('#left li').click(function(e){
                 $('#left li').removeClass("active")

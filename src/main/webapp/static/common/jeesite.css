@@ -59,7 +59,7 @@ input.btn:hover {*color:#333333}
 .form-horizontal .controls label.error {background-position:0 2px;}
 
 .form-horizontal .table-form{width:100%;border-color:#dddddd;}
-.form-horizontal .table-form, .form-horizontal .table-form td{border:1px solid #ddd;background-color:#fdfdfd;padding:4px;} 
+.form-horizontal .table-form, .form-horizontal .table-form td{border:1px solid #ddd;background-color:#fdfdfd;padding:4px;}
 .form-horizontal .table-form td.tit{background:#fafafa;text-align:center;padding-right:8px;white-space:nowrap;}
 .form-horizontal .form-actions{margin-bottom:0;}
 
@@ -68,10 +68,20 @@ input.btn:hover {*color:#333333}
 .pagination {margin:8px 0;} .pagination .controls a{border:0;}
 .pagination .controls input{border:0;color:#999;width:30px;padding:0;margin:-3px 0 0 0;text-align:center;}
 
-.modal-backdrop {background-color:#ffffff;}
+.modal-backdrop {
+    background-color:#777;
+}
 .modal-backdrop,.modal-backdrop.fade.in {opacity:0.5;filter:alpha(opacity=50);}
+.modal {}
 .modal.tree {width:300px;margin:-250px 0 0 -180px;*margin:-200px 0 0 -150px;}
 .modal.tree .modal-body {height:260px;padding:20px 25px;}
+
+.modal-sm {
+    width: 300px;
+}
+.modal-lg {
+    width: 900px;
+}
 
 .accordion-heading,.table th {white-space:nowrap;background-color:#f5f5f5;
 	background-image:-moz-linear-gradient(top,#ffffff,#f5f5f5);background-image:-ms-linear-gradient(top,#ffffff,#f5f5f5);
