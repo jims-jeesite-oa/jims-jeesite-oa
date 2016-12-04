@@ -11,12 +11,15 @@
 			$("#searchForm").submit();
         	return false;
         }
+        $(document).ready(function() {
+            initBreadCrumb()
+        });
 	</script>
 </head>
 <body>
     <ul class="breadcrumb">
-        <li><a href="#">新闻公告</a> <span class="divider">/</span></li>
-        <li class="active">新闻公告</li>
+        <li id="levelMenu1"><a href="#"></a> <span class="divider">/</span></li>
+        <li id="levelMenu2" class="active"></li>
     </ul>
 
 	<form:form id="searchForm" modelAttribute="oaNews" action="${ctx}/oa/oaNews/" method="post" class="breadcrumb form-search">
@@ -34,7 +37,7 @@
                     <form:option value="2" label="拒绝发布"/>
                 </form:select>
             </li>
-			<li class="btns"><input id="btnSubmit" class="btn btn-primary" type="submit" value="查询"/></li>
+			<li class="btns"><input id="btnSubmit" class="btn btn-primary " type="submit" value="查询"/></li>
 			<li class="btns"><a href="${ctx}/oa/oaNews/form" role="button" class="btn btn-primary">添加</a></li>
 			<li class="clearfix"></li>
 		</ul>

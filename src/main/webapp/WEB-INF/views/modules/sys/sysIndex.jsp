@@ -178,7 +178,7 @@
                         <li>
                             <a class="menu" href="javascript:" data-href="${ctx}/sys/menu/tree?parentId=${menu.id}" data-id="${menu.id}">
                                 <span class="icons-${menu.icon}"></span>
-                                <span>${menu.name}</span></a>
+                                <span class="topMenuText">${menu.name}</span></a>
                         </li>
                     </c:if>
                 </c:forEach>
@@ -233,14 +233,13 @@
     </div>
 </div>
 <script type="text/javascript">
-    function showModal(){
-        $('#myModal').modal('toggle')
-    }
-    function initModal(data){
-        $('#myModal .modal-body').html(data)
-        showModal()
-    }
-
+//    function showModal(){
+//        $('#myModal').modal('toggle')
+//    }
+//    function initModal(data){
+//        $('#myModal .modal-body').html(data)
+//        showModal()
+//    }
     var menuObj = $("#menu");
     var headerObj = $("#header");
     var frameObj = $("#left, #right, #right iframe");
@@ -277,6 +276,7 @@
 
 
     $("#menu #topMenus a.menu").click(function(){
+        $.cookie('levelMenu1',$('.topMenuText',this).html())
         if($(this).hasClass('moreMenu')){
             if($('#mask').css('display') == 'none'){
                 $("#moreMenu").slideDown("fast");
@@ -309,6 +309,8 @@
                 $(this).parent('li').addClass("active")
                 $('#left a').css({color : '#555'})
                 $(this).css({color : '#fff'})
+                $.cookie('levelMenu2',$('span',this).html())
+                $.cookie('levelMenu2Href',$(this).attr('href'))
                 e.stopPropagation()
             })
             $('#left li').mouseover(function(){

@@ -26,13 +26,14 @@
 					}
 				}
 			});
+            initBreadCrumb()
 		});
 	</script>
 </head>
 <body>
     <ul class="breadcrumb">
-        <li><a href="#">新闻公告</a> <span class="divider">/</span></li>
-        <li><a href="${ctx}/oa/oaNews/">新闻公告</a> <span class="divider">/</span></li>
+        <li id="levelMenu1"><a href="#"></a> <span class="divider">/</span></li>
+        <li id="levelMenu2"><a href="#"></a> <span class="divider">/</span></li>
         <li class="active">
             <shiro:hasPermission name="oa:oaNews:edit">${not empty oaNews.id?'修改':'添加'}</shiro:hasPermission><shiro:lacksPermission name="oa:oaNews:edit">查看</shiro:lacksPermission>
         </li>

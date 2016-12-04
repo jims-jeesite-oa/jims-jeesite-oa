@@ -1,3 +1,4 @@
+<%@ page import="com.thinkgem.jeesite.common.utils.CookieUtils" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ include file="/WEB-INF/views/include/taglib.jsp"%>
 <html>
@@ -11,7 +12,7 @@
     </style>
 	<script type="text/javascript">
 		$(document).ready(function() {
-			
+			initBreadCrumb()
 		});
 		function page(n,s){
 			$("#pageNo").val(n);
@@ -22,10 +23,10 @@
 	</script>
 </head>
 <body>
-	<ul class="nav nav-tabs">
-		<li class="active"><a href="${ctx}/oa/oaSchedule/">日程列表</a></li>
-		<shiro:hasPermission name="oa:oaSchedule:edit"><li><a href="${ctx}/oa/oaSchedule/form">日程添加</a></li></shiro:hasPermission>
-	</ul>
+    <ul class="breadcrumb">
+        <li id="levelMenu1"><a href="#"></a> <span class="divider">/</span></li>
+        <li id="levelMenu2" class="active"></li>
+    </ul>
 	<form:form id="searchForm" modelAttribute="oaSchedule" action="${ctx}/oa/oaSchedule/" method="post" class="breadcrumb form-search">
 		<input id="pageNo" name="pageNo" type="hidden" value="${page.pageNo}"/>
 		<input id="pageSize" name="pageSize" type="hidden" value="${page.pageSize}"/>
@@ -42,6 +43,7 @@
                 </form:select>
             </li>
             <li class="btns"><input id="btnSubmit" class="btn btn-primary" type="submit" value="查询"/></li>
+            <li class="btns"><a href="${ctx}/oa/oaSchedule/form" role="button" class="btn btn-primary">添加</a></li>
             <li class="clearfix"></li>
         </ul>
 	</form:form>
