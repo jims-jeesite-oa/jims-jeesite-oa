@@ -1,4 +1,3 @@
-<%@ page import="com.thinkgem.jeesite.common.utils.CookieUtils" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ include file="/WEB-INF/views/include/taglib.jsp"%>
 <html>
@@ -11,9 +10,6 @@
         }
     </style>
 	<script type="text/javascript">
-		$(document).ready(function() {
-			initBreadCrumb()
-		});
 		function page(n,s){
 			$("#pageNo").val(n);
 			$("#pageSize").val(s);
@@ -43,7 +39,10 @@
                 </form:select>
             </li>
             <li class="btns"><input id="btnSubmit" class="btn btn-primary" type="submit" value="查询"/></li>
-            <li class="btns"><a href="${ctx}/oa/oaSchedule/form" role="button" class="btn btn-primary">添加</a></li>
+            <shiro:hasPermission name="oa:oaSchedule:edit">
+                <li class="btns"><a href="${ctx}/oa/oaSchedule/form" role="button" class="btn btn-primary">添加</a></li>
+            </shiro:hasPermission>
+
             <li class="clearfix"></li>
         </ul>
 	</form:form>

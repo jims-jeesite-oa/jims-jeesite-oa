@@ -26,7 +26,6 @@
 					}
 				}
 			});
-            initBreadCrumb()
 		});
 	</script>
 </head>

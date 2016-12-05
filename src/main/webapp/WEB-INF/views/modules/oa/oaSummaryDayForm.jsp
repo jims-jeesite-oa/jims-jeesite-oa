@@ -28,11 +28,10 @@
 
 </head>
 <body>
-<ul class="nav nav-tabs">
-    <li><a href="${ctx}/oa/oaSummaryDay/">日总结</a></li>
-    <li class="active"><a href="${ctx}/oa/oaSummaryDay/formId">周总结</a></li>
+<ul class="breadcrumb">
+    <li id="levelMenu1"><a href="#"></a> <span class="divider">/</span></li>
+    <li id="levelMenu2" class="active"></li>
 </ul>
-<br/>
 <form:form id="inputForm" modelAttribute="oaSummaryWeek" action="${ctx}/oa/oaSummaryDay/saveWeek" method="post"
            class="form-horizontal">
   <%--  <form:hidden path="oaVos" value="${oaSummaryWeek.oaVos}"/>--%>

@@ -97,10 +97,13 @@
 	</script>
 </head>
 <body>
-	<ul class="nav nav-tabs">
-		<li><a href="${ctx}/sys/role/">角色列表</a></li>
-		<li class="active"><a href="${ctx}/sys/role/form?id=${role.id}">角色<shiro:hasPermission name="sys:role:edit">${not empty role.id?'修改':'添加'}</shiro:hasPermission><shiro:lacksPermission name="sys:role:edit">查看</shiro:lacksPermission></a></li>
-	</ul><br/>
+    <ul class="breadcrumb">
+        <li id="levelMenu1"><a href="#"></a> <span class="divider">/</span></li>
+        <li id="levelMenu2"><a href="#"></a> <span class="divider">/</span></li>
+        <li class="active">
+            <shiro:hasPermission name="sys:role:edit">${not empty role.id?'修改':'添加'}</shiro:hasPermission><shiro:lacksPermission name="sys:role:edit">查看</shiro:lacksPermission>
+        </li>
+    </ul>
 	<form:form id="inputForm" modelAttribute="role" action="${ctx}/sys/role/save" method="post" class="form-horizontal">
 		<form:hidden path="id"/>
 		<sys:message content="${message}"/>

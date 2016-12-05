@@ -6,10 +6,13 @@
 	<meta name="decorator" content="default"/>
 </head>
 <body>
-	<ul class="nav nav-tabs">
-		<li><a href="${ctx}/sys/role/">角色列表</a></li>
-		<li class="active"><a href="${ctx}/sys/role/assign?id=${role.id}"><shiro:hasPermission name="sys:role:edit">角色分配</shiro:hasPermission><shiro:lacksPermission name="sys:role:edit">人员列表</shiro:lacksPermission></a></li>
-	</ul>
+    <ul class="breadcrumb">
+        <li id="levelMenu1"><a href="#"></a> <span class="divider">/</span></li>
+        <li id="levelMenu2"><a href="#"></a> <span class="divider">/</span></li>
+        <li class="active">
+            <shiro:hasPermission name="sys:role:edit">角色分配</shiro:hasPermission><shiro:lacksPermission name="sys:role:edit">人员列表</shiro:lacksPermission>
+        </li>
+    </ul>
 	<div class="container-fluid breadcrumb">
 		<div class="row-fluid span12">
 			<span class="span4">角色名称: <b>${role.name}</b></span>

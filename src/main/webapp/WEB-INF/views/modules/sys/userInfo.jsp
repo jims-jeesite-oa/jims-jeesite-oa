@@ -25,6 +25,10 @@
 	</script>
 </head>
 <body>
+    <ul class="breadcrumb">
+        <li id="levelMenu1"><a href="#"></a> <span class="divider">/</span></li>
+        <li id="levelMenu2" class="active"></li>
+    </ul>
 	<form:form id="inputForm" modelAttribute="user" action="${ctx}/sys/user/info" method="post" class="form-horizontal"><%--
 		<form:hidden path="email" htmlEscape="false" maxlength="255" class="input-xlarge"/>
 		<sys:ckfinder input="email" type="files" uploadPath="/mytask" selectMultiple="false"/> --%>

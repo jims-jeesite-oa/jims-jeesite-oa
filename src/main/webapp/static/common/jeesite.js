@@ -6,6 +6,7 @@
  * @version 2014-4-29
  */
 $(document).ready(function() {
+    initBreadCrumb()
 	try{
 		// 链接去掉虚框
 		$("a").bind("focus",function() {

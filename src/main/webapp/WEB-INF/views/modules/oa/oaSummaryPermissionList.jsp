@@ -63,9 +63,8 @@
             }
         };
 
-        var $j = jQuery.noConflict();
-        $j(document).ready(function () {
-            $j("#inputForm").validate({
+        $(document).ready(function () {
+            $("#inputForm").validate({
                 submitHandler: function (form) {
                     // loading('正在提交，请稍等...');
                     form.submit();
@@ -81,7 +80,7 @@
                 }
             });
 
-            $j.ajax({
+            $.ajax({
                 url: "${ctx}/sys/office/treeData?type=3",
                 type: "get",
                 dataType: "text",
@@ -95,8 +94,8 @@
         //初始化ZTree树
         function initZtree(data) {
             var zNodes = eval("(" + data + ")");		//动态js语句
-            zTreeObj = $j.fn.zTree.init($('#jkTree'), setting, zNodes);	//jkTree 树的id，支持多个树
-            zTreeTk = $j.fn.zTree.init($('#TkTree'), setting1, zNodes);	//jkTree 树的id，支持多个树
+            zTreeObj = $.fn.zTree.init($('#jkTree'), setting, zNodes);	//jkTree 树的id，支持多个树
+            zTreeTk = $.fn.zTree.init($('#TkTree'), setting1, zNodes);	//jkTree 树的id，支持多个树
 
             //展开一级节点
             var nodes = zTreeObj.getNodesByParam("level", 0);
@@ -113,6 +112,10 @@
     </script>
 </head>
 <body>
+<ul class="breadcrumb">
+    <li id="levelMenu1"><a href="#"></a> <span class="divider">/</span></li>
+    <li id="levelMenu2" class="active"></li>
+</ul>
 <div style="float: left; width: 150px;"  >
     <ul id="jkTree" class="ztree"></ul>
 </div>
@@ -153,6 +156,5 @@
 
 <script src="${ctxStatic}/tree/js/jquery.ztree.core-3.5.min.js" type="text/javascript"></script>
 <script src="${ctxStatic}/tree/js/jquery.ztree.excheck-3.5.min.js" type="text/javascript"></script>
-<script src="${ctxStatic}/tree/js/jquery-1.4.4.min.js" type="text/javascript"></script>
 </body>
 </html>

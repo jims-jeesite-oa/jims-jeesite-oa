@@ -11,9 +11,6 @@
 			$("#searchForm").submit();
         	return false;
         }
-        $(document).ready(function() {
-            initBreadCrumb()
-        });
 	</script>
 </head>
 <body>
@@ -38,7 +35,9 @@
                 </form:select>
             </li>
 			<li class="btns"><input id="btnSubmit" class="btn btn-primary " type="submit" value="查询"/></li>
-			<li class="btns"><a href="${ctx}/oa/oaNews/form" role="button" class="btn btn-primary">添加</a></li>
+            <shiro:hasPermission name="oa:oaNews:edit">
+			    <li class="btns"><a href="${ctx}/oa/oaNews/form" role="button" class="btn btn-primary">添加</a></li>
+            </shiro:hasPermission>
 			<li class="clearfix"></li>
 		</ul>
 	</form:form>
