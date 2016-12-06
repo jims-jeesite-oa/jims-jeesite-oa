@@ -20,5 +20,13 @@ public interface MailInfoDao extends CrudDao<MailInfo> {
      * @param ownId
      */
     public void allRead(String ownId);
-	
+
+
+    /**
+     * 查看邮件的详细信息
+     * @param id
+     * @return
+     */
+    public MailInfo getMail(String id) ;
+
 }

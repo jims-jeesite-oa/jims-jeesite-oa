@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +21,9 @@ import com.thinkgem.jeesite.modules.oa.dao.MailInfoDao;
 @Service
 @Transactional(readOnly = true)
 public class MailInfoService extends CrudService<MailInfoDao, MailInfo> {
+
+    @Autowired
+    private MailInfoDao mailInfoDao;
 
 	public MailInfo get(String id) {
 		return super.get(id);
@@ -90,6 +94,15 @@ public class MailInfoService extends CrudService<MailInfoDao, MailInfo> {
     @Transactional(readOnly = false)
     public void allRead(String ownId){
         dao.allRead(ownId);
+    }
+
+    /**
+     * 查看邮件的详细信息
+     * @param id
+     * @return
+     */
+    public MailInfo getMail(String id) {
+        return mailInfoDao.getMail(id);
     }
 	
 }
