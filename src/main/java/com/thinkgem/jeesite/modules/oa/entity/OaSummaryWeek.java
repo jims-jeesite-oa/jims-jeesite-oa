@@ -28,6 +28,25 @@ public class OaSummaryWeek extends DataEntity<OaSummaryWeek> {
 	private String evaluate;		// 评阅内容
 	private String evaluateMan;		// 评阅人
 	private String evaluateManId;		// 评阅人id
+    private String loginId;   //登录人id
+
+    private String login;
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public String getLoginId() {
+        return loginId;
+    }
+
+    public void setLoginId(String loginId) {
+        this.loginId = loginId;
+    }
 
     private Integer weekOfYear;    //当前日期是第几周
     private Integer flag;    //判断当前是上一周还是下一周

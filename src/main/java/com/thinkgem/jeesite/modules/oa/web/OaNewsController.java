@@ -121,7 +121,7 @@ public class OaNewsController extends BaseController {
     public String auditNews(String id,String auditFlag){
         OaNews oaNews = get(id);
         oaNews.setAuditFlag(auditFlag);
-        oaNewsService.save(oaNews);
-        return "modules/sys/main";
+        oaNewsService.update(oaNews);
+        return "modules/sys/main1";
     }
 }

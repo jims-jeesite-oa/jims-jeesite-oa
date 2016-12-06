@@ -28,8 +28,10 @@ public class Page<T> {
 	private int pageSize = Integer.valueOf(Global.getConfig("page.pageSize")); // 页面大小，设置为“-1”表示不进行分页（分页无效）
 	
 	private long count;// 总记录数，设置为“-1”表示不查询总数
+
+    private long delete;
 	
-	private int first;// 首页索引
+private int first;// 首页索引
 	private int last;// 尾页索引
 	private int prev;// 上一页索引
 	private int next;// 下一页索引
@@ -53,8 +55,16 @@ public class Page<T> {
 	public Page() {
 		this.pageSize = -1;
 	}
-	
-	/**
+
+    public long getDelete() {
+        return delete;
+    }
+
+    public void setDelete(long delete) {
+        this.delete = delete;
+    }
+
+    /**
 	 * 构造方法
 	 * @param request 传递 repage 参数，来记住页码
 	 * @param response 用于设置 Cookie，记住页码

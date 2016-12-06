@@ -8,7 +8,8 @@
 		a.sum_date AS "sumDate",
 		a.evaluate AS "evaluate",
 		a.evaluate_man AS "evaluateMan",
-		a.evaluate_man_id AS "evaluateManId"
+		a.evaluate_man_id AS "evaluateManId",
+		a.login_id AS "loginId"
 	</sql>
 
     <sql id="oaSummaryDayJoins">
@@ -50,6 +51,9 @@
             <if test="sumDate!=null and sumDate !=''">
                 a.sum_date=#{sumDate}
             </if>
+            <if test="loginId!=null and loginId !=''">
+              and  a.login_id=#{loginId}
+            </if>
         </where>
     </select>
 
@@ -77,14 +81,16 @@
 			sum_date,
 			evaluate,
 			evaluate_man,
-			evaluate_man_id
+			evaluate_man_id,
+			login_id
 		) VALUES (
 			#{id},
 			#{content},
 			#{sumDate},
 			#{evaluate},
 			#{evaluateMan},
-			#{evaluateManId}
+			#{evaluateManId},
+			#{loginId}
 		)
 	</insert>
 
@@ -94,7 +100,8 @@
 			sum_date = #{sumDate},
 			evaluate = #{evaluate},
 			evaluate_man = #{evaluateMan},
-			evaluate_man_id = #{evaluateManId}
+			evaluate_man_id = #{evaluateManId},
+			login_id=#{loginId}
 		WHERE id = #{id}
 	</update>
 

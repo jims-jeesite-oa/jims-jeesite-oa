@@ -62,9 +62,9 @@
 				$("#${input}Preview").append(li);
 			}
 		}
-		if ($("#${input}Preview").text() == ""){
-			$("#${input}Preview").html("<li style='list-style:none;padding-top:5px;'>无</li>");
-		}
+		<%--if ($("#${input}Preview").text() == ""){--%>
+			<%--$("#${input}Preview").html("<li style='list-style:none;padding-top:5px;'>无</li>");--%>
+		<%--}--%>
 	}
 	${input}Preview();
 </script>

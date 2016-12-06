@@ -19,7 +19,7 @@ public interface UserDao extends CrudDao<User> {
 	
 	/**
 	 * 根据登录名称查询用户
-	 * @param loginName
+	 * @param
 	 * @return
 	 */
 	public User getByLoginName(User user);
@@ -71,5 +71,7 @@ public interface UserDao extends CrudDao<User> {
 	 * @return
 	 */
 	public int updateUserInfo(User user);
+
+
 
 }

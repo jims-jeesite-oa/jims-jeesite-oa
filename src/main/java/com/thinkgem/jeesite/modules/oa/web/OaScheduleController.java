@@ -7,6 +7,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.thinkgem.jeesite.modules.oa.entity.OaNotify;
+import com.thinkgem.jeesite.modules.sys.entity.User;
+import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -58,6 +60,8 @@ public class OaScheduleController extends BaseController {
 	@RequiresPermissions("oa:oaSchedule:view")
 	@RequestMapping(value = {"list", ""})
 	public String list(OaSchedule oaSchedule, HttpServletRequest request, HttpServletResponse response, Model model) {
+        User user=UserUtils.getUser();
+        oaSchedule.setLoginId(user.getId());
 		Page<OaSchedule> page = oaScheduleService.findPage(new Page<OaSchedule>(request, response), oaSchedule); 
 		model.addAttribute("page", page);
 		return "modules/oa/oaScheduleList";
@@ -108,9 +112,11 @@ public class OaScheduleController extends BaseController {
 	@RequiresPermissions("oa:oaSchedule:edit")
 	@RequestMapping(value = "save")
 	public String save(OaSchedule oaSchedule, Model model, RedirectAttributes redirectAttributes) {
+        User user= UserUtils.getUser();
 		if (!beanValidator(model, oaSchedule)){
 			return form(oaSchedule, model);
 		}
+        oaSchedule.setLoginId(user.getId());
         oaSchedule.setFlag("0");
 		oaScheduleService.save(oaSchedule);
 		addMessage(redirectAttributes, "保存日程安排成功");

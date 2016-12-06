@@ -8,6 +8,7 @@
 	<script type="text/javascript">
 		$(document).ready(function() {
 			$("#treeTable").treeTable({expandLevel : 3}).show();
+
 		});
     	function updateSort() {
 			loading('正在提交，请稍等...');
@@ -17,11 +18,17 @@
 	</script>
 </head>
 <body>
-	<ul class="nav nav-tabs">
-		<li class="active"><a href="${ctx}/sys/menu/">菜单列表</a></li>
-		<shiro:hasPermission name="sys:menu:edit"><li><a href="${ctx}/sys/menu/form">菜单添加</a></li></shiro:hasPermission>
-	</ul>
-	<sys:message content="${message}"/>
+    <ul class="breadcrumb">
+        <li id="levelMenu1"><a href="#"></a> <span class="divider">/</span></li>
+        <li id="levelMenu2" class="active"></li>
+    </ul>
+    <shiro:hasPermission name="sys:menu:edit">
+        <div class="breadcrumb">
+            <a href="${ctx}/sys/menu/form" role="button" class="btn btn-primary">添加菜单</a>
+            <input id="btnSubmit" class="btn btn-primary" type="button" value="保存排序" onclick="updateSort();"/>
+        </div>
+    </shiro:hasPermission>
+    <sys:message content="${message}"/>
 	<form id="listForm" method="post">
 		<table id="treeTable" class="table table-striped table-bordered table-condensed hide">
 			<thead><tr><th>名称</th><th>链接</th><th style="text-align:center;">排序</th><th>可见</th><th>权限标识</th><shiro:hasPermission name="sys:menu:edit"><th>操作</th></shiro:hasPermission></tr></thead>
@@ -47,9 +54,7 @@
 				</tr>
 			</c:forEach></tbody>
 		</table>
-		<shiro:hasPermission name="sys:menu:edit"><div class="form-actions pagination-left">
-			<input id="btnSubmit" class="btn btn-primary" type="button" value="保存排序" onclick="updateSort();"/>
-		</div></shiro:hasPermission>
+
 	 </form>
 </body>
 </html>
