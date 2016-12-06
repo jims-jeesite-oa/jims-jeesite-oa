@@ -131,13 +131,14 @@
 								<th>是否显示到列表</th>
 								<th>是否流程变量</th>
 								<th>备注信息</th>
+								<th>控件类型Id</th>
 								<shiro:hasPermission name="table:oaPersonDefineTable:edit"><th width="10">&nbsp;</th></shiro:hasPermission>
 							</tr>
 						</thead>
 						<tbody id="oaPersonDefineTableColumnList">
 						</tbody>
 						<shiro:hasPermission name="table:oaPersonDefineTable:edit"><tfoot>
-							<tr><td colspan="10"><a href="javascript:" onclick="addRow('#oaPersonDefineTableColumnList', oaPersonDefineTableColumnRowIdx, oaPersonDefineTableColumnTpl);oaPersonDefineTableColumnRowIdx = oaPersonDefineTableColumnRowIdx + 1;" class="btn">新增</a></td></tr>
+							<tr><td colspan="11"><a href="javascript:" onclick="addRow('#oaPersonDefineTableColumnList', oaPersonDefineTableColumnRowIdx, oaPersonDefineTableColumnTpl);oaPersonDefineTableColumnRowIdx = oaPersonDefineTableColumnRowIdx + 1;" class="btn">新增</a></td></tr>
 						</tfoot></shiro:hasPermission>
 					</table>
 					<script type="text/template" id="oaPersonDefineTableColumnTpl">//<!--
@@ -181,8 +182,18 @@
 							<td>
 								<input id="oaPersonDefineTableColumnList{{idx}}_remarks" name="oaPersonDefineTableColumnList[{{idx}}].remarks" type="text" value="{{row.remarks}}" maxlength="255" class="input-small "/>
 							</td>
+							<td>
+							     <select id="oaPersonDefineTableColumnList{{idx}}_controlTypeId" name="oaPersonDefineTableColumnList[{{idx}}].controlTypeId" data-value="{{row.columnType}}" class="input-small ">
+									<option value=""></option>
+									<c:forEach items="${fns:getControlType()}" var="dict">
+										<option value="${dict.id}">${dict.controlName}</option>
+									</c:forEach>
+								</select>
+ 							</td>
 							<shiro:hasPermission name="table:oaPersonDefineTable:edit"><td class="text-center" width="10">
-								{{#delBtn}}<span class="close" onclick="delRow(this, '#oaPersonDefineTableColumnList{{idx}}')" title="删除">&times;</span>{{/delBtn}}
+								{{#delBtn}}<span class="close" onclick="delRow(this, '#oaPersonDefineTableColumnList{{idx}}')" title="删除">
+								&times</span>
+								{{/delBtn}}
 							</td></shiro:hasPermission>
 						</tr>//-->
 					</script>

@@ -3,7 +3,6 @@
  */
 package com.thinkgem.jeesite.modules.table.entity;
 
-import com.thinkgem.jeesite.modules.table.enumeration.ColumnType;
 import org.hibernate.validator.constraints.Length;
 
 import com.thinkgem.jeesite.common.persistence.DataEntity;
@@ -11,12 +10,12 @@ import com.thinkgem.jeesite.common.persistence.DataEntity;
 /**
  * 自定义数据源Entity
  * @author chenxy
- * @version 2016-11-17
+ * @version 2016-11-24
  */
 public class OaPersonDefineTableColumn extends DataEntity<OaPersonDefineTableColumn> {
 	
 	private static final long serialVersionUID = 1L;
-	private String tableId;		// 主表ID 父类
+	private OaPersonDefineTable tableId;		// 主表ID 父类
 	private String columnName;		// 列名
 	private String columnComment;		// 注释
 	private String columnType;		// 列的类型
@@ -24,23 +23,26 @@ public class OaPersonDefineTableColumn extends DataEntity<OaPersonDefineTableCol
 	private String isRequired;		// 是否必填
 	private String isShow;		// 是否显示到列表
 	private String isProcess;		// 是否流程变量
+	private String controlTypeId;		// 控件类型Id
 	
 	public OaPersonDefineTableColumn() {
 		super();
 	}
 
+	public OaPersonDefineTableColumn(String id){
+		super(id);
+	}
 
-
-	public OaPersonDefineTableColumn(String tableId){
+	public OaPersonDefineTableColumn(OaPersonDefineTable tableId){
 		this.tableId = tableId;
 	}
 
 	@Length(min=0, max=64, message="主表ID长度必须介于 0 和 64 之间")
-	public String getTableId() {
+	public OaPersonDefineTable getTableId() {
 		return tableId;
 	}
 
-	public void setTableId(String tableId) {
+	public void setTableId(OaPersonDefineTable tableId) {
 		this.tableId = tableId;
 	}
 	
@@ -64,22 +66,7 @@ public class OaPersonDefineTableColumn extends DataEntity<OaPersonDefineTableCol
 	
 	@Length(min=0, max=80, message="列的类型长度必须介于 0 和 80 之间")
 	public String getColumnType() {
-        if(this.columnType==null || "".equals(this.columnType)){
-            return null;
-        }
-        if(this.columnType.trim().equals(ColumnType.大文本)){
-            return "longtext";
-        }
-        if(this.columnType.trim().equals(ColumnType.数字)){
-            return "int";
-        }
-        if(this.columnType.trim().equals(ColumnType.文字)){
-            return "varchar";
-        }
-        if(this.columnType.trim().equals(ColumnType.日期)){
-            return "datetime";
-        }
-		return "";
+		return columnType;
 	}
 
 	public void setColumnType(String columnType) {
@@ -120,6 +107,15 @@ public class OaPersonDefineTableColumn extends DataEntity<OaPersonDefineTableCol
 
 	public void setIsProcess(String isProcess) {
 		this.isProcess = isProcess;
+	}
+	
+	@Length(min=0, max=64, message="控件类型Id长度必须介于 0 和 64 之间")
+	public String getControlTypeId() {
+		return controlTypeId;
+	}
+
+	public void setControlTypeId(String controlTypeId) {
+		this.controlTypeId = controlTypeId;
 	}
 	
 }

@@ -17,8 +17,7 @@
 		a.update_date AS "updateDate",
 		a.remarks AS "remarks",
 		a.del_flag AS "delFlag",
-		o2.name AS "office.name",
-		a.master_table_id as "masterTableId"
+		o2.name AS "office.name"
 	</sql>
 	
 	<sql id="oaPersonDefineTableJoins">
@@ -87,8 +86,7 @@
 			update_by,
 			update_date,
 			remarks,
-			del_flag,
-			master_table_id
+			del_flag
 		) VALUES (
 			#{id},
 			#{office.id},
@@ -103,8 +101,7 @@
 			#{updateBy.id},
 			#{updateDate},
 			#{remarks},
-			#{delFlag},
-			#{masterTableId}
+			#{delFlag}
 		)
 	</insert>
 	
@@ -128,5 +125,16 @@
 			del_flag = #{DEL_FLAG_DELETE}
 		WHERE id = #{id}
 	</update>
-	
+
+
+
+
+    <select id="findByTableName" resultType="OaPersonDefineTable">
+        SELECT
+        <include refid="oaPersonDefineTableColumns"/>
+        FROM oa_person_define_table a
+        <include refid="oaPersonDefineTableJoins"/>
+        WHERE a.table_Name = #{tableName}
+        and a.office_id= #{officeId}
+    </select>
 </mapper>

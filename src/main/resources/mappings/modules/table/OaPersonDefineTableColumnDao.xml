@@ -17,7 +17,8 @@
 		a.update_by AS "updateBy.id",
 		a.update_date AS "updateDate",
 		a.remarks AS "remarks",
-		a.del_flag AS "delFlag"
+		a.del_flag AS "delFlag",
+		a.control_type_id AS "controlTypeId"
 	</sql>
 	
 	<sql id="oaPersonDefineTableColumnJoins">
@@ -87,7 +88,8 @@
 			update_by,
 			update_date,
 			remarks,
-			del_flag
+			del_flag,
+			control_type_id
 		) VALUES (
 			#{id},
 			#{tableId},
@@ -103,7 +105,8 @@
 			#{updateBy.id},
 			#{updateDate},
 			#{remarks},
-			#{delFlag}
+			#{delFlag},
+			#{controlTypeId}
 		)
 	</insert>
 	
@@ -119,7 +122,8 @@
 			is_process = #{isProcess},
 			update_by = #{updateBy.id},
 			update_date = #{updateDate},
-			remarks = #{remarks}
+			remarks = #{remarks},
+			control_type_id = #{controlTypeId}
 		WHERE id = #{id}
 	</update>
 	
@@ -135,5 +139,12 @@
 			</otherwise>
 		</choose>
 	</update>
-	
+
+     <select id="findColumnListByTableId" resultType="OaPersonDefineTableColumn">
+        SELECT
+        <include refid="oaPersonDefineTableColumnColumns"/>
+        FROM oa_person_define_table_column a
+        <include refid="oaPersonDefineTableColumnJoins"/>
+        WHERE a.table_id = #{tableId}
+    </select>
 </mapper>

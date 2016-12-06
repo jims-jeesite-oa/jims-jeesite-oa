@@ -149,5 +149,13 @@
 			del_flag = #{DEL_FLAG_DELETE}
 		WHERE id = #{id}
 	</update>
-	
+
+    <select id="findFormContentByTableName" resultType="OaFormMaster">
+        SELECT
+        <include refid="oaFormMasterColumns"/>
+        FROM oa_form_master a
+        <include refid="oaFormMasterJoins"/>
+        WHERE a.office_id = #{officeId}
+        and a.table_name=#{tableName}
+    </select>
 </mapper>
