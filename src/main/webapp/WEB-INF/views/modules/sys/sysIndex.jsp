@@ -42,7 +42,7 @@
             float: left;
         }
         #loginName{
-            font-size: 16px;
+            font-size: 14px;
         }
         #userLogo div{
             position: absolute;
@@ -50,6 +50,8 @@
         }
         #userLogo ul {
             padding-top: 15px;
+            font-family:"微软雅黑","黑体","宋体";
+            font-weight: 100;
         }
         #menu ul,#left ul {
             list-style:none;
@@ -158,7 +160,7 @@
     <div id="menu">
         <div id="userLogo">
             <c:set var="user" value="${fns:getUser()}"/>
-            <img src="${user.photo}">
+            <img src="${user.photo}" class="img-circle">
             <div>
                 <ul>
                     <li id="loginName">${user.name}</li>
@@ -171,18 +173,13 @@
         </div>
         <div id="topMenus">
             <ul>
-                <c:set var="firstMenu" value="true"/>
                 <c:forEach items="${fns:getMenuList()}" var="menu" varStatus="idxStatus">
                     <c:if test="${menu.parent.id eq '1'&&menu.isShow eq '1'}">
                         <li>
                             <a class="menu" href="javascript:" data-href="${ctx}/sys/menu/tree?parentId=${menu.id}" data-id="${menu.id}">
                                 <span class="icons-${menu.icon}"></span>
-                                <span>${menu.name}</span></a>
+                                <span class="topMenuText">${menu.name}</span></a>
                         </li>
-                        <c:if test="${firstMenu}">
-                            <c:set var="firstMenuId" value="${menu.id}"/>
-                        </c:if>
-                        <c:set var="firstMenu" value="false"/>
                     </c:if>
                 </c:forEach>
                 <li>
@@ -193,7 +190,26 @@
         </div>
     </div>
 
-    <div id="moreMenu" class="mask"></div>
+    <div id="moreMenu" class="mask">
+        <div id="myCarousel" class="carousel slide" style="width: 500px;margin:0 auto;">
+            <!-- 轮播（Carousel）项目 -->
+            <div class="carousel-inner">
+                <div class="item active">
+                    <img src="/static/images/icons/5.png" alt="First slide">
+                </div>
+                <div class="item">
+                    <img src="/static/images/icons/5.png" alt="Second slide">
+                </div>
+                <div class="item">
+                    <img src="/static/images/icons/5.png" alt="Third slide">
+                </div>
+            </div>
+        </div>
+        <a class="carousel-control left" href="#myCarousel"
+           data-slide="prev" style="float: right">&lsaquo;</a>
+        <a class="carousel-control right" href="#myCarousel"
+           data-slide="next">&rsaquo;</a>
+    </div>
 
     <div>
         <div id="left">
@@ -203,7 +219,27 @@
         </div>
     </div>
 </div>
+<div id="myModal" class="modal hide fade modal-lg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="myModalLabel">添加</h3>
+    </div>
+    <div class="modal-body">
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+        <button class="btn btn-primary">保存</button>
+    </div>
+</div>
 <script type="text/javascript">
+//    function showModal(){
+//        $('#myModal').modal('toggle')
+//    }
+//    function initModal(data){
+//        $('#myModal .modal-body').html(data)
+//        showModal()
+//    }
     var menuObj = $("#menu");
     var headerObj = $("#header");
     var frameObj = $("#left, #right, #right iframe");
@@ -217,6 +253,8 @@
         $('html').css({overflow: 'hidden'})
         $('#right').css('width',strs[1] - $('#left').width() - 3)
         frameObj.css('height',strs[0] - headerObj.height() - menuObj.height() - 3);
+
+        $('#myModal').css({'left' : (strs[1] - $('#myModal').width()) / 2})
     }
     function getWindowSize() {
         return ["Height", "Width"].map(function (a) {
@@ -238,6 +276,7 @@
 
 
     $("#menu #topMenus a.menu").click(function(){
+        $.cookie('levelMenu1',$('.topMenuText',this).html())
         if($(this).hasClass('moreMenu')){
             if($('#mask').css('display') == 'none'){
                 $("#moreMenu").slideDown("fast");
@@ -270,11 +309,16 @@
                 $(this).parent('li').addClass("active")
                 $('#left a').css({color : '#555'})
                 $(this).css({color : '#fff'})
+                $.cookie('levelMenu2',$('span',this).html())
+                $.cookie('levelMenu2Href',$(this).attr('href'))
                 e.stopPropagation()
             })
             $('#left li').mouseover(function(){
                 $('#left li').removeClass("hover")
                 $(this).addClass("hover")
+            })
+            $('#left li').mouseout(function(){
+                $(this).removeClass("hover")
             })
             $('#left li').click(function(e){
                 $('#left li').removeClass("active")

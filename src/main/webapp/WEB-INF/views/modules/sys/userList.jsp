@@ -38,10 +38,10 @@
 			<a href="${ctx}/sys/user/import/template">下载模板</a>
 		</form>
 	</div>
-	<ul class="nav nav-tabs">
-		<li class="active"><a href="${ctx}/sys/user/list">用户列表</a></li>
-		<shiro:hasPermission name="sys:user:edit"><li><a href="${ctx}/sys/user/form">用户添加</a></li></shiro:hasPermission>
-	</ul>
+    <ul class="breadcrumb">
+        <li id="levelMenu1"><a href="#"></a> <span class="divider">/</span></li>
+        <li id="levelMenu2" class="active"></li>
+    </ul>
 	<form:form id="searchForm" modelAttribute="user" action="${ctx}/sys/user/list" method="post" class="breadcrumb form-search ">
 		<input id="pageNo" name="pageNo" type="hidden" value="${page.pageNo}"/>
 		<input id="pageSize" name="pageSize" type="hidden" value="${page.pageSize}"/>
@@ -55,6 +55,9 @@
 				title="部门" url="/sys/office/treeData?type=2" cssClass="input-small" allowClear="true" notAllowSelectParent="true"/></li>
 			<li><label>姓&nbsp;&nbsp;&nbsp;名：</label><form:input path="name" htmlEscape="false" maxlength="50" class="input-medium"/></li>
 			<li class="btns"><input id="btnSubmit" class="btn btn-primary" type="submit" value="查询" onclick="return page();"/>
+                <shiro:hasPermission name="oa:oaSchedule:edit">
+                    <a href="${ctx}/sys/user/form" role="button" class="btn btn-primary">添加</a>
+                </shiro:hasPermission>
 				<input id="btnExport" class="btn btn-primary" type="button" value="导出"/>
 				<input id="btnImport" class="btn btn-primary" type="button" value="导入"/></li>
 			<li class="clearfix"></li>

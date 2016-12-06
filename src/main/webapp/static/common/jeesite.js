@@ -6,6 +6,7 @@
  * @version 2014-4-29
  */
 $(document).ready(function() {
+    initBreadCrumb()
 	try{
 		// 链接去掉虚框
 		$("a").bind("focus",function() {
@@ -279,4 +280,14 @@ function abbr(name, maxLength){
      return name;  
  }  
  return nameSub;  
+}
+
+function initBreadCrumb(){
+    $('#levelMenu1 a').html($.cookie('levelMenu1'))
+    if($('#levelMenu2 a').length > 0) {
+        $('#levelMenu2 a').html($.cookie('levelMenu2'))
+        $('#levelMenu2 a').attr('href',$.cookie('levelMenu2Href'))
+    } else {
+        $('#levelMenu2').html($.cookie('levelMenu2'))
+    }
 }

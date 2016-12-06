@@ -17,10 +17,10 @@
 	</script>
 </head>
 <body>
-	<ul class="nav nav-tabs">
-		<li class="active"><a href="${ctx}/oa/oaAuditMan/">新闻审核官列表</a></li>
-		<shiro:hasPermission name="oa:oaAuditMan:edit"><li><a href="${ctx}/oa/oaAuditMan/form">新闻审核官添加</a></li></shiro:hasPermission>
-	</ul>
+    <ul class="breadcrumb">
+        <li><a href="#">新闻公告</a> <span class="divider">/</span></li>
+        <li class="active">新闻审核官</li>
+    </ul>
 	<form:form id="searchForm" modelAttribute="oaAuditMan" action="${ctx}/oa/oaAuditMan/" method="post" class="breadcrumb form-search">
 		<input id="pageNo" name="pageNo" type="hidden" value="${page.pageNo}"/>
 		<input id="pageSize" name="pageSize" type="hidden" value="${page.pageSize}"/>
@@ -29,6 +29,7 @@
 				<form:input path="auditJob" htmlEscape="false" maxlength="80" class="input-medium"/>
 			</li>
 			<li class="btns"><input id="btnSubmit" class="btn btn-primary" type="submit" value="查询"/></li>
+            <li class="btns"><a href="${ctx}/oa/oaAuditMan/form" role="button" class="btn btn-primary">添加</a></li>
 			<li class="clearfix"></li>
 		</ul>
 	</form:form>
@@ -59,6 +60,5 @@
 		</c:forEach>
 		</tbody>
 	</table>
-	<div class="pagination">${page}</div>
 </body>
 </html>

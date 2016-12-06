@@ -14,9 +14,10 @@
 	</script>
 </head>
 <body>
-<!-- 	<ul class="nav nav-tabs"> -->
-<%-- 		<li class="active"><a href="${ctx}/sys/log/">日志列表</a></li> --%>
-<!-- 	</ul> -->
+    <ul class="breadcrumb">
+        <li id="levelMenu1"><a href="#"></a> <span class="divider">/</span></li>
+        <li id="levelMenu2" class="active"></li>
+    </ul>
 	<form:form id="searchForm" action="${ctx}/sys/log/" method="post" class="breadcrumb form-search">
 		<input id="pageNo" name="pageNo" type="hidden" value="${page.pageNo}"/>
 		<input id="pageSize" name="pageSize" type="hidden" value="${page.pageSize}"/>

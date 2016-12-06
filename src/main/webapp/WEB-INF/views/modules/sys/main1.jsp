@@ -7,7 +7,7 @@
     <style type="text/css">
         body{
             background-color: #EDEFF0;
-            padding-right: 30px;
+            padding-right: 20px;
         }
         #main {
             width: 100%;
@@ -253,7 +253,7 @@
         function changeCss(){
             if($('#main').width() != mainWidth){
                 mainWidth = $('#main').width()
-                $('#main li').width(mainWidth / 2 - 35)
+                $('#main li').width(mainWidth / 2 - 40)
             }
         }
     </script>

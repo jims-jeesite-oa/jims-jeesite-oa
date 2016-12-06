@@ -28,10 +28,13 @@
     </script>
 </head>
 <body>
-<ul class="nav nav-tabs">
-    <li><a href="${ctx}/oa/oaAuditMan/">新闻审核官列表</a></li>
-    <li class="active"><a href="${ctx}/oa/oaAuditMan/form?id=${oaAuditMan.id}">新闻审核官<shiro:hasPermission name="oa:oaAuditMan:edit">${not empty oaAuditMan.id?'修改':'添加'}</shiro:hasPermission><shiro:lacksPermission name="oa:oaAuditMan:edit">查看</shiro:lacksPermission></a></li>
-</ul><br/>
+<ul class="breadcrumb">
+    <li><a href="#">新闻公告</a> <span class="divider">/</span></li>
+    <li><a href="${ctx}/oa/oaAuditMan/">新闻审核官</a> <span class="divider">/</span></li>
+    <li class="active">
+        <shiro:hasPermission name="oa:oaAuditMan:edit">${not empty oaNews.id?'修改':'添加'}</shiro:hasPermission><shiro:lacksPermission name="oa:oaAuditMan:edit">查看</shiro:lacksPermission>
+    </li>
+</ul>
 <form:form id="inputForm" modelAttribute="oaAuditMan" action="${ctx}/oa/oaAuditMan/save" method="post" class="form-horizontal">
     <form:hidden path="id"/>
     <form:hidden path="auditMan" id="auditMan"/>

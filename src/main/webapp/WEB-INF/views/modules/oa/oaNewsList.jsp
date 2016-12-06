@@ -5,9 +5,6 @@
 	<title>新闻公告管理</title>
 	<meta name="decorator" content="default"/>
 	<script type="text/javascript">
-		$(document).ready(function() {
-			
-		});
 		function page(n,s){
 			$("#pageNo").val(n);
 			$("#pageSize").val(s);
@@ -17,10 +14,11 @@
 	</script>
 </head>
 <body>
-	<ul class="nav nav-tabs">
-		<li class="active"><a href="${ctx}/oa/oaNews/">新闻公告列表</a></li>
-		<shiro:hasPermission name="oa:oaNews:edit"><li><a href="${ctx}/oa/oaNews/form">新闻公告添加</a></li></shiro:hasPermission>
-	</ul>
+    <ul class="breadcrumb">
+        <li id="levelMenu1"><a href="#"></a> <span class="divider">/</span></li>
+        <li id="levelMenu2" class="active"></li>
+    </ul>
+
 	<form:form id="searchForm" modelAttribute="oaNews" action="${ctx}/oa/oaNews/" method="post" class="breadcrumb form-search">
 		<input id="pageNo" name="pageNo" type="hidden" value="${page.pageNo}"/>
 		<input id="pageSize" name="pageSize" type="hidden" value="${page.pageSize}"/>
@@ -36,7 +34,10 @@
                     <form:option value="2" label="拒绝发布"/>
                 </form:select>
             </li>
-			<li class="btns"><input id="btnSubmit" class="btn btn-primary" type="submit" value="查询"/></li>
+			<li class="btns"><input id="btnSubmit" class="btn btn-primary " type="submit" value="查询"/></li>
+            <shiro:hasPermission name="oa:oaNews:edit">
+			    <li class="btns"><a href="${ctx}/oa/oaNews/form" role="button" class="btn btn-primary">添加</a></li>
+            </shiro:hasPermission>
 			<li class="clearfix"></li>
 		</ul>
 	</form:form>

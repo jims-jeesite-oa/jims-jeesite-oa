@@ -30,10 +30,13 @@
 	</script>
 </head>
 <body>
-	<ul class="nav nav-tabs">
-		<li><a href="${ctx}/oa/oaNews/">新闻公告列表</a></li>
-		<li class="active"><a href="${ctx}/oa/oaNews/form?id=${oaNews.id}">新闻公告<shiro:hasPermission name="oa:oaNews:edit">${not empty oaNews.id?'修改':'添加'}</shiro:hasPermission><shiro:lacksPermission name="oa:oaNews:edit">查看</shiro:lacksPermission></a></li>
-	</ul><br/>
+    <ul class="breadcrumb">
+        <li id="levelMenu1"><a href="#"></a> <span class="divider">/</span></li>
+        <li id="levelMenu2"><a href="#"></a> <span class="divider">/</span></li>
+        <li class="active">
+            <shiro:hasPermission name="oa:oaNews:edit">${not empty oaNews.id?'修改':'添加'}</shiro:hasPermission><shiro:lacksPermission name="oa:oaNews:edit">查看</shiro:lacksPermission>
+        </li>
+    </ul>
 	<form:form id="inputForm" modelAttribute="oaNews" action="${ctx}/oa/oaNews/save" method="post" class="form-horizontal">
 		<form:hidden path="id"/>
         <form:hidden path="auditFlag"/>
