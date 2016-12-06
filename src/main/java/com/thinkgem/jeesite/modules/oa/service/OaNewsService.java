@@ -43,6 +43,12 @@ public class OaNewsService extends CrudService<OaNewsDao, OaNews> {
         }
 		super.save(oaNews);
 	}
+
+    @Transactional(readOnly = false)
+    public void update(OaNews oaNews) {
+        oaNews.preUpdate();
+        dao.update(oaNews);
+    }
 	
 	@Transactional(readOnly = false)
 	public void delete(OaNews oaNews) {

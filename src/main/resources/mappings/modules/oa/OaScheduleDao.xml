@@ -42,15 +42,7 @@
                 AND a.login_id=#{loginId}
             </if>
         </where>
-
-        <choose>
-            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
-                ORDER BY ${page.orderBy}
-            </when>
-            <otherwise>
-            </otherwise>
-        </choose>
-
+             order by schedule_date asc
 
     </select>
 

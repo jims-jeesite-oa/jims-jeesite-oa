@@ -15,12 +15,6 @@
 	    	$("#listForm").attr("action", "${ctx}/sys/menu/updateSort");
 	    	$("#listForm").submit();
     	}
-        function expandAll() {
-            $("#treeTable").treeTable('expandAll');
-        }
-        function collapseAll() {
-            $("#treeTable").treeTable('collapseAll');
-        }
 	</script>
 </head>
 <body>
@@ -32,8 +26,6 @@
         <div class="breadcrumb">
             <a href="${ctx}/sys/menu/form" role="button" class="btn btn-primary">添加菜单</a>
             <input id="btnSubmit" class="btn btn-primary" type="button" value="保存排序" onclick="updateSort();"/>
-            <input id="expandAll" class="btn btn-primary" type="button" value="全部展开" onclick="expandAll()"/>
-            <input id="collapseAll" class="btn btn-primary" type="button" value="全部收缩" onclick="collapseAll()"/>
         </div>
     </shiro:hasPermission>
     <sys:message content="${message}"/>
