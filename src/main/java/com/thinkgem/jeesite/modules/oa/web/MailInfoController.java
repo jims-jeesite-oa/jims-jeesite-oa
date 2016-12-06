@@ -20,6 +20,9 @@ import com.thinkgem.jeesite.modules.oa.entity.MailInfo;
 import com.thinkgem.jeesite.modules.oa.service.MailInfoService;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 邮件信息Controller
@@ -45,24 +48,55 @@ public class MailInfoController extends BaseController {
 		return entity;
 	}
 
+
     /**
-     * 根据邮件人、邮件状态获取邮件信息
+     * 根据邮件人、邮件状态查询已发送,已删除，草稿箱，收件箱的邮件
      * @param mailInfo
      * @param request
      * @param response
      * @param model
      * @return
      */
-	@RequestMapping(value = {"list", ""})
-	public String list(MailInfo mailInfo, HttpServletRequest request, HttpServletResponse response, Model model) {
+    @RequestMapping(value = {"listBySend"})
+    public String listBySend(MailInfo mailInfo, HttpServletRequest request, HttpServletResponse response, Model model,String state) {
         mailInfo.setOwnId(UserUtils.getUser().getId());
         if(mailInfo.getState() == null){
-            mailInfo.setState("INBOX");
+            mailInfo.setState("SENT");
+        }else{
+            mailInfo.setState(state);
         }
         Page<MailInfo> page = mailInfoService.findPage(new Page<MailInfo>(request, response), mailInfo);
-		model.addAttribute("page", page);
-		return "modules/oa/mailInfoList";
-	}
+        List<MailInfo> list=mailInfoService.findList(mailInfo);
+        mailInfo.setReadMark("0");
+        List<MailInfo> delete=mailInfoService.findList(mailInfo);
+        page.setCount(list.size());
+        page.setDelete(delete.size());
+        model.addAttribute("page", page);
+        if(StringUtils.equals(mailInfo.getState(),"DELETED")){
+            return "modules/oa/delete";
+        }  else if(StringUtils.equals(mailInfo.getState(),"DRAFTS")){
+            return "modules/oa/drafts";
+        }else if(StringUtils.equals(mailInfo.getState(),"INBOX")){
+            return "modules/oa/receiving";
+        } else{
+            return "modules/oa/sent";
+        }
+    }
+
+
+
+
+
+    /**
+     *写信
+     * @return
+     */
+    @RequestMapping(value = {"none", ""})
+    public String none() {
+        return "modules/oa/write";
+    }
+
+
 
     /**
      * 邮件信息查看
@@ -92,8 +126,22 @@ public class MailInfoController extends BaseController {
 		}
 		mailInfoService.send(mailInfo);
 		addMessage(redirectAttributes, "邮件发送成功");
-		return "modules/oa/mailInfoList";
+		return "modules/oa/success";
 	}
+
+    /**
+     *查看邮件
+     * @param mailInfo
+     * @param model
+     * @param redirectAttributes
+     * @return
+     */
+    @RequestMapping(value = "find")
+    public String find(MailInfo mailInfo, Model model, RedirectAttributes redirectAttributes,String id) {
+        MailInfo mail= mailInfoService.getMail(id);
+        model.addAttribute("mailInfo",mail);
+        return "modules/oa/find";
+    }
 
     /**
      * 保存邮件到草稿箱
@@ -104,55 +152,174 @@ public class MailInfoController extends BaseController {
      */
     @RequestMapping(value = "saveDrafts")
     public String saveDrafts(MailInfo mailInfo, Model model, RedirectAttributes redirectAttributes) {
+        mailInfo.setSenderId(UserUtils.getUser().getId());
+        mailInfo.setTime(new Date());
         if (!beanValidator(model, mailInfo)){
             return info(mailInfo, model);
         }
         mailInfoService.saveDrafts(mailInfo);
-        addMessage(redirectAttributes, "邮件成功保存到邮件箱");
-        return "modules/oa/mailInfoList";
+        addMessage(redirectAttributes, "邮件成功保存到草稿箱");
+        model.addAttribute("mailInfo",mailInfo);
+        return "modules/oa/write";
     }
 
     /**
-     * 移动到
+     * 删除邮件  并返回到界面
      * @param mailInfo
      * @param redirectAttributes
      * @return
      */
 	@RequestMapping(value = "move")
-	public String move(MailInfo mailInfo, RedirectAttributes redirectAttributes) {
-        mailInfo.setState("DELETED");
-		mailInfoService.save(mailInfo);
-        addMessage(redirectAttributes, "删除邮件成功");
-		return "modules/oa/mailInfoList";
+	public String move(MailInfo mailInfo, RedirectAttributes redirectAttributes,Model model,HttpServletRequest request ,HttpServletResponse response,String ids,String state) {
+        String[] id = ids.split(",");
+        if (id != null) {
+            for (int i = 0; i < id.length; i++) {
+                MailInfo mail= mailInfoService.get(id[i]);
+                mail.setState("DELETED");
+                mailInfoService.save(mail);
+            }
+            addMessage(redirectAttributes, "删除邮件成功");
+        }
+        //返回界面
+        MailInfo mailInfo1=new MailInfo();
+        mailInfo1.setOwnId(UserUtils.getUser().getId());
+        mailInfo1.setState(state);
+        Page<MailInfo> page = mailInfoService.findPage(new Page<MailInfo>(request, response), mailInfo1);
+        List<MailInfo> list=mailInfoService.findList(mailInfo1);
+        mailInfo1.setReadMark("0");
+        List<MailInfo> delete=mailInfoService.findList(mailInfo1);
+        page.setCount(list.size());
+        page.setDelete(delete.size());
+        model.addAttribute("page", page);
+        if(StringUtils.equals(mailInfo.getState(),"DELETED")){
+            return "modules/oa/delete";
+        }  else if(StringUtils.equals(mailInfo.getState(),"DRAFTS")){
+            return "modules/oa/drafts";
+        }else if(StringUtils.equals(mailInfo.getState(),"INBOX")){
+            return "modules/oa/receiving";
+        } else{
+            return "modules/oa/sent";
+        }
 	}
 
     /**
-     * 彻底删除邮件
+     * 彻底删除邮件  并返回到界面
      * @param mailInfo
      * @param redirectAttributes
      * @return
      */
     @RequestMapping(value = "thoroughDelete")
-    public String thoroughDelete(MailInfo mailInfo, RedirectAttributes redirectAttributes) {
-        mailInfoService.delete(mailInfo);
-        addMessage(redirectAttributes, "彻底删除邮件成功");
-        return "modules/oa/mailInfoList";
+    public String thoroughDelete(MailInfo mailInfo, RedirectAttributes redirectAttributes,Model model,HttpServletRequest request ,HttpServletResponse response,String ids,String state) {
+            String[] id = ids.split(",");
+            if (id != null) {
+                for (int i = 0; i < id.length; i++) {
+                    mailInfo.setId(id[i]);
+                    mailInfoService.delete(mailInfo);
+                }
+                addMessage(redirectAttributes, "彻底删除邮件成功");
+            }
+        //返回界面
+        MailInfo mailInfo1=new MailInfo();
+        mailInfo1.setOwnId(UserUtils.getUser().getId());
+        mailInfo1.setState(state);
+        Page<MailInfo> page = mailInfoService.findPage(new Page<MailInfo>(request, response), mailInfo1);
+        List<MailInfo> list=mailInfoService.findList(mailInfo1);
+        mailInfo1.setReadMark("0");
+        List<MailInfo> delete=mailInfoService.findList(mailInfo1);
+        page.setCount(list.size());
+        page.setDelete(delete.size());
+        model.addAttribute("page", page);
+        if(StringUtils.equals(mailInfo.getState(),"DELETED")){
+            return "modules/oa/delete";
+        }  else if(StringUtils.equals(mailInfo.getState(),"DRAFTS")){
+            return "modules/oa/drafts";
+        }else if(StringUtils.equals(mailInfo.getState(),"INBOX")){
+            return "modules/oa/receiving";
+        } else{
+            return "modules/oa/sent";
+        }
     }
 
     /**
      * 标记为 (已读/未读)
-     * @param ids
+     * @param
      * @param readMark
      * @return
      */
     @RequestMapping(value = "read")
-    public String mark(String ids, String readMark){
+    public String mark(MailInfo mailInfo,String ids, RedirectAttributes redirectAttributes,Model model,HttpServletRequest request ,HttpServletResponse response, String readMark,String state){
+        mailInfo.setOwnId(UserUtils.getUser().getId());
         if(StringUtils.isNotBlank(ids) && StringUtils.isNotBlank(readMark)){
             mailInfoService.readMark(ids, readMark);
         }
-        return "modules/oa/mailInfoList";
+
+        MailInfo mailInfo1=new MailInfo();
+        mailInfo1.setState(state);
+        mailInfo1.setOwnId(UserUtils.getUser().getId());
+        Page<MailInfo> page = mailInfoService.findPage(new Page<MailInfo>(request, response), mailInfo1);
+        List<MailInfo> list=mailInfoService.findList(mailInfo1);
+        mailInfo1.setReadMark("0");
+        List<MailInfo> delete=mailInfoService.findList(mailInfo1);
+        page.setCount(list.size());
+        page.setDelete(delete.size());
+        model.addAttribute("page", page);
+        if(StringUtils.equals(mailInfo.getState(),"DELETED")){
+            return "modules/oa/delete";
+        }  else if(StringUtils.equals(mailInfo.getState(),"DRAFTS")){
+            return "modules/oa/drafts";
+        }else if(StringUtils.equals(mailInfo.getState(),"INBOX")){
+            return "modules/oa/receiving";
+        } else{
+            return "modules/oa/sent";
+        }
     }
 
+
+    /**
+     * 移动到(收件箱/已发送)
+     * @param
+     * @param readMark
+     * @return
+     */
+    @RequestMapping(value = "remove")
+    public String remove(MailInfo mailInfo,String ids, RedirectAttributes redirectAttributes,Model model,HttpServletRequest request ,HttpServletResponse response, String readMark,String state,String state1){
+        mailInfo.setOwnId(UserUtils.getUser().getId());
+        String[] id = ids.split(",");
+        if (id != null) {
+            for (int i = 0; i < id.length; i++) {
+                MailInfo mail= mailInfoService.get(id[i]);
+                mail.setState(state1);
+                mailInfoService.save(mail);
+            }
+            addMessage(redirectAttributes, "移动邮件成功");
+        }
+
+
+        MailInfo mailInfo1=new MailInfo();
+        mailInfo1.setOwnId(UserUtils.getUser().getId());
+        mailInfo1.setState(state);
+        Page<MailInfo> page = mailInfoService.findPage(new Page<MailInfo>(request, response), mailInfo1);
+        List<MailInfo> list=mailInfoService.findList(mailInfo1);
+        mailInfo1.setReadMark("0");
+        List<MailInfo> delete=mailInfoService.findList(mailInfo1);
+        page.setCount(list.size());
+        page.setDelete(delete.size());
+        model.addAttribute("page", page);
+        if(StringUtils.equals(mailInfo.getState(),"DELETED")){
+            return "modules/oa/delete";
+        }  else if(StringUtils.equals(mailInfo.getState(),"DRAFTS")){
+            return "modules/oa/drafts";
+        }else if(StringUtils.equals(mailInfo.getState(),"INBOX")){
+            return "modules/oa/receiving";
+        } else{
+            return "modules/oa/sent";
+        }
+    }
+
+    /**
+     * 标记为全部已读
+     * @return
+     */
     @RequestMapping(value = "allRead")
     public String allRead(){
         mailInfoService.allRead(UserUtils.getUser().getId());

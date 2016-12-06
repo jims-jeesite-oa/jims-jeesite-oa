@@ -25,8 +25,29 @@ public class MailInfo extends DataEntity<MailInfo> {
 	private String ccId;		// 抄送人
 	private String ownId;		// 拥有此邮件人
 	private String state;		// 状态:收件箱(INBOX),已发送(SENT),草稿箱(DRAFTS),已删除(DELETED)
-	
-	public MailInfo() {
+
+    private String name;   //用户姓名
+
+
+    private Integer count;    //邮件未读的数量
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public MailInfo() {
 		super();
 	}
 

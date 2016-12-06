@@ -1,0 +1,56 @@
+/*-------------------------------------
+zTree Style
+
+version:	3.5.17
+author:		Hunter.z
+email:		hunter.z@263.net
+website:	http://code.google.com/p/jquerytree/
+
+-------------------------------------*/
+
+.table {
+    width: 100%;
+    /*border: 1px solid red;*/
+}
+
+.tr1 {
+    height: 40px;
+    background-color: #dadfe3;
+}
+
+.tr2 {
+    height: 17px;
+    background-color: #DFE4E8;
+}
+
+.td {
+    /*padding-top: 5px;*/
+    padding-left: 7px;
+}
+
+.td1 {
+    text-align: center;
+    width: 60px;
+}
+
+.reTd {
+    width: 40%;
+    /*border: 1px solid red;*/
+    padding-left: 25px;
+}
+
+.reTr {
+    border-top: 2px solid #F5F5F5;
+    height: 35px;
+}
+
+.reCheckbox {
+    width: 15px;
+}
+
+.findTr {
+    height: 25px;
+    background-color: #EFF5FB;
+    color: #ABAAAD;
+}
+

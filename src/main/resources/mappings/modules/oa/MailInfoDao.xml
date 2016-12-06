@@ -32,6 +32,14 @@
 		<include refid="mailInfoJoins"/>
 		WHERE a.id = #{id}
 	</select>
+
+    <select id="getMail" resultType="MailInfo">
+        SELECT
+        a.*,s.name
+        FROM mail_info a,sys_user s
+        WHERE a.id = #{id}
+              and s.id=a.sender_id
+    </select>
 	
 	<select id="findList" resultType="MailInfo">
 		SELECT 
@@ -40,8 +48,16 @@
 		<include refid="mailInfoJoins"/>
 		<where>
 			a.del_flag = #{DEL_FLAG_NORMAL}
-            and own_id = #{ownId}
-            and state = #{state}
+            <if test="ownId!=null and ownId!=''">
+                and own_id = #{ownId}
+            </if>
+            <if test="state!=null and state!=''">
+                and state = #{state}
+            </if>
+            <if test="readMark!=null and readMark!=''">
+                and read_mark = #{readMark}
+            </if>
+
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
@@ -129,11 +145,10 @@
 		WHERE id = #{id}
 	</update>
 	
-	<update id="delete">
-		UPDATE mail_info SET 
-			del_flag = #{DEL_FLAG_DELETE}
+	<delete id="delete">
+		delete from  mail_info
 		WHERE id = #{id}
-	</update>
+	</delete>
 
     <update id="allRead">
         UPDATE mail_info SET
