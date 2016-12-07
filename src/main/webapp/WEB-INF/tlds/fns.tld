@@ -111,6 +111,14 @@
         <function-signature> java.util.List getAllPermission()</function-signature>
         <example>${fns:getAllPermission()}</example>
     </function>
+
+    <function>
+        <description>获取所有人</description>
+        <name>getPhone</name>
+        <function-class>com.thinkgem.jeesite.modules.oa.units.CommonUtils</function-class>
+        <function-signature> java.util.List getPhone()</function-signature>
+        <example>${fns:getPhone()}</example>
+    </function>
 	
   <!-- DictUtils -->
   <function>

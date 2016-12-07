@@ -88,8 +88,8 @@
 </head>
 <body>
 <div style="background-color: #ffffff">
-
-    <table style="margin-left: 5px;margin-top: 5px;width: 99.5%">
+    <form:form  modelAttribute="mailInfo" action="" method="post"  id="form1">
+    <table style="margin-left: 5px;margin-top: 5px;width: 99%">
         <tr>
             <td colspan="2" align="center">
                 <div id="ss"></div>
@@ -111,11 +111,26 @@
             <td width="80px">　　收件人：</td>
             <td>2</td>
         </tr>
-        <tr style="height: 180px;">
+        <tr style="height: 160px;">
             <td colspan="2" style="padding-left: 25px" valign="top">　　${mailInfo.content}</td>
+        </tr>
+        <tr class="findAd">
+            <td colspan="2">
+                <img src="${ctxStatic}/tree/css/mailCss/img/mail080.png">&nbsp;附件
+            </td>
+        </tr>
+        <tr class="findAdjunct">
+            <td colspan="2" class="td" style="padding-bottom: 15px; height: 25px">
+                <form:hidden id="files" path="files" htmlEscape="false" maxlength="2000" class="input-xlarge"/>
+                <sys:ckfinder input="files" type="files" uploadPath="/oa/mailInfo" selectMultiple="true"/>
+            </td>
+        </tr>
+        <tr style="height: 8px">
+            <td></td>
         </tr>
         <tr style="background-color: #C1D9F3;height: 35px">
             <td colspan="2" style="padding-left: 5px">
+                <input type="button" value="返回" class="btn" onclick="history.go(-1)">
                 <input type="button" value="彻底删除" class="btn" onclick="deleteBy('${mailInfo.state}')">
 
                 <div class="btn-group">
@@ -125,11 +140,13 @@
                             </span>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a href="#" onclick="read('${mailInfo.state}')">&nbsp; &nbsp;<img style="width:26px;height: 19px;"
-                                                                           src="${ctxStatic}/tree/css/mailCss/img/mail020.png">已读邮件</a>
+                        <li><a href="#" onclick="read('${mailInfo.state}')">&nbsp; &nbsp;<img
+                                style="width:26px;height: 19px;"
+                                src="${ctxStatic}/tree/css/mailCss/img/mail020.png">已读邮件</a>
                         </li>
-                        <li><a href="#" onclick="unread('${mailInfo.state}')">&nbsp; &nbsp;<img style="width:26px;height: 19px;"
-                                                                             src="${ctxStatic}/tree/css/mailCss/img/mail010.png">未读邮件
+                        <li><a href="#" onclick="unread('${mailInfo.state}')">&nbsp; &nbsp;<img
+                                style="width:26px;height: 19px;"
+                                src="${ctxStatic}/tree/css/mailCss/img/mail010.png">未读邮件
                         </a>
                         </li>
                     </ul>
@@ -154,6 +171,7 @@
             </td>
         </tr>
     </table>
+    </form:form>
 </div>
 </body>
 </html>

@@ -3,7 +3,9 @@ package com.thinkgem.jeesite.modules.oa.service;
 import java.util.List;
 
 import com.thinkgem.jeesite.common.utils.StringUtils;
+import com.thinkgem.jeesite.modules.sys.entity.User;
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,7 +38,14 @@ public class MailInfoService extends CrudService<MailInfoDao, MailInfo> {
 	public Page<MailInfo> findPage(Page<MailInfo> page, MailInfo mailInfo) {
 		return super.findPage(page, mailInfo);
 	}
-	
+
+    public Page<User> findPage1(Page<User> page, User user) {
+        user.setPage(page);
+        page.setList(mailInfoDao.getPhone(user));
+        return page;
+    }
+
+
 	@Transactional(readOnly = false)
 	public void send(MailInfo mailInfo) {
         if (mailInfo.getContent()!=null){
@@ -64,6 +73,10 @@ public class MailInfoService extends CrudService<MailInfoDao, MailInfo> {
 
     @Transactional(readOnly = false)
     public void saveDrafts(MailInfo mailInfo) {
+        if (mailInfo.getContent()!=null){
+            mailInfo.setContent(StringEscapeUtils.unescapeHtml4(
+                    mailInfo.getContent()));
+        }
         mailInfo.setOwnId(mailInfo.getSenderId());
         mailInfo.setReadMark("1");
         mailInfo.setState("DRAFTS");
@@ -104,5 +117,6 @@ public class MailInfoService extends CrudService<MailInfoDao, MailInfo> {
     public MailInfo getMail(String id) {
         return mailInfoDao.getMail(id);
     }
-	
+
+
 }

@@ -15,7 +15,7 @@
             $("#inputForm").validate({
                 submitHandler: function (form) {
                     if (CKEDITOR.instances.content.getData() == "") {
-                        top.$.jBox.tip('请填写新闻内容', 'warning');
+                        top.$.jBox.tip('请填写邮件内容', 'warning');
                     } else {
 //                        loading('正在提交，请稍等...');
                         form.submit();
@@ -45,6 +45,33 @@
             form1.submit();
         }
 
+
+
+        function getO(id)
+        {
+            if (typeof(id)=="string")
+                return document.getElementById(id);
+        }
+
+        function appendAfterRow(tableID,RowIndex)
+        {
+//FUNCTION: 向指定行后面增加一行,列数和第一行的列数一样
+            var o=document.getElementById(tableID);
+            var refRow=RowIndex;
+            var cells=o.rows[0].cells.length;
+            if(refRow=="") refRow = getO("nRow").value;
+            var v="";
+            var newRefRow=o.insertRow(refRow);
+            for (var i=0;i<cells;i++)
+            {
+                if(o.rows.length<10)
+                    v="0"+o.rows.length+"0"+(i+1);
+                else
+                    v=o.rows.length+"0"+(i+1);
+                newRefRow.insertCell(i).innerHTML=v;
+            }
+        }
+
     </script>
 </head>
 <body>
@@ -54,22 +81,29 @@
             <td colspan="2" style="padding-left: 15px">写信</td>
         </tr>
     </table>
-    <table style="width: 98.5%;" id="mytable">
+    <table style="width: 98.5%;" id="mytable" id="tb01">
         <form:form  modelAttribute="mailInfo" action="" method="post"  id="form1"
                    class="form-horizontal">
             <tr>
                 <td class="td1">收件人</td>
-                <td class="td"><form:input path="receiverId" htmlEscape="true" type="text"
-                                           style="width:100%" value="${mailInfo.receiverId}"></form:input></td>
+                <td class="td">
+                    <form:select path="receiverId" class="input-medium" style="width:100%" itemValue="${mailInfo.receiverId}">
+                        <form:option value="" label=""/>
+                        <form:options items="${fns:getPhone()}" itemLabel="name" itemValue="id" htmlEscape="true" />
+                    </form:select>
             </tr>
             <tr>
-                <td colspan="2" style="padding-left: 69px ;"><a href="javascript:void(0);"
-                                                                onclick="js_method()">添加抄送</a></td>
+                <td class="td1">抄送人</td>
+                <td class="td">
+                    <form:select path="ccId" class="input-medium" style="width:100%" itemValue="${mailInfo.ccId}">
+                        <form:option value="" label=""/>
+                        <form:options items="${fns:getPhone()}" itemLabel="name" itemValue="id" htmlEscape="true" />
+                    </form:select>
             </tr>
             <tr>
                 <td class="td1">主题</td>
                 <td class="td"><form:input path="theme" htmlEscape="true" type="text"
-                                           style="width:100%" value="${mailInfo.theme}"></form:input></td>
+                                           style="width:99%" value="${mailInfo.theme}"></form:input></td>
             </tr>
             <tr>
                 <td class="td1">附件</td>
@@ -83,7 +117,7 @@
                 <td class="td1" valign="top">正文</td>
                 <td style=" padding-left: 7px;">
                     <form:textarea id="content" htmlEscape="true" path="content" rows="3" maxlength="200"
-                                   class="input-xxlarge" value="${mailInfo.content}"/>
+                                   class="input-xxlarge" />
                     <sys:ckeditor replace="content" uploadPath="/oa/mailInfo" height="200px"/>
                 </td>
             </tr>
