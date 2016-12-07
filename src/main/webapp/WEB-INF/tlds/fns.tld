@@ -250,6 +250,13 @@
     <function-signature>long pastDays(java.util.Date)</function-signature>
     <example>${fns:pastDays(date)}</example>  
   </function>
+    <function>
+        <description>获取当前星期</description>
+        <name>getWeek</name>
+        <function-class>com.thinkgem.jeesite.common.utils.DateUtils</function-class>
+        <function-signature>java.lang.String getWeek()</function-signature>
+        <example>${fns:getWeek()}</example>
+    </function>
   
   <!-- JsonMapper -->
   <function>

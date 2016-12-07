@@ -19,4 +19,21 @@
     <example>${fno:getAuditManAllList()}</example>
   </function>
 
+    <function>
+        <description>获取所有个人通知</description>
+        <name>getMyNotify</name>
+        <function-class>com.thinkgem.jeesite.modules.oa.units.InfoUtils</function-class>
+        <function-signature>java.util.List getMyNotify()</function-signature>
+        <example>${fno:getMyNotify()}</example>
+    </function>
+
+    <function>
+        <description>获取日程安排</description>
+        <name>getSchedules</name>
+        <function-class>com.thinkgem.jeesite.modules.oa.units.InfoUtils</function-class>
+        <function-signature>java.util.List getSchedules(java.lang.String)</function-signature>
+        <example>${fno:getSchedules(flag)}</example>
+    </function>
+
+
 </taglib>

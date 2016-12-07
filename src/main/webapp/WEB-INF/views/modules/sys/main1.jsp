@@ -72,6 +72,9 @@
         .dateTd {
             width: 80px;
         }
+        a {
+            color: #606060;
+        }
     </style>
 
 </head>
@@ -82,39 +85,25 @@
                 <div >
                     <div>
                         <span class="title">新 闻</span>
-                        <span class="moreBtn">More ></span>
+                        <span class="moreBtn"><a href="${ctx}/oa/oaNews">More ></a></span>
                         <hr/>
                     </div>
                     <div class="content">
-                        <table class="">
-                            <tr>
-                                <td><i class="icon-volume-up"></i>2015年健康知识讲座通知</td>
-                                <td class="dateTd">2016-01-01</td>
-                            </tr>
-                            <tr>
-                                <td><i class="icon-volume-up"></i>2015年健康知识讲座通知</td>
-                                <td>2016-01-01</td>
-                            </tr>
-                            <tr>
-                                <td><i class="icon-volume-up"></i>2015年健康知识讲座通知</td>
-                                <td>2016-01-01</td>
-                            </tr>
-                            <tr>
-                                <td><i class="icon-volume-up"></i>2015年健康知识讲座通知</td>
-                                <td>2016-01-01</td>
-                            </tr>
-                            <tr>
-                                <td><i class="icon-volume-up"></i>2015年健康知识讲座通知</td>
-                                <td>2016-01-01</td>
-                            </tr>
-                            <tr>
-                                <td><i class="icon-volume-up"></i>2015年健康知识讲座通知</td>
-                                <td>2016-01-01</td>
-                            </tr>
-                            <tr>
-                                <td><i class="icon-volume-up"></i>2015年健康知识讲座通知</td>
-                                <td>2016-01-01</td>
-                            </tr>
+                        <table class="info">
+                            <c:forEach items="${fns:getAllNews()}" var="news"  begin="0" end="6">
+                                <tr>
+                                    <td>
+                                        <i class="icon-volume-up"></i>
+                                        <a href="${ctx}/oa/oaNews/getAuditNews?id=${news.id}">
+                                            ${fns:abbr(news.title,45)}
+                                            <c:if test="${news.isTopic eq '1'}">
+                                                <i class="icon-arrow-up"></i>
+                                            </c:if>
+                                        </a>
+                                    </td>
+                                    <td class="dateTd"><fmt:formatDate value="${news.createDate}" pattern="yyyy-MM-dd"/></td>
+                                </tr>
+                            </c:forEach>
                         </table>
                     </div>
                 </div>
@@ -123,39 +112,25 @@
                 <div >
                     <div>
                         <span class="title">内部通知</span>
-                        <span class="moreBtn">More ></span>
+                        <span class="moreBtn"><a href="${ctx}/oa/oaNotify/self">More ></a></span>
                         <hr/>
                     </div>
                     <div class="content">
-                        <table class="">
-                            <tr>
-                                <td><i class="icon-volume-up"></i>2015年健康知识讲座通知</td>
-                                <td class="dateTd">2016-01-01</td>
-                            </tr>
-                            <tr>
-                                <td><i class="icon-volume-up"></i>2015年健康知识讲座通知</td>
-                                <td>2016-01-01</td>
-                            </tr>
-                            <tr>
-                                <td><i class="icon-volume-up"></i>2015年健康知识讲座通知</td>
-                                <td>2016-01-01</td>
-                            </tr>
-                            <tr>
-                                <td><i class="icon-volume-up"></i>2015年健康知识讲座通知</td>
-                                <td>2016-01-01</td>
-                            </tr>
-                            <tr>
-                                <td><i class="icon-volume-up"></i>2015年健康知识讲座通知</td>
-                                <td>2016-01-01</td>
-                            </tr>
-                            <tr>
-                                <td><i class="icon-volume-up"></i>2015年健康知识讲座通知</td>
-                                <td>2016-01-01</td>
-                            </tr>
-                            <tr>
-                                <td><i class="icon-volume-up"></i>2015年健康知识讲座通知</td>
-                                <td>2016-01-01</td>
-                            </tr>
+                        <table class="info">
+                            <c:forEach items="${fno:getMyNotify()}" var="notifys"  begin="0" end="6">
+                                <tr>
+                                    <td>
+                                        <i class="icon-volume-up"></i>
+                                        <a href="${ctx}/oa/oaNotify/view?id=${notifys.id}">
+                                            ${fns:abbr(notifys.title,41)}
+                                            <c:if test="${notifys.readFlag == '0'}">
+                                                （未读）
+                                            </c:if>
+                                        </a>
+                                    </td>
+                                    <td class="dateTd"><fmt:formatDate value="${notifys.createDate}" pattern="yyyy-MM-dd"/></td>
+                                </tr>
+                            </c:forEach>
                         </table>
                     </div>
                 </div>
@@ -164,39 +139,22 @@
                 <div >
                     <div>
                         <span class="title">日程安排</span>
-                        <span class="moreBtn">More ></span>
+                        <span class="moreBtn"><a href="${ctx}/oa/oaSchedule">More ></a></span>
                         <hr/>
                     </div>
                     <div class="content">
-                        <table class="">
-                            <tr>
-                                <td><i class="icon-volume-up"></i>2015年健康知识讲座通知</td>
-                                <td class="dateTd">2016-01-01</td>
-                            </tr>
-                            <tr>
-                                <td><i class="icon-volume-up"></i>2015年健康知识讲座通知</td>
-                                <td>2016-01-01</td>
-                            </tr>
-                            <tr>
-                                <td><i class="icon-volume-up"></i>2015年健康知识讲座通知</td>
-                                <td>2016-01-01</td>
-                            </tr>
-                            <tr>
-                                <td><i class="icon-volume-up"></i>2015年健康知识讲座通知</td>
-                                <td>2016-01-01</td>
-                            </tr>
-                            <tr>
-                                <td><i class="icon-volume-up"></i>2015年健康知识讲座通知</td>
-                                <td>2016-01-01</td>
-                            </tr>
-                            <tr>
-                                <td><i class="icon-volume-up"></i>2015年健康知识讲座通知</td>
-                                <td>2016-01-01</td>
-                            </tr>
-                            <tr>
-                                <td><i class="icon-volume-up"></i>2015年健康知识讲座通知</td>
-                                <td>2016-01-01</td>
-                            </tr>
+                        <table class="info">
+                            <c:forEach items="${fno:getSchedules('0')}" var="schedules"  begin="0" end="6">
+                                <tr>
+                                    <td>
+                                        <i class="icon-calendar"></i>
+                                        <a href="${ctx}/oa/oaSchedule/form?id=${schedules.id}">
+                                            ${fns:abbr(schedules.content,45)}
+                                        </a>
+                                    </td>
+                                    <td class="dateTd"><fmt:formatDate value="${schedules.scheduleDate}" pattern="yyyy-MM-dd"/></td>
+                                </tr>
+                            </c:forEach>
                         </table>
                     </div>
                 </div>
@@ -209,35 +167,15 @@
                         <hr/>
                     </div>
                     <div class="content">
-                        <table class="">
-                            <tr>
-                                <td><i class="icon-volume-up"></i>2015年健康知识讲座通知</td>
-                                <td class="dateTd">2016-01-01</td>
-                            </tr>
-                            <tr>
-                                <td><i class="icon-volume-up"></i>2015年健康知识讲座通知</td>
-                                <td>2016-01-01</td>
-                            </tr>
-                            <tr>
-                                <td><i class="icon-volume-up"></i>2015年健康知识讲座通知</td>
-                                <td>2016-01-01</td>
-                            </tr>
-                            <tr>
-                                <td><i class="icon-volume-up"></i>2015年健康知识讲座通知</td>
-                                <td>2016-01-01</td>
-                            </tr>
-                            <tr>
-                                <td><i class="icon-volume-up"></i>2015年健康知识讲座通知</td>
-                                <td>2016-01-01</td>
-                            </tr>
-                            <tr>
-                                <td><i class="icon-volume-up"></i>2015年健康知识讲座通知</td>
-                                <td>2016-01-01</td>
-                            </tr>
-                            <tr>
-                                <td><i class="icon-volume-up"></i>2015年健康知识讲座通知</td>
-                                <td>2016-01-01</td>
-                            </tr>
+                        <table class="info">
+                            <c:forEach items="${fns:getAuditNews()}" var="news" begin="0" end="6">
+                                <tr>
+                                    <td><i class="icon-cogs"></i>
+                                        <a href="${ctx}/oa/oaNews/getAuditNews?id=${news.id}">新闻审核：${fns:abbr(news.title,40)}</a>
+                                    </td>
+                                    <td class="dateTd"><fmt:formatDate value="${news.createDate}" pattern="yyyy-MM-dd"/></td>
+                                </tr>
+                            </c:forEach>
                         </table>
                     </div>
                 </div>
