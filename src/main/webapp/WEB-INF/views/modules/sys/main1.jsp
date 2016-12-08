@@ -82,10 +82,10 @@
     <div id="main">
         <ul>
             <li>
-                <div >
+                <div>
                     <div>
                         <span class="title">新 闻</span>
-                        <span class="moreBtn"><a href="${ctx}/oa/oaNews">More ></a></span>
+                        <span class="moreBtn"><a href="${ctx}/oa/oaNews/more">More ></a></span>
                         <hr/>
                     </div>
                     <div class="content">
