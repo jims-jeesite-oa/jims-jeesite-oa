@@ -104,11 +104,17 @@ public class OaSummaryPermissionController extends BaseController {
         //获取被评阅人的所有id并根据逗号进行拆分
         String[]  ids=oaSummaryPermission.getEvaluateId().split(",");
         for(int i=0;i<ids.length;i++){
-            OaSummaryPermission oaSummaryPermission1=new OaSummaryPermission();
-            oaSummaryPermission1.setEvaluateId(ids[i]);
-            oaSummaryPermission1.setEvaluateById(oaSummaryPermission.getEvaluateById());
-            oaSummaryPermissionService.save(oaSummaryPermission1);
+
+            OaSummaryPermission oa=oaSummaryPermissionService.get(ids[i]);
+            if(oa==null){
+                OaSummaryPermission oaSummaryPermission1=new OaSummaryPermission();
+                oaSummaryPermission1.setEvaluateId(ids[i]);
+                oaSummaryPermission1.setEvaluateById(oaSummaryPermission.getEvaluateById());
+                oaSummaryPermissionService.save(oaSummaryPermission1);
+            }
         }
+
+
         addMessage(redirectAttributes, "保存评阅成功");
         return "redirect:"+Global.getAdminPath()+"/oa/oaSummaryPermission/?repage";
     }
@@ -301,6 +307,23 @@ public class OaSummaryPermissionController extends BaseController {
         addMessage(redirectAttributes, "保存工作日志成功");
         model.addAttribute("oaSummaryWeek", oaSummaryWeek);
         return "modules/oa/oaPermissionForm";
+    }
+
+
+    /**
+     *查询评阅人
+     * @param oaSummaryPermission
+     * @param model
+     * @param redirectAttributes
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "findById")
+    public String findById(OaSummaryPermission oaSummaryPermission, Model model, RedirectAttributes redirectAttributes,String id) throws Exception {
+        oaSummaryPermission= oaSummaryPermissionService.findById(id);
+        oaSummaryPermission.setEvaluateById(id);
+        model.addAttribute("oaSummaryPermission",oaSummaryPermission);
+        return "modules/oa/oaSummaryPermissionList";
     }
 
 }

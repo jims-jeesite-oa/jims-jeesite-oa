@@ -14,6 +14,7 @@
             data:{simpleData:{enable:true}},callback:{
                 //在单击时
                 onClick:function(event, treeId, treeNode){
+                    window.location.href=  "${ctx}/oa/oaSummaryPermission/findById?id="+treeNode.id
                     $("#evaluate").val(treeNode.name)
                     $("#evaluateBy").val(treeNode.id)
 
@@ -21,12 +22,9 @@
                     var nodes = zTreeObj.getNodesByParam("pId", treeNode.id, null);
                     for (var i=0, l=nodes.length; i<l; i++) {
                         try{zTreeObj.checkNode(nodes[i], treeNode.checked, true);}catch(e){}
-                        //tree.selectNode(nodes[i], false);
                     }
-                    // selectCheckNode();
-                },onDblClick: function(){//<c:if test="false">
+                },onDblClick: function(){
                     top.$.jBox.getBox().find("button[value='ok']").trigger("click");
-                    //$("input[type='text']", top.mainFrame.document).focus();//</c:if>
                 }
             }
         };
@@ -123,21 +121,23 @@
 <div style="width: 700px;float: left;">
     <form:form id="inputForm" modelAttribute="oaSummaryPermission" action="${ctx}/oa/oaSummaryPermission/save" method="post">
          <form:hidden path="evaluateById" id="evaluateBy" ></form:hidden>
-         <form:hidden path="evaluateId" id="ids" ></form:hidden>
+         <form:hidden path="evaluateId" id="ids" ></form:hidden>   
+         <form:hidden path="id"></form:hidden>
+
         <sys:message content="${message}"/>
         <table align="center" >
             <tr style="padding-top: 10px">
                 <td>评阅人</td>
                 <td>
-                    <form:input path=""  type="text" class="input-xxlarge required" id="evaluate" readonly="true" />
+                    <form:input path=""  type="text" class="input-xxlarge required" id="evaluate" readonly="true"  value="${oaSummaryPermission.evaluateName}" />
                     <span class="help-inline"><font color="red">*</font> </span>
                 </td>
             </tr>
             <tr>
                 <td>被评阅人</td>
                 <td>
-                    <form:textarea path="" htmlEscape="false" rows="6" maxlength="2000" class="input-xxlarge required" id="evaluateNames"  readonly="true"
-                                   />
+                    <form:textarea path="evaluateByNames" htmlEscape="false" rows="6" maxlength="2000" class="input-xxlarge required" id="evaluateNames"  readonly="true"
+                     value="${oaSummaryPermission.evaluateByNames}" />
                     <span class="help-inline"><font color="red">*</font> </span>
                 </td>
             </tr>
