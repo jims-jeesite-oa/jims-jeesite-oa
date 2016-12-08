@@ -142,9 +142,31 @@ public class MailInfoController extends BaseController {
      */
     @RequestMapping(value = "find")
     public String find(MailInfo mailInfo, Model model, RedirectAttributes redirectAttributes, String id) {
+
         MailInfo mail = mailInfoService.getMail(id);
+        if (StringUtils.equals(mail.getReadMark(), "0")) {
+            mail.setReadMark("1");
+            mailInfoService.save(mail);
+        }
         model.addAttribute("mailInfo", mail);
         return "modules/oa/find";
+    }
+
+
+    /**
+     * 点击人员写信
+     *
+     * @param mailInfo
+     * @param model
+     * @param redirectAttributes
+     * @return
+     */
+    @RequestMapping(value = "phoneWrite")
+    public String phoneWrite(MailInfo mailInfo, Model model, RedirectAttributes redirectAttributes, String ids) {
+        mailInfo=mailInfoService.getWrite(ids);
+        mailInfo.setReceiverId(ids);
+        model.addAttribute("mailInfo",mailInfo);
+        return "modules/oa/write";
     }
 
     /**
@@ -163,6 +185,7 @@ public class MailInfoController extends BaseController {
             return info(mailInfo, model);
         }
         mailInfoService.saveDrafts(mailInfo);
+        mailInfo = mailInfoService.getDrafts(mailInfo.getId());
         addMessage(redirectAttributes, "邮件成功保存到草稿箱");
         model.addAttribute("mailInfo", mailInfo);
         return "modules/oa/write";
@@ -343,8 +366,10 @@ public class MailInfoController extends BaseController {
      */
     @RequestMapping(value = "draftsById")
     public String draftsById(MailInfo mailInfo, Model model, String id) {
-        mailInfo = mailInfoService.get(id);
-        model.addAttribute("mailInfo",mailInfo);
+        mailInfo = mailInfoService.getDrafts(id);
+
+
+        model.addAttribute("mailInfo", mailInfo);
         return "modules/oa/write";
     }
 
@@ -354,39 +379,9 @@ public class MailInfoController extends BaseController {
      * @return
      */
     @RequestMapping(value = "phone")
-    public String phone(User user, Model model,HttpServletRequest request,HttpServletResponse response) {
+    public String phone(User user, Model model, HttpServletRequest request, HttpServletResponse response) {
         Page<User> page = mailInfoService.findPage1(new Page<User>(request, response), user);
-        model.addAttribute("page",page);
+        model.addAttribute("page", page);
         return "modules/oa/phone";
     }
-
-    /**
-     * 删除联系人
-     *
-     * @return
-     */
-    /*@RequestMapping(value = "deletePhone")
-    public String deletePhone(User user, Model model,HttpServletRequest request,HttpServletResponse response,String ids) {
-        String id[]=ids.split(",");
-        for(int i=0;i<id.length;i++){
-
-        }
-        Page<User> page = mailInfoService.findPage1(new Page<User>(request, response), user);
-        model.addAttribute("page",page);
-        return "modules/oa/phone";
-    }*/
-
-   /* @RequestMapping(value = "writeX")
-    public String write(User user, Model model,HttpServletRequest request,HttpServletResponse response,String ids) {
-        String id[]=ids.split(",");
-        for(int i=0;i<id.length;i++){
-
-        }
-        Page<User> page = mailInfoService.findPage1(new Page<User>(request, response), user);
-        model.addAttribute("page",page);
-        return "modules/oa/phone";
-    }*/
-
-
-
 }

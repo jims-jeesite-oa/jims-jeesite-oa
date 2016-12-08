@@ -42,5 +42,12 @@ public interface MailInfoDao extends CrudDao<MailInfo> {
     public List<User> getPhone(User user) ;
 
 
+    /**
+     * 查询用户信息
+     * @param id
+     * @return
+     */
+    public User getById(String id);
+
 
 }

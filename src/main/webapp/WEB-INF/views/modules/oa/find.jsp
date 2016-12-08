@@ -107,10 +107,18 @@
             <td width="80px">　　时　间：</td>
             <td><fmt:formatDate value="${mailInfo.time}" type="both" pattern="yyyy年MM月dd日 HH:mm:ss"/></td>
         </tr>
+        <c:if test="${not empty mailInfo.ccNames}">
+            <tr class="findTr">
+                <td width="80px">　　抄送人：</td>
+                <td>${mailInfo.ccNames}</td>
+            </tr>
+        </c:if>
         <tr style="height: 25px; background-color: #EFF5FB;color: #ABAAAD;border-bottom: 1px solid #C1D9F3">
             <td width="80px">　　收件人：</td>
-            <td>2</td>
+            <td>${mailInfo.receiverNames}</td>
         </tr>
+
+
         <tr style="height: 160px;">
             <td colspan="2" style="padding-left: 25px" valign="top">　　${mailInfo.content}</td>
         </tr>
@@ -122,7 +130,7 @@
         <tr class="findAdjunct">
             <td colspan="2" class="td" style="padding-bottom: 15px; height: 25px">
                 <form:hidden id="files" path="files" htmlEscape="false" maxlength="2000" class="input-xlarge"/>
-                <sys:ckfinder input="files" type="files" uploadPath="/oa/mailInfo" selectMultiple="true"/>
+                <sys:ckfinder input="files" type="files" uploadPath="/oa/mailInfo" selectMultiple="true" readonly="true"/>
             </td>
         </tr>
         <tr style="height: 8px">
@@ -130,7 +138,7 @@
         </tr>
         <tr style="background-color: #C1D9F3;height: 35px">
             <td colspan="2" style="padding-left: 5px">
-                <input type="button" value="返回" class="btn" onclick="history.go(-1)">
+                <input type="button" value="返回" class="btn" onclick="self.location=document.referrer;">
                 <input type="button" value="彻底删除" class="btn" onclick="deleteBy('${mailInfo.state}')">
 
                 <div class="btn-group">

@@ -44,31 +44,8 @@
                 document.getElementById("ss").innerHTML = "<div style='color: #ffffff;background-color: #EF8F00;width: 135px;height: 20px;text-align: center;'>未选中任何邮件</div>";
                 return;
             }
-            if (confirm('彻底删除后邮件将无法恢复，您确定要删除吗？')) {
-                form1.action = '${ctx}/oa/mailInfo/thoroughDelete?ids=' + chestr + '&state=SENT';
-                form1.submit();
-            }
+            window.location.href="${ctx}/oa/mailInfo/phoneWrite?ids="+chestr;
         }
-
-        //删除
-        function deleteB() {
-            var checked = false;
-            var chestr = "";
-            var ids = document.getElementsByName("checkbox");
-            for (var i = 0; i < ids.length; i++) {
-                if (ids[i].checked) {
-                    checked = true;
-                    chestr += ids[i].value + ",";
-                }
-            }
-            if (!checked) {
-                document.getElementById("ss").innerHTML = "<div style='color: #ffffff;background-color: #EF8F00;width: 135px;height: 20px;text-align: center;'>未选中任何邮件</div>";
-                return;
-            }
-            form1.action = '${ctx}/oa/mailInfo/move?ids=' + chestr;
-            form1.submit();
-        }
-
         //循环定时删除
         window.setInterval(show, 5000);
         function show() {
@@ -87,15 +64,11 @@
                 <td colspan="3" style="padding-left: 15px;">联系人 (全部)</td>
             </tr>
             <tr>
-               <%-- <td class="reTd">
-                    <c:if test="${fns.getUser().id eq 1}">
-                    <input type="button" value="删除" class="btn btn-warning"
-                           onclick="deleteB()">
-                    </c:if>
+                <td class="reTd">
                     <input type="button" value="写信" class="btn btn-success" onclick="deleteBy()">
                 <td>
                     <div id="ss"></div>
-                </td>--%>
+                </td>
             </tr>
         </table>
 
@@ -115,7 +88,11 @@
             <c:forEach items="${page.list}" var="user">
 
                 <tr class="reTr" data-id="${user.id}">
+                    <td style="width: 40px">
+                        <input type="checkbox" name="checkbox" value="${user.id}">
+                    </td>
                     <td style=" width: 25px ;" align="left">
+
                     </td>
                     <td style="width:25%;">
                             ${user.name}
@@ -126,9 +103,9 @@
                     <td style="width:15%;">
                         ${user.phone}
                     </td>
-                   <%-- <td style="width:10%;" align="center">
-                        <img src="${ctxStatic}/tree/css/mailCss/img/mail030.png"/>
-                    </td>--%>
+                    <td style="width: 15%">
+
+                    </td>
                 </tr>
             </c:forEach>
 

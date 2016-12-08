@@ -46,6 +46,13 @@
         *
         FROM sys_user s
     </select>
+
+    <select id="getById" resultType="User">
+        SELECT
+        *
+        FROM sys_user s
+        where s.id=#{id}
+    </select>
 	
 	<select id="findList" resultType="MailInfo">
 		SELECT 

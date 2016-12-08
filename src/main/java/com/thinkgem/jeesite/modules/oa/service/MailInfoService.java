@@ -48,6 +48,7 @@ public class MailInfoService extends CrudService<MailInfoDao, MailInfo> {
 
 	@Transactional(readOnly = false)
 	public void send(MailInfo mailInfo) {
+        String id=mailInfo.getId();
         if (mailInfo.getContent()!=null){
             mailInfo.setContent(StringEscapeUtils.unescapeHtml4(
                     mailInfo.getContent()));
@@ -67,7 +68,12 @@ public class MailInfoService extends CrudService<MailInfoDao, MailInfo> {
         mailInfo.setOwnId(mailInfo.getSenderId());
         mailInfo.setReadMark("1");
         mailInfo.setState("SENT");
-        mailInfo.setId(null);
+        if(id!=null){
+            mailInfo.setId(id);
+        }else {
+            mailInfo.setId(null);
+        }
+
 		super.save(mailInfo);
 	}
 
@@ -115,7 +121,89 @@ public class MailInfoService extends CrudService<MailInfoDao, MailInfo> {
      * @return
      */
     public MailInfo getMail(String id) {
-        return mailInfoDao.getMail(id);
+        MailInfo mailInfo= mailInfoDao.getMail(id);
+        StringBuilder sb=new StringBuilder();
+        StringBuilder cc=new StringBuilder();
+        StringBuilder send=new StringBuilder();
+        if(mailInfo.getReceiverId()!=null) {
+            String ids[]=mailInfo.getReceiverId().split(",");
+            for(int i=0;i<ids.length;i++){
+                User user=mailInfoDao.getById(ids[i]);
+                sb.append(user.getName()+",");
+            }
+            String receiverName = sb.toString().substring(0,sb.toString().length()-1);
+            mailInfo.setReceiverNames(receiverName);
+        }
+        if(mailInfo.getCcId()!=null){
+            String ids[]=mailInfo.getCcId().split(",");
+            for(int i=0;i<ids.length;i++){
+                User user=mailInfoDao.getById(ids[i]);
+                cc.append(user.getName()+",");
+            }
+            String receiverName = cc.toString().substring(0,cc.toString().length()-1);
+            mailInfo.setCcNames(receiverName);
+        }
+        if(mailInfo.getSenderId()!=null){
+            String ids[]=mailInfo.getSenderId().split(",");
+            for(int i=0;i<ids.length;i++){
+                User user=mailInfoDao.getById(ids[i]);
+                send.append(user.getName()+",");
+            }
+            String receiverName = send.toString().substring(0,send.toString().length()-1);
+            mailInfo.setName(receiverName);
+        }
+        return mailInfo;
+    }
+
+
+    /**
+     *草稿保存成功后，回显数据
+     * @param id
+     * @return
+     */
+    public MailInfo getDrafts(String id){
+        MailInfo mailInfo=dao.get(id);
+        StringBuilder sb=new StringBuilder();
+        StringBuilder cc=new StringBuilder();
+        if(mailInfo.getReceiverId()!=null) {
+            String ids[]=mailInfo.getReceiverId().split(",");
+            for(int i=0;i<ids.length;i++){
+               User user=mailInfoDao.getById(ids[i]);
+               sb.append(user.getName()+",");
+            }
+            String receiverName = sb.toString().substring(0,sb.toString().length()-1);
+            mailInfo.setReceiverNames(receiverName);
+        }
+        if(mailInfo.getCcId()!=null){
+            String ids[]=mailInfo.getCcId().split(",");
+            for(int i=0;i<ids.length;i++){
+                User user=mailInfoDao.getById(ids[i]);
+                cc.append(user.getName()+",");
+            }
+            String receiverName = cc.toString().substring(0,cc.toString().length()-1);
+            mailInfo.setCcNames(receiverName);
+        }
+        return mailInfo;
+    }
+
+    /**
+     *联系人选中，点击写信，进入到写信的界面
+     * @param id
+     * @return
+     */
+    public MailInfo getWrite(String id){
+        MailInfo mailInfo =new MailInfo();
+        StringBuilder sb=new StringBuilder();
+        if(id!=null) {
+            String ids[]=id.split(",");
+            for(int i=0;i<ids.length;i++){
+                User user=mailInfoDao.getById(ids[i]);
+                sb.append(user.getName()+",");
+            }
+            String receiverName = sb.toString().substring(0,sb.toString().length()-1);
+            mailInfo.setReceiverNames(receiverName);
+        }
+        return mailInfo;
     }
 
 

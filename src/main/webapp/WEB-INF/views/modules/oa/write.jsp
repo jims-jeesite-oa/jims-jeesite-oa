@@ -47,30 +47,6 @@
 
 
 
-        function getO(id)
-        {
-            if (typeof(id)=="string")
-                return document.getElementById(id);
-        }
-
-        function appendAfterRow(tableID,RowIndex)
-        {
-//FUNCTION: 向指定行后面增加一行,列数和第一行的列数一样
-            var o=document.getElementById(tableID);
-            var refRow=RowIndex;
-            var cells=o.rows[0].cells.length;
-            if(refRow=="") refRow = getO("nRow").value;
-            var v="";
-            var newRefRow=o.insertRow(refRow);
-            for (var i=0;i<cells;i++)
-            {
-                if(o.rows.length<10)
-                    v="0"+o.rows.length+"0"+(i+1);
-                else
-                    v=o.rows.length+"0"+(i+1);
-                newRefRow.insertCell(i).innerHTML=v;
-            }
-        }
 
     </script>
 </head>
@@ -82,23 +58,27 @@
         </tr>
     </table>
     <table style="width: 98.5%;" id="mytable" id="tb01">
-        <form:form  modelAttribute="mailInfo" action="" method="post"  id="form1"
+        <form:form modelAttribute="mailInfo" action="" method="post" id="form1"
                    class="form-horizontal">
+
+            <form:hidden path="id"></form:hidden>
             <tr>
                 <td class="td1">收件人</td>
                 <td class="td">
-                    <form:select path="receiverId" class="input-medium" style="width:100%" itemValue="${mailInfo.receiverId}">
-                        <form:option value="" label=""/>
-                        <form:options items="${fns:getPhone()}" itemLabel="name" itemValue="id" htmlEscape="true" />
-                    </form:select>
+                    <div class="controls">
+                        <sys:treeselect id="receiverId" name="receiverId"
+                                        value="${mailInfo.receiverId}" labelName="name" labelValue="${mailInfo.receiverNames}"
+                                        title="用户" url="/sys/office/treeData?type=3" cssClass="input-xxlarge required" notAllowSelectParent="true" checked="true" cssStyle="width:980px"/>
+                        <span class="help-inline"><font color="red">*</font> </span>
+                    </div>
             </tr>
             <tr>
                 <td class="td1">抄送人</td>
                 <td class="td">
-                    <form:select path="ccId" class="input-medium" style="width:100%" itemValue="${mailInfo.ccId}">
-                        <form:option value="" label=""/>
-                        <form:options items="${fns:getPhone()}" itemLabel="name" itemValue="id" htmlEscape="true" />
-                    </form:select>
+                        <sys:treeselect id="ccId" name="ccId"
+                                        value="${mailInfo.ccId}" labelName="name" labelValue="${mailInfo.ccNames}"
+                                        title="用户" url="/sys/office/treeData?type=3" cssClass="input-xxlarge required" notAllowSelectParent="true" checked="true" cssStyle="width:980px"/>
+                    <span class="help-inline"><font color="red">*</font> </span>
             </tr>
             <tr>
                 <td class="td1">主题</td>
@@ -117,13 +97,13 @@
                 <td class="td1" valign="top">正文</td>
                 <td style=" padding-left: 7px;">
                     <form:textarea id="content" htmlEscape="true" path="content" rows="3" maxlength="200"
-                                   class="input-xxlarge" />
+                                   class="input-xxlarge"/>
                     <sys:ckeditor replace="content" uploadPath="/oa/mailInfo" height="200px"/>
                 </td>
             </tr>
             <tr style=" ">
                 <td colspan="2" style="padding-left: 69px ;">发件人: <span>
-                 ${fns:getUser().name}
+                        ${fns:getUser().name}
                 </span></td>
             </tr>
             <tr>
