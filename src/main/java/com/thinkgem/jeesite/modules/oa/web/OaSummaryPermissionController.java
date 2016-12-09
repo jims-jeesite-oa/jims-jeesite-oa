@@ -57,20 +57,6 @@ public class OaSummaryPermissionController extends BaseController {
     @Autowired
     private OaSummaryWeekService oaSummaryWeekService;
 
-
-
-/*	@ModelAttribute
-	public OaSummaryPermission get(@RequestParam(required=false) String id) {
-		OaSummaryPermission entity = null;
-		if (StringUtils.isNotBlank(id)){
-			entity = oaSummaryPermissionService.get(id);
-		}
-		if (entity == null){
-			entity = new OaSummaryPermission();
-		}
-
-		return entity;
-	}*/
 //    @RequiresPermissions("oa:oaSummaryPermission:view")
     @RequestMapping(value = {"list", ""})
     public String index(OaSummaryPermission oaSummaryPermission, Model model) {
@@ -130,7 +116,15 @@ public class OaSummaryPermissionController extends BaseController {
      */
     @RequiresPermissions("oa:oaSummaryPermission:view")
     @RequestMapping(value = "formWeek")
-    public String formWeek(OaSummaryWeek oaSummaryWeek, Model model) {
+    public String formWeek(OaSummaryWeek oaSummaryWeek, Model model)throws  Exception{
+        //获取当前想要格式的日期
+        DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String s = sdf.format(new Date());
+        Date date = sdf.parse(s);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setFirstDayOfWeek(Calendar.SUNDAY);
+        calendar.setTime(date);
+        oaSummaryWeek.setWeekOfYear(calendar.get(Calendar.WEEK_OF_YEAR));
         model.addAttribute("oaSummaryWeek", oaSummaryWeek);
         return "modules/oa/oaPermissionForm";
     }
@@ -180,10 +174,8 @@ public class OaSummaryPermissionController extends BaseController {
     @RequestMapping(value = "formId")
     public String form(OaSummaryWeek oaSummaryWeek, Model model) throws Exception {
         String loginId=oaSummaryWeek.getLogin();
-        OaSummaryWeek oaSummaryWeek1=new OaSummaryWeek();
-        oaSummaryWeek1.setLoginId(loginId);
-        oaSummaryWeek=oaSummaryWeekService.findByWeek(oaSummaryWeek1);
         User user = UserUtils.getUser();
+
 
         //获取当前想要格式的日期
         DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -201,8 +193,8 @@ public class OaSummaryPermissionController extends BaseController {
                 oaSummaryWeek.setWeekOfYear(calendar.get(Calendar.WEEK_OF_YEAR));
             }
         }
-
-        // oaSummaryWeek = oaSummaryWeekService.findByWeek(oaSummaryWeek);
+        oaSummaryWeek.setLoginId(loginId);
+        oaSummaryWeek = oaSummaryWeekService.findByWeek(oaSummaryWeek);
         List<OaSchedule> list = null;
         List<OaVo> oa = new ArrayList<OaVo>();
 
@@ -257,54 +249,144 @@ public class OaSummaryPermissionController extends BaseController {
      */
     @RequestMapping(value = "saveWeek")
     public String saveWeek(OaSummaryWeek oaSummaryWeek, Model model, RedirectAttributes redirectAttributes) throws Exception {
-        /*String loginId=oaSummaryWeek.getLoginId();
-        User user = UserUtils.getUser();
-        //获取当前想要格式的日期
-        DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String year= sdf.format(currentFirstDate);
-        //拿到当前的年
-        String currentYear = year.substring(0, 10);
-        String year1 = year.substring(0, 4);
-        Date date = sdf.parse(currentYear);
-        List date1 = setDate(date);
-        oaSummaryWeek.setYear(year1);
-        oaSummaryWeek.setWeek(oaSummaryWeek.getWeekOfYear() + "");
-        oaSummaryWeek.setSumDate(new Date());
-        List<OaSchedule> list = null;
-        List<OaVo> oa = new ArrayList<OaVo>();
-        //根据日期拿到每个日期的任务完成和工作总结
-        for (int j = 0; j < date1.size(); j++) {
-            OaSchedule oaSchedule = new OaSchedule();
-            String sum = date1.get(j).toString().substring(0, 10);
-            String begin = sdf.format(DateFormat.getDateInstance().parse(sum));
-            Date scheduleDate = sdf.parse(begin);
-            OaVo oaVo = null;
-            oaSchedule.setScheduleDate(scheduleDate);
-            oaSchedule.setLoginId(loginId);
-            List<OaSchedule> list1 = oaScheduleService.completeBy(oaSchedule);
-            String con = null;
-            StringBuffer cons = new StringBuffer();
-            for (int i = 0; i < list1.size(); i++) {
-                con = cons.append(list1.get(i).getContent()).append("<br>").toString();
+        String loginId=oaSummaryWeek.getLoginId();
+        if(StringUtils.isNotEmpty(loginId)){
+            User user = UserUtils.getUser();
+            //获取当前想要格式的日期
+            DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            String year= sdf.format(currentFirstDate);
+            //拿到当前的年
+            String currentYear = year.substring(0, 10);
+            String year1 = year.substring(0, 4);
+            Date date = sdf.parse(currentYear);
+            List date1 = setDate(date);
+            oaSummaryWeek.setYear(year1);
+            oaSummaryWeek.setWeek(oaSummaryWeek.getWeekOfYear() + "");
+            oaSummaryWeek.setSumDate(new Date());
+            List<OaSchedule> list = null;
+            List<OaVo> oa = new ArrayList<OaVo>();
+            //根据日期拿到每个日期的任务完成和工作总结
+            for (int j = 0; j < date1.size(); j++) {
+                OaSchedule oaSchedule = new OaSchedule();
+                String sum = date1.get(j).toString().substring(0, 10);
+                String begin = sdf.format(DateFormat.getDateInstance().parse(sum));
+                Date scheduleDate = sdf.parse(begin);
+                OaVo oaVo = null;
+                oaSchedule.setScheduleDate(scheduleDate);
+                oaSchedule.setLoginId(loginId);
+                List<OaSchedule> list1 = oaScheduleService.completeBy(oaSchedule);
+                String con = null;
+                StringBuffer cons = new StringBuffer();
+                for (int i = 0; i < list1.size(); i++) {
+                    con = cons.append(list1.get(i).getContent()).append("<br>").toString();
+                }
+                OaSummaryDay oaSummaryDay = new OaSummaryDay();
+                oaSummaryDay.setSumDate(scheduleDate);
+                oaSummaryDay.setLoginId(loginId);
+                oaSummaryDay = oaSummaryDayService.findByDate(oaSummaryDay);
+                oaVo = new OaVo();
+                oaVo.setContent(con);
+                oaVo.setDate(date1.get(j).toString());
+                if (oaSummaryDay != null) {
+                    oaVo.setStatus(oaSummaryDay.getContent());
+                }
+                oa.add(oaVo);
             }
-            OaSummaryDay oaSummaryDay = new OaSummaryDay();
-            oaSummaryDay.setSumDate(scheduleDate);
-            oaSummaryDay.setLoginId(loginId);
-            oaSummaryDay = oaSummaryDayService.findByDate(oaSummaryDay);
-            oaVo = new OaVo();
-            oaVo.setContent(con);
-            oaVo.setDate(date1.get(j).toString());
-            if (oaSummaryDay != null) {
-                oaVo.setStatus(oaSummaryDay.getContent());
-            }
-            oa.add(oaVo);
-        }
-        oaSummaryWeek.setOaVos(oa);
+            oaSummaryWeek.setOaVos(oa);
 //        oaSummaryWeek.setLoginId(loginId);
-        oaSummaryWeek.setEvaluateMan(user.getName());
-        oaSummaryWeek.setEvaluateManId(user.getId());
-        oaSummaryWeekService.save(oaSummaryWeek);*/
-        addMessage(redirectAttributes, "保存工作日志成功");
+            oaSummaryWeek.setEvaluateMan(user.getName());
+            oaSummaryWeek.setEvaluateManId(user.getId());
+            oaSummaryWeekService.save(oaSummaryWeek);
+        }
+        addMessage(redirectAttributes, "保存周总结评阅成功");
+        model.addAttribute("oaSummaryWeek", oaSummaryWeek);
+        return "modules/oa/oaPermissionForm";
+    }
+
+
+    String year;
+
+    /**
+     * 上一周   本周   下一周
+     *
+     * @param flag
+     * @param weekOfYear
+     * @param model
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "lackWeek")
+    public String lackWeek(@RequestParam("flag") String flag, @RequestParam("weekOfYear") Integer weekOfYear,@RequestParam("login")String login, Model model) throws Exception {
+        OaSummaryWeek oaSummaryWeek = new OaSummaryWeek();
+       if(StringUtils.isNotEmpty(login)){
+           //获取当前想要格式的日期
+           DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+           String s = sdf.format(new Date());
+           Date date = sdf.parse(s);
+           //根据当前的日期来设置第一天从星期日开始
+           Calendar calendar = Calendar.getInstance();
+           calendar.setFirstDayOfWeek(Calendar.SUNDAY);
+           calendar.setTime(date);
+           List date1 = new ArrayList();
+           //本周
+           if (StringUtils.equals(flag, "1")) {
+               oaSummaryWeek.setWeekOfYear(weekOfYear - 1);
+               date1 = setDate(addDate(currentFirstDate, -7));
+               year = date1.get(0).toString();
+           } else if (StringUtils.equals(flag, "2")) {
+               if (weekOfYear == 53) {
+                   oaSummaryWeek.setWeekOfYear(1);
+               } else {
+                   oaSummaryWeek.setWeekOfYear(weekOfYear + 1);
+               }
+
+               date1 = setDate(addDate(currentFirstDate, 7));
+               year = date1.get(0).toString();
+           } else {
+               oaSummaryWeek.setWeekOfYear(calendar.get(Calendar.WEEK_OF_YEAR));
+               date1 = setDate(new Date());
+           }
+           oaSummaryWeek.setLoginId(login);
+           OaSummaryWeek oaSummaryWeek1 = oaSummaryWeekService.findByWeek(oaSummaryWeek);
+           if (oaSummaryWeek1 != null) {
+               oaSummaryWeek.setContent(oaSummaryWeek1.getContent());
+               oaSummaryWeek.setNextPlanContent(oaSummaryWeek1.getNextPlanContent());
+               oaSummaryWeek.setNextPlanTitle(oaSummaryWeek1.getNextPlanTitle());
+               oaSummaryWeek.setId(oaSummaryWeek1.getId());
+           }
+           List<OaVo> oa = new ArrayList<OaVo>();
+           //根据日期拿到每个日期的任务完成和工作总结
+           for (int j = 0; j < date1.size(); j++) {
+               OaSchedule oaSchedule = new OaSchedule();
+               String sum = date1.get(j).toString().substring(0, 10);
+               String begin = sdf.format(DateFormat.getDateInstance().parse(sum));
+               Date scheduleDate = sdf.parse(begin);
+               OaVo oaVo = null;
+               oaSchedule.setScheduleDate(scheduleDate);
+               oaSchedule.setLoginId(login);
+               List<OaSchedule> list1 = oaScheduleService.completeBy(oaSchedule);
+               String con = null;
+               StringBuffer cons = new StringBuffer();
+               if (list1.size() > 0) {
+                   for (int i = 0; i < list1.size(); i++) {
+                       con = cons.append(list1.get(i).getContent()).append("<br>").toString();
+                   }
+               }
+               OaSummaryDay oaSummaryDay = new OaSummaryDay();
+               oaSummaryDay.setSumDate(scheduleDate);
+               oaSummaryDay.setLoginId(login);
+               oaSummaryDay = oaSummaryDayService.findByDate(oaSummaryDay);
+
+               oaVo = new OaVo();
+               oaVo.setContent(con);
+               oaVo.setDate(date1.get(j).toString());
+               if (oaSummaryDay != null) {
+                   oaVo.setStatus(oaSummaryDay.getContent());
+               }
+               oa.add(oaVo);
+           }
+           oaSummaryWeek.setOaVos(oa);
+       }
         model.addAttribute("oaSummaryWeek", oaSummaryWeek);
         return "modules/oa/oaPermissionForm";
     }

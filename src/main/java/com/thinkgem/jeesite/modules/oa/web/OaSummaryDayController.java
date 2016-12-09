@@ -135,6 +135,7 @@ public class OaSummaryDayController extends BaseController {
 
     Date currentFirstDate;
     List dd = new ArrayList();
+
     //存放列表中的第一天的日期
     String year;
 
@@ -188,12 +189,14 @@ public class OaSummaryDayController extends BaseController {
         calendar.setFirstDayOfWeek(Calendar.SUNDAY);
         calendar.setTime(date);
         List date1 = setDate(new Date());
+
         if (oaSummaryWeek.getWeekOfYear() != null) {
             oaSummaryWeek.setWeekOfYear(oaSummaryWeek.getWeekOfYear());
         } else {
             oaSummaryWeek.setWeekOfYear(calendar.get(Calendar.WEEK_OF_YEAR));
         }
-        // oaSummaryWeek = oaSummaryWeekService.findByWeek(oaSummaryWeek);
+        oaSummaryWeek.setLoginId(user.getId());
+        oaSummaryWeek = oaSummaryWeekService.findByWeek(oaSummaryWeek);
         List<OaSchedule> list = null;
         List<OaVo> oa = new ArrayList<OaVo>();
 
@@ -224,7 +227,10 @@ public class OaSummaryDayController extends BaseController {
             }
             oa.add(oaVo);
         }
-        if (oa != null) {
+        if (oa != null && oaSummaryWeek!=null) {
+            oaSummaryWeek.setOaVos(oa);
+        } else{
+            oaSummaryWeek=new OaSummaryWeek();
             oaSummaryWeek.setOaVos(oa);
         }
         // oaSummaryWeek.setOaVos(oa);
