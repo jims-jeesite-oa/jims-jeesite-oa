@@ -388,6 +388,7 @@ public class OaSummaryDayController extends BaseController {
             oaSummaryWeek.setNextPlanContent(oaSummaryWeek1.getNextPlanContent());
             oaSummaryWeek.setNextPlanTitle(oaSummaryWeek1.getNextPlanTitle());
             oaSummaryWeek.setId(oaSummaryWeek1.getId());
+            oaSummaryWeek.setEvaluate(oaSummaryWeek1.getEvaluate());
         }
         List<OaVo> oa = new ArrayList<OaVo>();
         //根据日期拿到每个日期的任务完成和工作总结
