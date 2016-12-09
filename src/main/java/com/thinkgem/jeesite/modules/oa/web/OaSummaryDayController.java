@@ -442,7 +442,7 @@ public class OaSummaryDayController extends BaseController {
 
 
     @RequestMapping(value = "loginId")
-    public String loginId(@ModelAttribute("oaSummaryDay") OaSummaryDay oaSummaryDay, Model model) throws Exception {
+    public String loginId(@ModelAttribute(" m") OaSummaryDay oaSummaryDay, Model model) throws Exception {
         String loginId = oaSummaryDay.getLoginId();
         Date sumDate = oaSummaryDay.getSumDate();
         oaSummaryDay.setLoginId(loginId);
