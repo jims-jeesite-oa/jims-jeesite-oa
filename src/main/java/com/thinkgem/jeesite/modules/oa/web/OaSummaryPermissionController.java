@@ -175,65 +175,65 @@ public class OaSummaryPermissionController extends BaseController {
     public String form(OaSummaryWeek oaSummaryWeek, Model model) throws Exception {
         String loginId=oaSummaryWeek.getLogin();
         User user = UserUtils.getUser();
-
-
-        //获取当前想要格式的日期
-        DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String s = sdf.format(new Date());
-        Date date = sdf.parse(s);
-        //根据当前的日期来设置第一天从星期日开始
-        Calendar calendar = Calendar.getInstance();
-        calendar.setFirstDayOfWeek(Calendar.SUNDAY);
-        calendar.setTime(date);
-        List date1 = setDate(new Date());
-        if(oaSummaryWeek!=null) {
-            if (oaSummaryWeek.getWeekOfYear() != null) {
-                oaSummaryWeek.setWeekOfYear(oaSummaryWeek.getWeekOfYear());
-            } else {
-                oaSummaryWeek.setWeekOfYear(calendar.get(Calendar.WEEK_OF_YEAR));
+        if(StringUtils.isNotEmpty(loginId)){
+            //获取当前想要格式的日期
+            DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            String s = sdf.format(new Date());
+            Date date = sdf.parse(s);
+            //根据当前的日期来设置第一天从星期日开始
+            Calendar calendar = Calendar.getInstance();
+            calendar.setFirstDayOfWeek(Calendar.SUNDAY);
+            calendar.setTime(date);
+            List date1 = setDate(new Date());
+            if(oaSummaryWeek!=null) {
+                if (oaSummaryWeek.getWeekOfYear() != null) {
+                    oaSummaryWeek.setWeekOfYear(oaSummaryWeek.getWeekOfYear());
+                } else {
+                    oaSummaryWeek.setWeekOfYear(calendar.get(Calendar.WEEK_OF_YEAR));
+                }
             }
-        }
-        oaSummaryWeek.setLoginId(loginId);
-        oaSummaryWeek = oaSummaryWeekService.findByWeek(oaSummaryWeek);
-        List<OaSchedule> list = null;
-        List<OaVo> oa = new ArrayList<OaVo>();
+            oaSummaryWeek.setLoginId(loginId);
+            oaSummaryWeek = oaSummaryWeekService.findByWeek(oaSummaryWeek);
+            List<OaSchedule> list = null;
+            List<OaVo> oa = new ArrayList<OaVo>();
 
-        //根据日期拿到每个日期的任务完成和工作总结
-        for (int j = 0; j < date1.size(); j++) {
-            OaSchedule oaSchedule = new OaSchedule();
-            String sum = date1.get(j).toString().substring(0, 10);
-            String begin = sdf.format(DateFormat.getDateInstance().parse(sum));
-            Date scheduleDate = sdf.parse(begin);
-            OaVo oaVo = null;
-            oaSchedule.setScheduleDate(scheduleDate);
-            oaSchedule.setLoginId(loginId);
-            List<OaSchedule> list1 = oaScheduleService.completeBy(oaSchedule);
-            String con = null;
-            StringBuffer cons = new StringBuffer();
-            for (int i = 0; i < list1.size(); i++) {
-                con = cons.append(list1.get(i).getContent()).append("<br>").toString();
+            //根据日期拿到每个日期的任务完成和工作总结
+            for (int j = 0; j < date1.size(); j++) {
+                OaSchedule oaSchedule = new OaSchedule();
+                String sum = date1.get(j).toString().substring(0, 10);
+                String begin = sdf.format(DateFormat.getDateInstance().parse(sum));
+                Date scheduleDate = sdf.parse(begin);
+                OaVo oaVo = null;
+                oaSchedule.setScheduleDate(scheduleDate);
+                oaSchedule.setLoginId(loginId);
+                List<OaSchedule> list1 = oaScheduleService.completeBy(oaSchedule);
+                String con = null;
+                StringBuffer cons = new StringBuffer();
+                for (int i = 0; i < list1.size(); i++) {
+                    con = cons.append(list1.get(i).getContent()).append("<br>").toString();
+                }
+                OaSummaryDay oaSummaryDay = new OaSummaryDay();
+                oaSummaryDay.setSumDate(scheduleDate);
+                oaSummaryDay.setLoginId(loginId);
+                oaSummaryDay = oaSummaryDayService.findByDate(oaSummaryDay);
+                oaVo = new OaVo();
+                oaVo.setContent(con);
+                oaVo.setDate(date1.get(j).toString());
+                if (oaSummaryDay != null) {
+                    oaVo.setStatus(oaSummaryDay.getContent());
+                }
+                oa.add(oaVo);
             }
-            OaSummaryDay oaSummaryDay = new OaSummaryDay();
-            oaSummaryDay.setSumDate(scheduleDate);
-            oaSummaryDay.setLoginId(loginId);
-            oaSummaryDay = oaSummaryDayService.findByDate(oaSummaryDay);
-            oaVo = new OaVo();
-            oaVo.setContent(con);
-            oaVo.setDate(date1.get(j).toString());
-            if (oaSummaryDay != null) {
-                oaVo.setStatus(oaSummaryDay.getContent());
+            if (oa != null && oaSummaryWeek!=null) {
+                oaSummaryWeek.setOaVos(oa);
+            } else{
+                oaSummaryWeek=new OaSummaryWeek();
+                oaSummaryWeek.setOaVos(oa);
             }
-            oa.add(oaVo);
+            // oaSummaryWeek.setOaVos(oa);
+            oaSummaryWeek.setLoginId(loginId);
+            oaSummaryWeek.setWeekOfYear(calendar.get(Calendar.WEEK_OF_YEAR));
         }
-        if (oa != null && oaSummaryWeek!=null) {
-            oaSummaryWeek.setOaVos(oa);
-        } else{
-            oaSummaryWeek=new OaSummaryWeek();
-            oaSummaryWeek.setOaVos(oa);
-        }
-        // oaSummaryWeek.setOaVos(oa);
-        oaSummaryWeek.setLoginId(loginId);
-        oaSummaryWeek.setWeekOfYear(calendar.get(Calendar.WEEK_OF_YEAR));
         model.addAttribute("oaSummaryWeek", oaSummaryWeek);
         return "modules/oa/oaPermissionForm";
     }
