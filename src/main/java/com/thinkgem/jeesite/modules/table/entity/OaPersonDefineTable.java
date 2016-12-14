@@ -14,6 +14,7 @@ import com.thinkgem.jeesite.common.persistence.DataEntity;
  * 自定义数据源Entity
  * @author chenxy
  * @version 2016-11-24
+ *
  */
 public class OaPersonDefineTable extends DataEntity<OaPersonDefineTable> {
 	
