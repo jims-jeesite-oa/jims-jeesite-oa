@@ -282,4 +282,12 @@
         <function-signature>java.util.List getAllNews()</function-signature>
         <example>${fns:getAllNews()}</example>
     </function>
+
+    <function>
+        <description>获取待办列表</description>
+        <name>getTodo</name>
+        <function-class>com.thinkgem.jeesite.modules.sys.utils.NoticeUnits</function-class>
+        <function-signature>java.util.List getTodo()</function-signature>
+        <example>${fns:getTodo()}</example>
+    </function>
 </taglib>
