@@ -3,6 +3,7 @@
 <%@ attribute name="id" type="java.lang.String" required="true" description="编号"%>
 <%@ attribute name="name" type="java.lang.String" required="true" description="隐藏域名称（ID）"%>
 <%@ attribute name="value" type="java.lang.String" required="true" description="隐藏域值（ID）"%>
+<%@ attribute name="pid" type="java.lang.String" required="false" description="隐藏域父节点值（ID）"%>
 <%@ attribute name="labelName" type="java.lang.String" required="true" description="输入框名称（Name）"%>
 <%@ attribute name="labelValue" type="java.lang.String" required="true" description="输入框值（Name）"%>
 <%@ attribute name="title" type="java.lang.String" required="true" description="选择框标题"%>
@@ -24,6 +25,7 @@
 <%@ attribute name="dataMsgRequired" type="java.lang.String" required="false" description=""%>
 <div class="input-append">
 	<input id="${id}Id" name="${name}" class="${cssClass}" type="hidden" value="${value}"/>
+	<input id="${id}Pid" class="${cssClass}" type="hidden" value="${pid}"/>
 	<input id="${id}Name" name="${labelName}" ${allowInput?'':'readonly="readonly"'} type="text" value="${labelValue}" data-msg-required="${dataMsgRequired}"
 		class="${cssClass}" style="${cssStyle}"/><a id="${id}Button" href="javascript:" class="btn ${disabled} ${hideBtn ? 'hide' : ''}" style="${smallBtn?'padding:4px 2px;':''}">&nbsp;<i class="icon-search"></i>&nbsp;</a>&nbsp;&nbsp;
 </div>
@@ -38,7 +40,7 @@
 			ajaxData:{selectIds: $("#${id}Id").val()},buttons:{"确定":"ok", ${allowClear?"\"清除\":\"clear\", ":""}"关闭":true}, submit:function(v, h, f){
 				if (v=="ok"){
 					var tree = h.find("iframe")[0].contentWindow.tree;//h.find("iframe").contents();
-					var ids = [], names = [], nodes = [];
+					var ids = [], names = [], nodes = [], pids = [];
 					if ("${checked}" == "true"){
 						nodes = tree.getCheckedNodes(true);
 					}else{
@@ -64,14 +66,17 @@
 							return false;
 						}//</c:if>
 						ids.push(nodes[i].id);
+                        pids.push(nodes[i].pId);
 						names.push(nodes[i].name);//<c:if test="${!checked}">
 						break; // 如果为非复选框选择，则返回第一个选择  </c:if>
 					}
 					$("#${id}Id").val(ids.join(",").replace(/u_/ig,""));
+					$("#${id}Pid").val(pids.join(",").replace(/u_/ig,""));
 					$("#${id}Name").val(names.join(","));
 				}//<c:if test="${allowClear}">
 				else if (v=="clear"){
 					$("#${id}Id").val("");
+					$("#${id}Pid").val("");
 					$("#${id}Name").val("");
                 }//</c:if>
 				if(typeof ${id}TreeselectCallBack == 'function'){

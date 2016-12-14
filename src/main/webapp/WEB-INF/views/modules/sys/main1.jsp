@@ -163,12 +163,14 @@
                 <div >
                     <div>
                         <span class="title">待办流程</span>
-                        <span class="moreBtn">More ></span>
+                        <span class="moreBtn"><a href="${ctx}/act/task/">More ></a></span>
                         <hr/>
                     </div>
                     <div class="content">
                         <table class="info">
+                            <c:set value="7" var="flowCount"></c:set>
                             <c:forEach items="${fns:getAuditNews()}" var="news" begin="0" end="6">
+                                <c:set value="${flowCount - 1}" var="flowCount"></c:set>
                                 <tr>
                                     <td><i class="icon-cogs"></i>
                                         <a href="${ctx}/oa/oaNews/getAuditNews?id=${news.id}">新闻审核：${fns:abbr(news.title,40)}</a>
@@ -176,6 +178,20 @@
                                     <td class="dateTd"><fmt:formatDate value="${news.createDate}" pattern="yyyy-MM-dd"/></td>
                                 </tr>
                             </c:forEach>
+                            <c:if test="${flowCount gt 0}">
+                                <c:forEach items="${fns:getTodo()}" var="act"  begin="0" end="${flowCount - 1}">
+                                    <tr>
+                                        <td>
+                                            <i class="icon-cogs"></i>
+                                            <c:set var="task" value="${act.task}" />
+                                            <a href="${ctx}/act/task/form?taskId=${task.id}&taskName=${fns:urlEncode(task.name)}&taskDefKey=${task.taskDefinitionKey}&procInsId=${task.processInstanceId}&procDefId=${task.processDefinitionId}&status=${act.status}">
+                                                    ${act.procDef.name}：${fns:abbr(task.name,35)}
+                                            </a>
+                                        </td>
+                                        <td class="dateTd"><fmt:formatDate value="${task.createTime}" pattern="yyyy-MM-dd"/></td>
+                                    </tr>
+                                </c:forEach>
+                            </c:if>
                         </table>
                     </div>
                 </div>
