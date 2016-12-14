@@ -1,11 +1,40 @@
 
-.icons-news{background:url(/static/images/icons/news.png)  no-repeat;display: block;width: 50px;  height: 50px;}
-.icons-more{background:url(/static/images/icons/add.png)  no-repeat;display: block;width: 50px;  height: 50px;}
-.icons-mail{background:url(/static/images/icons/mail.png)  no-repeat;display: block;width: 50px;  height: 50px;}
-.icons-notify{background:url(/static/images/icons/notify.png)  no-repeat;display: block;width: 50px;  height: 50px;}
-.icons-schedule{background:url(/static/images/icons/schedule.png)  no-repeat;display: block;width: 50px;  height: 50px;}
-.icons-manage{background:url(/static/images/icons/manage.png)  no-repeat;display: block;width: 50px;  height: 50px;}
-.icons-user{background:url(/static/images/icons/user.png)  no-repeat;display: block;width: 50px;  height: 50px;}
-.icons-home{background:url(/static/images/icons/home.png)  no-repeat;display: block;width: 50px;  height: 50px;}
-.icons-work{background:url(/static/images/icons/work.png)  no-repeat;display: block;width: 50px;  height: 50px;}
-.icons-succ{background:url(/static/images/icons/succ.png)  no-repeat;display: block;width: 50px;  height: 50px;}
+.icon-news{background:url(/static/images/icons/news.png)  no-repeat;display: block;width: 50px;  height: 50px;}
+.icon-more{background:url(/static/images/icons/add.png)  no-repeat;display: block;width: 50px;  height: 50px;}
+.icon-mail{background:url(/static/images/icons/mail.png)  no-repeat;display: block;width: 50px;  height: 50px;}
+.icon-notify{background:url(/static/images/icons/notify.png)  no-repeat;display: block;width: 50px;  height: 50px;}
+.icon-schedule{background:url(/static/images/icons/schedule.png)  no-repeat;display: block;width: 50px;  height: 50px;}
+.icon-manage{background:url(/static/images/icons/manage.png)  no-repeat;display: block;width: 50px;  height: 50px;}
+.icon-iuser{background:url(/static/images/icons/user.png)  no-repeat;display: block;width: 50px;  height: 50px;}
+.icon-ihome{background:url(/static/images/icons/home.png)  no-repeat;display: block;width: 50px;  height: 50px;}
+.icon-work{background:url(/static/images/icons/work.png)  no-repeat;display: block;width: 50px;  height: 50px;}
+.icon-succ{background:url(/static/images/icons/succ.png)  no-repeat;display: block;width: 50px;  height: 50px;}
+
+
+.icon-05{background:url(/static/images/icons/icon_05.png)  no-repeat;display: block;width: 50px;  height: 50px;}
+.icon-06{background:url(/static/images/icons/icon_06.png)  no-repeat;display: block;width: 50px;  height: 50px;}
+.icon-transaction{background:url(/static/images/icons/transaction.png)  no-repeat;display: block;width: 50px;  height: 50px;}
+.icon-personal{background:url(/static/images/icons/personal.png)  no-repeat;display: block;width: 50px;  height: 50px;}
+.icon-financial{background:url(/static/images/icons/financial.png)  no-repeat;display: block;width: 50px;  height: 50px;}
+.icon-mfinancial{background:url(/static/images/icons/mfinancial.png)  no-repeat;display: block;width: 50px;  height: 50px;}
+
+
+.icon-other{background:url(/static/images/icons/other.png)  no-repeat;display: block;width: 50px;  height: 50px;}
+.icon-statement{background:url(/static/images/icons/statement.png)  no-repeat;display: block;width: 50px;  height: 50px;}
+.icon-log{background:url(/static/images/icons/log.png)  no-repeat;display: block;width: 50px;  height: 50px;}
+.icon-flow{background:url(/static/images/icons/flow.png)  no-repeat;display: block;width: 50px;  height: 50px;}
+.icon-ckeck{background:url(/static/images/icons/check.png)  no-repeat;display: block;width: 50px;  height: 50px;}
+.icon-administrative{background:url(/static/images/icons/administrative.png)  no-repeat;display: block;width: 50px;  height: 50px;}
+.icon-rules{background:url(/static/images/icons/rules.png)  no-repeat;display: block;width: 50px;  height: 50px;}
+.icon-plan{background:url(/static/images/icons/plan.png)  no-repeat;display: block;width: 50px;  height: 50px;}
+.icon-hr{background:url(/static/images/icons/hr.png)  no-repeat;display: block;width: 50px;  height: 50px;}
+.icon-information{background:url(/static/images/icons/information.png)  no-repeat;display: block;width: 50px;  height: 50px;}
+.icon-staff{background:url(/static/images/icons/staff.png)  no-repeat;display: block;width: 50px;  height: 50px;}
+.icon-MyCalendar{background:url(/static/images/icons/MyCalendar.png)  no-repeat;display: block;width: 50px;  height: 50px;}
+.icon-files{background:url(/static/images/icons/files.png)  no-repeat;display: block;width: 50px;  height: 50px;}
+.icon-planning{background:url(/static/images/icons/planning.png)  no-repeat;display: block;width: 50px;  height: 50px;}
+.icon-definition{background:url(/static/images/icons/definition.png)  no-repeat;display: block;width: 50px;  height: 50px;}
+.icon-knowledge{background:url(/static/images/icons/knowledge.png)  no-repeat;display: block;width: 50px;  height: 50px;}
+.icon-notices{background:url(/static/images/icons/notices.png)  no-repeat;display: block;width: 50px;  height: 50px;}
+.icon-phones{background:url(/static/images/icons/phones.png)  no-repeat;display: block;width: 50px;  height: 50px;}
+.icon-research{background:url(/static/images/icons/research.png)  no-repeat;display: block;width: 50px;  height: 50px;}

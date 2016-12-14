@@ -68,7 +68,7 @@
                     <div class="controls">
                         <sys:treeselect id="receiverId" name="receiverId"
                                         value="${mailInfo.receiverId}" labelName="name" labelValue="${mailInfo.receiverNames}"
-                                        title="用户" url="/sys/office/treeData?type=3" cssClass="input-xxlarge required" notAllowSelectParent="true" checked="true" cssStyle="width:980px"/>
+                                        title="用户" url="/sys/office/treeData?type=3" cssClass="input-xxlarge required" notAllowSelectParent="true" checked="true" cssStyle="width:800px"/>
                         <span class="help-inline"><font color="red">*</font> </span>
                     </div>
             </tr>
@@ -77,13 +77,13 @@
                 <td class="td">
                         <sys:treeselect id="ccId" name="ccId"
                                         value="${mailInfo.ccId}" labelName="name" labelValue="${mailInfo.ccNames}"
-                                        title="用户" url="/sys/office/treeData?type=3" cssClass="input-xxlarge required" notAllowSelectParent="true" checked="true" cssStyle="width:980px"/>
+                                        title="用户" url="/sys/office/treeData?type=3" cssClass="input-xxlarge required" notAllowSelectParent="true" checked="true" cssStyle="width:800px"/>
                     <span class="help-inline"><font color="red">*</font> </span>
             </tr>
             <tr>
                 <td class="td1">主题</td>
                 <td class="td"><form:input path="theme" htmlEscape="true" type="text"
-                                           style="width:99%" value="${mailInfo.theme}"></form:input></td>
+                                           style="width:800px" value="${mailInfo.theme}"></form:input></td>
             </tr>
             <tr>
                 <td class="td1">附件</td>
