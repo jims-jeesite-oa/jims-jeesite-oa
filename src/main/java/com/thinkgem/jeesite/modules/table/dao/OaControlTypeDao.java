@@ -5,18 +5,14 @@ package com.thinkgem.jeesite.modules.table.dao;
 
 import com.thinkgem.jeesite.common.persistence.CrudDao;
 import com.thinkgem.jeesite.common.persistence.annotation.MyBatisDao;
-import com.thinkgem.jeesite.modules.table.entity.OaPersonDefineTableColumn;
-
-import java.util.List;
+import com.thinkgem.jeesite.modules.table.entity.OaControlType;
 
 /**
- * 自定义数据源DAO接口
+ * 控件添加DAO接口
  * @author chenxy
  * @version 2016-11-24
  */
 @MyBatisDao
-public interface OaPersonDefineTableColumnDao extends CrudDao<OaPersonDefineTableColumn> {
-
-    List<OaPersonDefineTableColumn> findColumnListByTableId(String tableId);
-
+public interface OaControlTypeDao extends CrudDao<OaControlType> {
+	
 }

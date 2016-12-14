@@ -13,7 +13,8 @@ import com.thinkgem.jeesite.common.persistence.DataEntity;
 /**
  * 自定义数据源Entity
  * @author chenxy
- * @version 2016-11-17
+ * @version 2016-11-24
+ *
  */
 public class OaPersonDefineTable extends DataEntity<OaPersonDefineTable> {
 	
@@ -25,7 +26,6 @@ public class OaPersonDefineTable extends DataEntity<OaPersonDefineTable> {
 	private String tableStatus;		// 状态
 	private String isMaster;		// 是否主表
 	private String isDetail;		// 是否从表
-    private String masterTableId;//主表Id
 	private List<OaPersonDefineTableColumn> oaPersonDefineTableColumnList = Lists.newArrayList();		// 子表列表
 	
 	public OaPersonDefineTable() {
@@ -97,16 +97,8 @@ public class OaPersonDefineTable extends DataEntity<OaPersonDefineTable> {
 	public void setIsDetail(String isDetail) {
 		this.isDetail = isDetail;
 	}
-
-    @Length(min=0, max=64, message="是否从表长度必须介于 0 和 64 之间")
-    public String getMasterTableId() {
-        return masterTableId;
-    }
-    public void setMasterTableId(String masterTableId) {
-        this.masterTableId = masterTableId;
-    }
-
-    public List<OaPersonDefineTableColumn> getOaPersonDefineTableColumnList() {
+	
+	public List<OaPersonDefineTableColumn> getOaPersonDefineTableColumnList() {
 		return oaPersonDefineTableColumnList;
 	}
 

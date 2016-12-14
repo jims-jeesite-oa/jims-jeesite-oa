@@ -10,9 +10,15 @@ import com.thinkgem.jeesite.modules.table.entity.OaPersonDefineTable;
 /**
  * 自定义数据源DAO接口
  * @author chenxy
- * @version 2016-11-17
+ * @version 2016-11-24
  */
 @MyBatisDao
 public interface OaPersonDefineTableDao extends CrudDao<OaPersonDefineTable> {
-	
+    /**
+     * 根据表名和机构Id查询
+     * @param tableName
+     * @param officeId
+     * @return
+     */
+    OaPersonDefineTable findByTableName(String tableName, String officeId);
 }
