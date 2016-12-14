@@ -111,6 +111,14 @@
         <function-signature> java.util.List getAllPermission()</function-signature>
         <example>${fns:getAllPermission()}</example>
     </function>
+
+    <function>
+        <description>获取所有人</description>
+        <name>getPhone</name>
+        <function-class>com.thinkgem.jeesite.modules.oa.units.CommonUtils</function-class>
+        <function-signature> java.util.List getPhone()</function-signature>
+        <example>${fns:getPhone()}</example>
+    </function>
 	
   <!-- DictUtils -->
   <function>
@@ -274,14 +282,4 @@
         <function-signature>java.util.List getAllNews()</function-signature>
         <example>${fns:getAllNews()}</example>
     </function>
-
-    <function>
-        <description>获取控件类型</description>
-        <name>getControlType</name>
-        <function-class>com.thinkgem.jeesite.modules.sys.utils.ControlTypeUtils</function-class>
-        <function-signature>java.util.List getControlType</function-signature>
-        <example>${fns:getControlType}</example>
-    </function>
-
-
 </taglib>

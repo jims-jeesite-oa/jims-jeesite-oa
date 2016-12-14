@@ -55,6 +55,23 @@ public class OaNewsController extends BaseController {
 		return "modules/oa/oaNewsList";
 	}
 
+    /**
+     * 更多时查看
+     * @param oaNews
+     * @param
+     * @param
+     * @param model
+     * @return
+     */
+    @RequiresPermissions("oa:oaNews:view")
+    @RequestMapping(value = "more")
+    public String more(OaNews oaNews, HttpServletRequest request, HttpServletResponse response, Model model) {
+        oaNews.setAuditFlag("1");
+        Page<OaNews> page = oaNewsService.findPage(new Page<OaNews>(request, response), oaNews);
+        model.addAttribute("page", page);
+        return "modules/oa/oaNewsMore";
+    }
+
 	@RequiresPermissions("oa:oaNews:view")
 	@RequestMapping(value = "form")
 	public String form(OaNews oaNews, Model model) {
@@ -92,7 +109,7 @@ public class OaNewsController extends BaseController {
 	@RequestMapping(value = "delete")
 	public String delete(OaNews oaNews, RedirectAttributes redirectAttributes) {
 		oaNewsService.delete(oaNews);
-		addMessage(redirectAttributes, "删除新闻公告成功");
+        addMessage(redirectAttributes, "删除新闻公告成功");
 		return "redirect:"+Global.getAdminPath()+"/oa/oaNews/?repage";
 	}
 

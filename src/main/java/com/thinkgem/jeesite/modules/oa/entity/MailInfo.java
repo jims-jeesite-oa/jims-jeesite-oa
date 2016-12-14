@@ -28,6 +28,24 @@ public class MailInfo extends DataEntity<MailInfo> {
 
     private String name;   //用户姓名
 
+    private String receiverNames;
+    private String ccNames;
+
+    public String getReceiverNames() {
+        return receiverNames;
+    }
+
+    public void setReceiverNames(String receiverNames) {
+        this.receiverNames = receiverNames;
+    }
+
+    public String getCcNames() {
+        return ccNames;
+    }
+
+    public void setCcNames(String ccNames) {
+        this.ccNames = ccNames;
+    }
 
     private Integer count;    //邮件未读的数量
 

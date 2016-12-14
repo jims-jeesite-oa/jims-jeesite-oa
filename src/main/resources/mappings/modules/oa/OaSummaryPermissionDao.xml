@@ -11,12 +11,21 @@
 	</sql>
     
 	<select id="get" resultType="OaSummaryPermission">
-		SELECT 
+		SELECT
 			<include refid="oaSummaryPermissionColumns"/>
 		FROM oa_summary_permission a
 		<include refid="oaSummaryPermissionJoins"/>
-		WHERE a.id = #{id}
+		WHERE a.evaluate_id = #{EvaluateId}
 	</select>
+
+
+    <select id="findById" resultType="OaSummaryPermission">
+        SELECT
+        <include refid="oaSummaryPermissionColumns"/>
+        FROM oa_summary_permission a
+        <include refid="oaSummaryPermissionJoins"/>
+        WHERE a.evaluate_by_id = #{evaluateById}
+    </select>
 	
 	<select id="findList" resultType="OaSummaryPermission">
 		SELECT 

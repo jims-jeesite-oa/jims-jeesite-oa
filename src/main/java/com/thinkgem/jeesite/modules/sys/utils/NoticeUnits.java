@@ -2,6 +2,8 @@ package com.thinkgem.jeesite.modules.sys.utils;
 
 import com.google.common.collect.Lists;
 import com.thinkgem.jeesite.common.utils.SpringContextHolder;
+import com.thinkgem.jeesite.modules.act.entity.Act;
+import com.thinkgem.jeesite.modules.act.service.ActTaskService;
 import com.thinkgem.jeesite.modules.oa.dao.OaNewsDao;
 import com.thinkgem.jeesite.modules.oa.entity.OaNews;
 import com.thinkgem.jeesite.modules.sys.entity.User;
@@ -14,6 +16,8 @@ import java.util.List;
 public class NoticeUnits {
 
     private static OaNewsDao newsDao = SpringContextHolder.getBean(OaNewsDao.class);
+
+    private static ActTaskService actTaskService = SpringContextHolder.getBean(ActTaskService.class);
 
     /**
      * 获取当前用户可审核的新闻公告
@@ -32,6 +36,18 @@ public class NoticeUnits {
             return newsList;
         }
         return Lists.newArrayList();
+    }
+
+    /**
+     * 获取待办列表
+     * @return
+     */
+    public static List<Act> getTodo(){
+        List<Act> acts = actTaskService.todoList(new Act());
+        if(acts == null){
+            acts = Lists.newArrayList();
+        }
+        return acts;
     }
 
     /**

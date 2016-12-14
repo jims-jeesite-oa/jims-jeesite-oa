@@ -8,6 +8,7 @@ import com.google.common.collect.Maps;
 import com.thinkgem.jeesite.common.mapper.JsonMapper;
 import com.thinkgem.jeesite.common.utils.CacheUtils;
 import com.thinkgem.jeesite.common.utils.SpringContextHolder;
+import com.thinkgem.jeesite.modules.oa.dao.MailInfoDao;
 import com.thinkgem.jeesite.modules.oa.dao.OaAuditManDao;
 import com.thinkgem.jeesite.modules.oa.dao.OaSummaryPermissionDao;
 import com.thinkgem.jeesite.modules.oa.entity.OaAuditMan;
@@ -33,6 +34,7 @@ public class CommonUtils {
 
 	private static OaAuditManDao oaAuditManDao = SpringContextHolder.getBean(OaAuditManDao.class);
 	private static OaSummaryPermissionDao oaSummaryPermissionDao = SpringContextHolder.getBean(OaSummaryPermissionDao.class);
+	private static MailInfoDao mailInfoDao = SpringContextHolder.getBean(MailInfoDao.class);
 	private static UserDao userDao = SpringContextHolder.getBean(UserDao.class);
 
 	public static final String CACHE_AUDIT_MAN_List = "oaAuditManAllList";
@@ -61,6 +63,23 @@ public class CommonUtils {
                User u=userDao.get(list.get(i).getEvaluateId());
                manList.add(u);
            }
+        }
+        return manList;
+    }
+
+    /**
+     *查询公司所有的人
+     * @return
+     */
+    public static List<User> getPhone(){
+        List<User> manList = (List<User>)CacheUtils.get(CACHE_ALL_PERMISSION_List);
+        if (manList==null){
+            manList=new ArrayList<>();
+            List<User> list= mailInfoDao.getPhone(new User());
+            for(int i=0;i<list.size();i++){
+                User u=list.get(i);
+                manList.add(u);
+            }
         }
         return manList;
     }

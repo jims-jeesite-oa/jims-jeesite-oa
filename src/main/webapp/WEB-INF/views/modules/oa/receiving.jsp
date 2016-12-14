@@ -248,7 +248,7 @@
                         <fmt:formatDate value="${mailInfo.time}" type="both" pattern="yyyy年MM月dd日 " />
                     </td>
                     <td style="width:10%;" align="center">
-                        <img src="${ctxStatic}/tree/css/mailCss/img/mail030.png"/>
+                       <%-- <img src="${ctxStatic}/tree/css/mailCss/img/mail030.png"/>--%>
                     </td>
                 </tr>
             </c:forEach>

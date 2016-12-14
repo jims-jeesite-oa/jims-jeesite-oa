@@ -62,9 +62,7 @@ public class UserUtils {
 			if (user == null){
 				return null;
 			}
-			user.setRoleList(roleDao.findList(new Role(user)));
-			CacheUtils.put(USER_CACHE, USER_CACHE_ID_ + user.getId(), user);
-			CacheUtils.put(USER_CACHE, USER_CACHE_LOGIN_NAME_ + user.getLoginName(), user);
+            getOtherInfo(user, true);
 		}
 		return user;
 	}
@@ -81,12 +79,32 @@ public class UserUtils {
 			if (user == null){
 				return null;
 			}
-			user.setRoleList(roleDao.findList(new Role(user)));
-			CacheUtils.put(USER_CACHE, USER_CACHE_ID_ + user.getId(), user);
-			CacheUtils.put(USER_CACHE, USER_CACHE_LOGIN_NAME_ + user.getLoginName(), user);
+            getOtherInfo(user, true);
 		}
 		return user;
 	}
+    // 处理用户其他信息
+    public static void getOtherInfo(User user, boolean saveCache){
+        user.setRoleList(roleDao.findList(new Role(user)));
+        if (user.getCompany() != null && user.getCompany().getId() != null){
+            user.setCompany(officeDao.get(user.getCompany().getId()));
+        }
+        if (user.getOffice() != null && user.getOffice().getId() != null){
+            user.setOffice(officeDao.get(user.getOffice().getId()));
+        }
+        if(saveCache) {
+            CacheUtils.put(USER_CACHE, USER_CACHE_ID_ + user.getId(), user);
+            CacheUtils.put(USER_CACHE, USER_CACHE_LOGIN_NAME_ + user.getLoginName(), user);
+        }
+    }
+    // 处理多用户其他信息
+    public static void getOtherInfoForList(List<User> users, boolean saveCache){
+        if(users != null && users.size() > 0) {
+            for(User user : users){
+                getOtherInfo(user, saveCache);
+            }
+        }
+    }
 	
 	/**
 	 * 清除当前用户缓存

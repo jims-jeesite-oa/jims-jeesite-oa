@@ -45,12 +45,26 @@ website:	http://code.google.com/p/jquerytree/
 }
 
 .reCheckbox {
-    width: 15px;
+    width: 20px;
 }
 
 .findTr {
     height: 25px;
     background-color: #EFF5FB;
     color: #ABAAAD;
+}
+
+.findAdjunct {
+    height: 70px;
+    border-bottom: 2px solid #E0ECF9;
+    border-left: 2px solid #E0ECF9;
+    border-right: 2px solid #E0ECF9
+}
+
+.findAd {
+    background-color: #E0ECF9;
+    border-left: 2px solid #E0ECF9;
+    border-right: 2px solid #E0ECF9;
+    font-weight: bold;
 }
 

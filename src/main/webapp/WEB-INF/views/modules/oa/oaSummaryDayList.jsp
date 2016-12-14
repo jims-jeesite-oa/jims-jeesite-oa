@@ -51,11 +51,8 @@
                 </table>
             </div>
         </div>
-       <%-- <c:forEach items="${page.list}" var="oaSchedule">--%>
         <form:hidden path="id" value="${oaSummaryDay.id}"/>
-      <%--  <form:hidden path="sumDate" value="${oaSummaryDay.sumDate}"/>--%>
         <sys:message content="${message}"/>
-
         <div class="control-group">
             <label class="control-label">工作总结：</label>
             <div class="controls">
@@ -79,10 +76,6 @@
         <div class="form-actions">
             <shiro:hasPermission name="oa:oaSummaryDay:edit"><input id="btnSubmit" class="btn btn-primary" type="submit" value="保 存"/>&nbsp;</shiro:hasPermission>
         </div>
-       <%-- </c:forEach>--%>
     </form:form>
-
-
-	<%--<div class="pagination">${page}</div>--%>
 </body>
 </html>

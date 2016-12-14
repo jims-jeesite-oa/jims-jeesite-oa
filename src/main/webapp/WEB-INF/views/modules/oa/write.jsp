@@ -15,7 +15,7 @@
             $("#inputForm").validate({
                 submitHandler: function (form) {
                     if (CKEDITOR.instances.content.getData() == "") {
-                        top.$.jBox.tip('请填写新闻内容', 'warning');
+                        top.$.jBox.tip('请填写邮件内容', 'warning');
                     } else {
 //                        loading('正在提交，请稍等...');
                         form.submit();
@@ -45,6 +45,9 @@
             form1.submit();
         }
 
+
+
+
     </script>
 </head>
 <body>
@@ -54,22 +57,33 @@
             <td colspan="2" style="padding-left: 15px">写信</td>
         </tr>
     </table>
-    <table style="width: 98.5%;" id="mytable">
-        <form:form  modelAttribute="mailInfo" action="" method="post"  id="form1"
+    <table style="width: 98.5%;" id="mytable" id="tb01">
+        <form:form modelAttribute="mailInfo" action="" method="post" id="form1"
                    class="form-horizontal">
+
+            <form:hidden path="id"></form:hidden>
             <tr>
                 <td class="td1">收件人</td>
-                <td class="td"><form:input path="receiverId" htmlEscape="true" type="text"
-                                           style="width:100%" value="${mailInfo.receiverId}"></form:input></td>
+                <td class="td">
+                    <div class="controls">
+                        <sys:treeselect id="receiverId" name="receiverId"
+                                        value="${mailInfo.receiverId}" labelName="name" labelValue="${mailInfo.receiverNames}"
+                                        title="用户" url="/sys/office/treeData?type=3" cssClass="input-xxlarge required" notAllowSelectParent="true" checked="true" cssStyle="width:980px"/>
+                        <span class="help-inline"><font color="red">*</font> </span>
+                    </div>
             </tr>
             <tr>
-                <td colspan="2" style="padding-left: 69px ;"><a href="javascript:void(0);"
-                                                                onclick="js_method()">添加抄送</a></td>
+                <td class="td1">抄送人</td>
+                <td class="td">
+                        <sys:treeselect id="ccId" name="ccId"
+                                        value="${mailInfo.ccId}" labelName="name" labelValue="${mailInfo.ccNames}"
+                                        title="用户" url="/sys/office/treeData?type=3" cssClass="input-xxlarge required" notAllowSelectParent="true" checked="true" cssStyle="width:980px"/>
+                    <span class="help-inline"><font color="red">*</font> </span>
             </tr>
             <tr>
                 <td class="td1">主题</td>
                 <td class="td"><form:input path="theme" htmlEscape="true" type="text"
-                                           style="width:100%" value="${mailInfo.theme}"></form:input></td>
+                                           style="width:99%" value="${mailInfo.theme}"></form:input></td>
             </tr>
             <tr>
                 <td class="td1">附件</td>
@@ -83,13 +97,13 @@
                 <td class="td1" valign="top">正文</td>
                 <td style=" padding-left: 7px;">
                     <form:textarea id="content" htmlEscape="true" path="content" rows="3" maxlength="200"
-                                   class="input-xxlarge" value="${mailInfo.content}"/>
+                                   class="input-xxlarge"/>
                     <sys:ckeditor replace="content" uploadPath="/oa/mailInfo" height="200px"/>
                 </td>
             </tr>
             <tr style=" ">
                 <td colspan="2" style="padding-left: 69px ;">发件人: <span>
-                 ${fns:getUser().name}
+                        ${fns:getUser().name}
                 </span></td>
             </tr>
             <tr>

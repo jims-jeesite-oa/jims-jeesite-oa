@@ -25,6 +25,16 @@
                     }
                 }
             });
+
+
+            $(".check").click(function (e) {
+                e.stopPropagation()
+            })
+
+            $(".reTr").on('click', function () {
+                var id= $(this).attr("data-id")
+                window.location.href = '${ctx}/oa/mailInfo/draftsById?id=' + id
+            })
         });
 
 
@@ -155,11 +165,11 @@
             <tbody>
             <c:forEach items="${page.list}" var="mailInfo">
 
-                <tr class="reTr">
+                <tr class="reTr" data-id="${mailInfo.id}">
                     <td class="reCheckbox">
-                        <input type="checkbox" name="checkbox" value="${mailInfo.id}">
+                        <input type="checkbox" name="checkbox" value="${mailInfo.id}" class="check">
                     </td>
-                    <td style=" width: 25px ;" align="left">
+                    <td style=" width: 40px ;" align="left">
                          <img src="${ctxStatic}/tree/css/mailCss/img/mail040.png"/>
                     </td>
                     <td style="width:25%;">
@@ -172,10 +182,15 @@
                         <fmt:formatDate value="${mailInfo.time}" type="both" pattern="yyyy年MM月dd日 " />
 
                     </td>
+                    <td style="width:10%;" align="center">
+                       <%-- <img src="${ctxStatic}/tree/css/mailCss/img/mail030.png"/>--%>
+                    </td>
                 </tr>
             </c:forEach>
             </tbody>
         </table>
+
+
     </form:form>
 </div>
 <div class="pagination" align="center">${page}</div>

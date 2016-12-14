@@ -25,6 +25,8 @@ import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.modules.oa.entity.OaSchedule;
 import com.thinkgem.jeesite.modules.oa.service.OaScheduleService;
 
+import java.util.Date;
+
 /**
  * 保存日程安排Controller
  * @author yangruidong
@@ -81,6 +83,9 @@ public class OaScheduleController extends BaseController {
 	@RequiresPermissions("oa:oaSchedule:view")
 	@RequestMapping(value = "form")
 	public String form(OaSchedule oaSchedule, Model model) {
+        if(oaSchedule.getScheduleDate()==null){
+            oaSchedule.setScheduleDate(new Date());
+        }
 		model.addAttribute("oaSchedule", oaSchedule);
 		return "modules/oa/oaScheduleForm";
 	}

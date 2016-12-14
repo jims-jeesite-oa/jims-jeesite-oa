@@ -240,6 +240,7 @@
                     <td style=" width: 25px ;" align="left">
                         <c:if test="${mailInfo.readMark eq 1}">
                             <img src="${ctxStatic}/tree/css/mailCss/img/mail020.png"/>
+                            <%--<span class="icons-suc">&nbsp;</span>--%>
                         </c:if>
                         <c:if test="${mailInfo.readMark eq 0}">
                             <img src="${ctxStatic}/tree/css/mailCss/img/mail010.png"/>
@@ -256,7 +257,7 @@
 
                     </td>
                     <td style="width:10%;" align="center">
-                        <img src="${ctxStatic}/tree/css/mailCss/img/mail030.png"/>
+                        <%--<img src="${ctxStatic}/tree/css/mailCss/img/mail030.png"/>--%>
                     </td>
                 </tr>
             </c:forEach>

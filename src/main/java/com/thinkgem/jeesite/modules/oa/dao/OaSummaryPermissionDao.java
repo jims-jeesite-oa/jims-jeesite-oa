@@ -25,5 +25,12 @@ public interface OaSummaryPermissionDao extends CrudDao<OaSummaryPermission> {
      * @return
      */
     public List<OaSummaryPermission> findListByLoginId(@Param("loginId")String loginId);
-	
+
+    /**
+     * 回显评阅人
+     * @param
+     * @return
+     */
+    public List<OaSummaryPermission> findById(@Param("evaluateById")String evaluateById);
+
 }
