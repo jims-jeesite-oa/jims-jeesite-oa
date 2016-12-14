@@ -4,7 +4,7 @@
 <head>
     <title>${fns:getConfig('productName')}</title>
     <meta name="decorator" content="blank"/>
-    <link href="${ctxStatic}/common/icons.css" type="text/css" rel="stylesheet"/>
+    <%--<link href="${ctxStatic}/common/icons.css" type="text/css" rel="stylesheet"/>--%>
 
     <style type="text/css">
         body {
@@ -241,7 +241,7 @@
                         <li>
                             <a class="menu" href="javascript:" data-href="${ctx}/sys/menu/tree?parentId=${menu.id}"
                                data-id="${menu.id}">
-                                <span class="${menu.icon}"></span>
+                                <span class="icon-${menu.icon}"></span>
                                 <span class="topMenuText">${menu.name}</span></a>
                         </li>
                     </c:if>

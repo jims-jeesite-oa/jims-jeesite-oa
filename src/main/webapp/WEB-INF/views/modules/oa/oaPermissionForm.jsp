@@ -36,24 +36,20 @@
     <ul class="ul-form">
         <li>    　　　　　<label>被评阅人：</label>
             <form:select path="login" class="input-medium">
-                <form:option value="" label=""/>    <%--htmlEscape="false"--%>
+                <form:option value="" label=""/>
                 <form:options items="${fns:getAllPermission()}" itemLabel="name" itemValue="id" htmlEscape="true" />
             </form:select>
         </li>
-        <%--<li><label>评阅日期：</label>
-            <input name="sumDate" type="text" readonly="readonly" maxlength="20" class="input-medium Wdate "
-                   value="<fmt:formatDate value="${oaSummaryWeek.sumDate}" pattern="yyyy-MM-dd"/>"
-                   onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
-        </li>--%>
         <li class="btns"><input id="btnSeaSubmit" class="btn btn-primary" type="submit" value="查询"/></li>
         <li class="clearfix"></li>
     </ul>
 </form:form>
 <form:form id="inputForm" modelAttribute="oaSummaryWeek" action="${ctx}/oa/oaSummaryPermission/saveWeek" method="post"
            class="form-horizontal">
-  <%--  <form:hidden path="oaVos" value="${oaSummaryWeek.oaVos}"/>--%>
     <form:hidden path="id" value="${oaSummaryWeek.id}"/>
     <form:hidden path="loginId" value="${oaSummaryWeek.loginId}"/>
+    <form:hidden path="weekOfYear" value="${oaSummaryWeek.weekOfYear}"/>
+    第 <font color="red">${oaSummaryWeek.weekOfYear} </font> 周
     <table id="contentTable" class="table  table-bordered table-condensed">
         <tr>
             <td colspan="2" style="width: 250px;text-align: center;">下周工作目标</td>
@@ -110,6 +106,9 @@
 
     <div align="center">
         <input id="btnSubmit"  class="btn btn-primary"  type="submit" value="保 存"/>&nbsp;
+        <input id="okBtnSubmit" onclick="location='${ctx}/oa/oaSummaryPermission/lackWeek?flag=1&weekOfYear=${oaSummaryWeek.weekOfYear}&login=${oaSummaryWeek.loginId}'" class="btn btn-primary" type="button" value="上一周"/>
+        <input id="akBtnSubmit" onclick="location='${ctx}/oa/oaSummaryPermission/lackWeek?flag=3&weekOfYear=${oaSummaryWeek.weekOfYear}&login=${oaSummaryWeek.loginId}'" class="btn btn-primary" type="button" value="本  周"/>
+        <input id="blackSubmit" onclick="location='${ctx}/oa/oaSummaryPermission/lackWeek?flag=2&weekOfYear=${oaSummaryWeek.weekOfYear}&login=${oaSummaryWeek.loginId}'" class="btn btn-warning" type="button" value="下一周"/>
     </div>
 </form:form>
 </body>

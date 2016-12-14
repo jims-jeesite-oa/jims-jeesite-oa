@@ -135,6 +135,7 @@ public class OaSummaryDayController extends BaseController {
 
     Date currentFirstDate;
     List dd = new ArrayList();
+
     //存放列表中的第一天的日期
     String year;
 
@@ -188,12 +189,14 @@ public class OaSummaryDayController extends BaseController {
         calendar.setFirstDayOfWeek(Calendar.SUNDAY);
         calendar.setTime(date);
         List date1 = setDate(new Date());
+
         if (oaSummaryWeek.getWeekOfYear() != null) {
             oaSummaryWeek.setWeekOfYear(oaSummaryWeek.getWeekOfYear());
         } else {
             oaSummaryWeek.setWeekOfYear(calendar.get(Calendar.WEEK_OF_YEAR));
         }
-        // oaSummaryWeek = oaSummaryWeekService.findByWeek(oaSummaryWeek);
+        oaSummaryWeek.setLoginId(user.getId());
+        oaSummaryWeek = oaSummaryWeekService.findByWeek(oaSummaryWeek);
         List<OaSchedule> list = null;
         List<OaVo> oa = new ArrayList<OaVo>();
 
@@ -224,7 +227,10 @@ public class OaSummaryDayController extends BaseController {
             }
             oa.add(oaVo);
         }
-        if (oa != null) {
+        if (oa != null && oaSummaryWeek!=null) {
+            oaSummaryWeek.setOaVos(oa);
+        } else{
+            oaSummaryWeek=new OaSummaryWeek();
             oaSummaryWeek.setOaVos(oa);
         }
         // oaSummaryWeek.setOaVos(oa);
@@ -382,6 +388,7 @@ public class OaSummaryDayController extends BaseController {
             oaSummaryWeek.setNextPlanContent(oaSummaryWeek1.getNextPlanContent());
             oaSummaryWeek.setNextPlanTitle(oaSummaryWeek1.getNextPlanTitle());
             oaSummaryWeek.setId(oaSummaryWeek1.getId());
+            oaSummaryWeek.setEvaluate(oaSummaryWeek1.getEvaluate());
         }
         List<OaVo> oa = new ArrayList<OaVo>();
         //根据日期拿到每个日期的任务完成和工作总结
@@ -435,7 +442,7 @@ public class OaSummaryDayController extends BaseController {
 
 
     @RequestMapping(value = "loginId")
-    public String loginId(@ModelAttribute("oaSummaryDay") OaSummaryDay oaSummaryDay, Model model) throws Exception {
+    public String loginId(@ModelAttribute(" m") OaSummaryDay oaSummaryDay, Model model) throws Exception {
         String loginId = oaSummaryDay.getLoginId();
         Date sumDate = oaSummaryDay.getSumDate();
         oaSummaryDay.setLoginId(loginId);

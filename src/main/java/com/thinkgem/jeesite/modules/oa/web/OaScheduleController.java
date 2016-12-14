@@ -122,7 +122,9 @@ public class OaScheduleController extends BaseController {
 			return form(oaSchedule, model);
 		}
         oaSchedule.setLoginId(user.getId());
-        oaSchedule.setFlag("0");
+        if(StringUtils.isEmpty(oaSchedule.getFlag())) {
+            oaSchedule.setFlag("0");
+        }
 		oaScheduleService.save(oaSchedule);
 		addMessage(redirectAttributes, "保存日程安排成功");
 		return "redirect:"+Global.getAdminPath()+"/oa/oaSchedule/?repage";
