@@ -14,5 +14,5 @@ import com.thinkgem.jeesite.modules.form.entity.OaFormMaster;
  */
 @MyBatisDao
 public interface OaFormMasterDao extends CrudDao<OaFormMaster> {
-	
+    OaFormMaster findFormContentByTableName(String tableName, String officeId);
 }

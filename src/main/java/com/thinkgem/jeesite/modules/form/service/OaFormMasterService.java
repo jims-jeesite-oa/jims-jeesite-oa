@@ -5,6 +5,7 @@ package com.thinkgem.jeesite.modules.form.service;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +23,8 @@ import com.thinkgem.jeesite.modules.form.dao.OaFormMasterDao;
 @Transactional(readOnly = true)
 public class OaFormMasterService extends CrudService<OaFormMasterDao, OaFormMaster> {
 
+    @Autowired
+    private OaFormMasterDao oaFormMasterDao;
 	public OaFormMaster get(String id) {
 		return super.get(id);
 	}
@@ -43,5 +46,8 @@ public class OaFormMasterService extends CrudService<OaFormMasterDao, OaFormMast
 	public void delete(OaFormMaster oaFormMaster) {
 		super.delete(oaFormMaster);
 	}
-	
+
+    public OaFormMaster findFormContentByTableName(String tableName, String officeId) {
+        return oaFormMasterDao.findFormContentByTableName(tableName,officeId);
+    }
 }

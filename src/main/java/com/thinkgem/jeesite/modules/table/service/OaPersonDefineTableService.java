@@ -21,7 +21,7 @@ import com.thinkgem.jeesite.modules.table.dao.OaPersonDefineTableColumnDao;
 /**
  * 自定义数据源Service
  * @author chenxy
- * @version 2016-11-17
+ * @version 2016-11-24
  */
 @Service
 @Transactional(readOnly = true)
@@ -29,10 +29,13 @@ public class OaPersonDefineTableService extends CrudService<OaPersonDefineTableD
 
 	@Autowired
 	private OaPersonDefineTableColumnDao oaPersonDefineTableColumnDao;
+
+    @Autowired
+    private OaPersonDefineTableDao oaPersonDefineTableDao;
 	
 	public OaPersonDefineTable get(String id) {
 		OaPersonDefineTable oaPersonDefineTable = super.get(id);
-		oaPersonDefineTable.setOaPersonDefineTableColumnList(oaPersonDefineTableColumnDao.findList(new OaPersonDefineTableColumn(oaPersonDefineTable.getId())));
+		oaPersonDefineTable.setOaPersonDefineTableColumnList(oaPersonDefineTableColumnDao.findList(new OaPersonDefineTableColumn(oaPersonDefineTable)));
 		return oaPersonDefineTable;
 	}
 	
@@ -53,7 +56,7 @@ public class OaPersonDefineTableService extends CrudService<OaPersonDefineTableD
 			}
 			if (OaPersonDefineTableColumn.DEL_FLAG_NORMAL.equals(oaPersonDefineTableColumn.getDelFlag())){
 				if (StringUtils.isBlank(oaPersonDefineTableColumn.getId())){
-					oaPersonDefineTableColumn.setTableId(oaPersonDefineTable.getId());
+					oaPersonDefineTableColumn.setTableId(oaPersonDefineTable);
 					oaPersonDefineTableColumn.preInsert();
 					oaPersonDefineTableColumnDao.insert(oaPersonDefineTableColumn);
 				}else{
@@ -65,13 +68,20 @@ public class OaPersonDefineTableService extends CrudService<OaPersonDefineTableD
 			}
 		}
         JdbcUtils.createTable(oaPersonDefineTable);
-        System.out.println("数据库表"+oaPersonDefineTable.getTableName()+"创建成功!");
  	}
 	
 	@Transactional(readOnly = false)
 	public void delete(OaPersonDefineTable oaPersonDefineTable) {
 		super.delete(oaPersonDefineTable);
-		oaPersonDefineTableColumnDao.delete(new OaPersonDefineTableColumn(oaPersonDefineTable.getId()));
+		oaPersonDefineTableColumnDao.delete(new OaPersonDefineTableColumn(oaPersonDefineTable));
 	}
-	
+
+    public OaPersonDefineTable findByTableName(String tableName, String officeId) {
+       return  this.oaPersonDefineTableDao.findByTableName(tableName, officeId);
+    }
+
+
+    public List<OaPersonDefineTableColumn> findColumnListByTableId(String tableId) {
+      return this.oaPersonDefineTableColumnDao.findColumnListByTableId(tableId);
+    }
 }
