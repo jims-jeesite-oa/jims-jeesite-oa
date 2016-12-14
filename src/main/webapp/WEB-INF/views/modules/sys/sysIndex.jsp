@@ -246,10 +246,12 @@
                         </li>
                     </c:if>
                 </c:forEach>
-                <li>
-                    <a class="menu moreMenu" href="#">
-                        <span class="icons-more"></span> </a>
-                </li>
+                <c:if test="${showMenu ne 10}">
+                    <li>
+                        <a class="menu moreMenu" href="#">
+                            <span class="icons-more"></span> </a>
+                    </li>
+                </c:if>
             </ul>
         </div>
     </div>
