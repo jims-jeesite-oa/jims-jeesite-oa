@@ -282,7 +282,6 @@
         <function-signature>java.util.List getAllNews()</function-signature>
         <example>${fns:getAllNews()}</example>
     </function>
-
     <function>
         <description>获取待办列表</description>
         <name>getTodo</name>
