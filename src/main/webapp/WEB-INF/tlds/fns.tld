@@ -290,4 +290,12 @@
         <function-signature>java.util.List getTodo()</function-signature>
         <example>${fns:getTodo()}</example>
     </function>
+
+    <function>
+        <description>获取所有控件类型</description>
+        <name>getControlType</name>
+        <function-class>com.thinkgem.jeesite.modules.sys.utils.ControlTypeUtils</function-class>
+        <function-signature>java.util.List getControlType()</function-signature>
+        <example>${fns:getControlType()}</example>
+    </function>
 </taglib>
