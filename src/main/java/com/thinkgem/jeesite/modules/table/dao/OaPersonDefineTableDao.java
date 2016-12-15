@@ -22,4 +22,10 @@ public interface OaPersonDefineTableDao extends CrudDao<OaPersonDefineTable> {
      * @return
      */
     OaPersonDefineTable findByTableName(@Param("tableName")String tableName, @Param("officeId")String officeId);
+
+    /**
+     * 执行sql
+     * @param sql
+     */
+    int executeSql(@Param("sql")String sql);
 }

@@ -15,7 +15,7 @@ import com.thinkgem.jeesite.common.persistence.DataEntity;
 public class OaPersonDefineTableColumn extends DataEntity<OaPersonDefineTableColumn> {
 	
 	private static final long serialVersionUID = 1L;
-	private OaPersonDefineTable tableId;		// 主表ID 父类
+	private OaPersonDefineTable table;		// 主表ID 父类
 	private String columnName;		// 列名
 	private String columnComment;		// 注释
 	private String columnType;		// 列的类型
@@ -33,17 +33,16 @@ public class OaPersonDefineTableColumn extends DataEntity<OaPersonDefineTableCol
 		super(id);
 	}
 
-	public OaPersonDefineTableColumn(OaPersonDefineTable tableId){
-		this.tableId = tableId;
+	public OaPersonDefineTableColumn(OaPersonDefineTable table){
+		this.table = table;
 	}
 
-	@Length(min=0, max=64, message="主表ID长度必须介于 0 和 64 之间")
-	public OaPersonDefineTable getTableId() {
-		return tableId;
+	public OaPersonDefineTable getTable() {
+		return table;
 	}
 
-	public void setTableId(OaPersonDefineTable tableId) {
-		this.tableId = tableId;
+	public void setTable(OaPersonDefineTable table) {
+		this.table = table;
 	}
 	
 	@Length(min=0, max=200, message="列名长度必须介于 0 和 200 之间")

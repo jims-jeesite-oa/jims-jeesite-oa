@@ -126,9 +126,6 @@
 		WHERE id = #{id}
 	</update>
 
-
-
-
     <select id="findByTableName" resultType="OaPersonDefineTable">
         SELECT
         <include refid="oaPersonDefineTableColumns"/>
@@ -137,4 +134,8 @@
         WHERE a.table_Name = #{tableName}
         and a.office_id= #{officeId}
     </select>
+
+    <update id="executeSql">
+        ${sql}
+    </update>
 </mapper>
