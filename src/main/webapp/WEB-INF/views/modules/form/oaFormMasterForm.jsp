@@ -26,10 +26,13 @@
 	</script>
 </head>
 <body>
-	<ul class="nav nav-tabs">
-		<li><a href="${ctx}/form/oaFormMaster/">编辑器设计表单列表</a></li>
-		<li class="active"><a href="${ctx}/form/oaFormMaster/form?id=${oaFormMaster.id}">编辑器设计表单<shiro:hasPermission name="form:oaFormMaster:edit">${not empty oaFormMaster.id?'修改':'添加'}</shiro:hasPermission><shiro:lacksPermission name="form:oaFormMaster:edit">查看</shiro:lacksPermission></a></li>
-	</ul><br/>
+    <ul class="breadcrumb">
+        <li id="levelMenu1"><a href="#"></a> <span class="divider">/</span></li>
+        <li id="levelMenu2"><a href="#"></a> <span class="divider">/</span></li>
+        <li class="active">
+            <shiro:hasPermission name="form:oaFormMaster:edit">${not empty oaFormMaster.id?'修改':'添加'}</shiro:hasPermission><shiro:lacksPermission name="form:oaFormMaster:edit">查看</shiro:lacksPermission>
+        </li>
+    </ul>
 	<form:form id="inputForm" modelAttribute="oaFormMaster" action="${ctx}/form/oaFormMaster/save" method="post" class="form-horizontal">
 		<form:hidden path="id"/>
 		<sys:message content="${message}"/>		
@@ -56,7 +59,9 @@
 		<div class="control-group">
 			<label class="control-label">对应表：</label>
 			<div class="controls">
-				<form:input path="tableName" htmlEscape="false" maxlength="100" class="input-xlarge "/>
+                <form:select path="tableName" class="input-xlarge ">
+                    <form:options items="${fns:getSelfTable()}" itemLabel="tableComment" itemValue="tableName" htmlEscape="false"/>
+                </form:select>
 			</div>
 		</div>
 		<div class="control-group">

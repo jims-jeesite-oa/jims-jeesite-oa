@@ -74,7 +74,7 @@
                 <label class="control-label">所属机构：</label>
                 <div class="controls">
                     <sys:treeselect id="office" name="office.id" value="${oaPersonDefineTable.office.id}" labelName="office.name" labelValue="${oaPersonDefineTable.office.name}"
-                        title="部门" url="/sys/office/treeData?type=2" cssClass="" allowClear="true" notAllowSelectParent="true"/>
+                        title="部门" url="/sys/office/treeData?type=1" cssClass="" allowClear="true" notAllowSelectParent="true"/>
                 </div>
             </div>
             <div class="control-group">
@@ -111,7 +111,6 @@
                     <tr>
                         <th class="hide"></th>
                         <th>列名</th>
-                        <th>注释</th>
                         <th>列的类型</th>
                         <th>列的长度</th>
                         <th>是否必填&nbsp;&nbsp;&nbsp;</th>
@@ -133,9 +132,7 @@
                     <td class="hide">
                         <input id="oaPersonDefineTableColumnList{{idx}}_id" name="oaPersonDefineTableColumnList[{{idx}}].id" type="hidden" value="{{row.id}}"/>
                         <input id="oaPersonDefineTableColumnList{{idx}}_delFlag" name="oaPersonDefineTableColumnList[{{idx}}].delFlag" type="hidden" value="0"/>
-                    </td>
-                    <td>
-                        <input id="oaPersonDefineTableColumnList{{idx}}_columnName" name="oaPersonDefineTableColumnList[{{idx}}].columnName" type="text" value="{{row.columnName}}" maxlength="200" class="input-small "/>
+                        <input id="oaPersonDefineTableColumnList{{idx}}_columnName" name="oaPersonDefineTableColumnList[{{idx}}].columnName" type="hidden" value="{{row.columnName}}"/>
                     </td>
                     <td>
                         <input id="oaPersonDefineTableColumnList{{idx}}_columnComment" name="oaPersonDefineTableColumnList[{{idx}}].columnComment" type="text" value="{{row.columnComment}}" maxlength="200" class="input-small "/>
@@ -170,10 +167,10 @@
                         <input id="oaPersonDefineTableColumnList{{idx}}_remarks" name="oaPersonDefineTableColumnList[{{idx}}].remarks" type="text" value="{{row.remarks}}" maxlength="255" class="input-small "/>
                     </td>
                     <td>
-                         <select id="oaPersonDefineTableColumnList{{idx}}_controlTypeId" name="oaPersonDefineTableColumnList[{{idx}}].controlTypeId" data-value="{{row.columnType}}" class="input-small ">
+                         <select id="oaPersonDefineTableColumnList{{idx}}_controlTypeId" name="oaPersonDefineTableColumnList[{{idx}}].controlTypeId" data-value="{{row.controlTypeId}}" class="input-small ">
                             <option value=""></option>
-                            <c:forEach items="${fns:getControlType()}" var="dict">
-                                <option value="${dict.id}">${dict.controlName}</option>
+                            <c:forEach items="${fns:getDictList('component')}" var="dict">
+                                <option value="${dict.value}">${dict.label}</option>
                             </c:forEach>
                         </select>
                     </td>

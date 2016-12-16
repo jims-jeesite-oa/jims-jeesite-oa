@@ -298,4 +298,12 @@
         <function-signature>java.util.List getControlType()</function-signature>
         <example>${fns:getControlType()}</example>
     </function>
+
+    <function>
+        <description>获取自定义表</description>
+        <name>getSelfTable</name>
+        <function-class>com.thinkgem.jeesite.modules.sys.utils.TableUtils</function-class>
+        <function-signature>java.util.List getSelfTable()</function-signature>
+        <example>${fns:getSelfTable()}</example>
+    </function>
 </taglib>

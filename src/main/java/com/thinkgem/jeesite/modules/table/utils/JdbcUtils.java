@@ -107,7 +107,7 @@ public class JdbcUtils {
             for(OaPersonDefineTableColumn column : columns) {
                 sql.append(column.getColumnName() + " " + column.getColumnType() +
                         ("VARCHAR2".equalsIgnoreCase(column.getColumnType()) ? "(" + column.getTableStatus() + ")" : ""));
-                sql.append("1".equals(column.getIsRequired()) ? "not null," : ",");
+                sql.append("1".equals(column.getIsRequired()) ? " not null," : ",");
                 if(StringUtils.isNotBlank(column.getColumnComment())){
                     comments.add("comment on column " + table.getTableName() + "." + column.getColumnName()
                             + " is '" + column.getColumnComment() + "'");

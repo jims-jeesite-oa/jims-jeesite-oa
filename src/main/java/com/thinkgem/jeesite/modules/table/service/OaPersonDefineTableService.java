@@ -51,17 +51,16 @@ public class OaPersonDefineTableService extends CrudService<OaPersonDefineTableD
 	@Transactional(readOnly = false)
 	public void save(OaPersonDefineTable oaPersonDefineTable) {
 		super.save(oaPersonDefineTable);
-        int index = 0;
+        int index = 1;
 		for (OaPersonDefineTableColumn oaPersonDefineTableColumn : oaPersonDefineTable.getOaPersonDefineTableColumnList()){
 			if (oaPersonDefineTableColumn.getId() == null){
 				continue;
 			}
 			if (OaPersonDefineTableColumn.DEL_FLAG_NORMAL.equals(oaPersonDefineTableColumn.getDelFlag())){
                 //字段为空时默认 COL+序列
-                if(StringUtils.isBlank(oaPersonDefineTableColumn.getColumnName())){
-                    index = index > 0 ? index : Integer.valueOf(oaPersonDefineTableColumnDao.getMaxColumnIndex());
+//                if(StringUtils.isBlank(oaPersonDefineTableColumn.getColumnName())){
                     oaPersonDefineTableColumn.setColumnName("COL" + index++);
-                }
+
                 if (StringUtils.isBlank(oaPersonDefineTableColumn.getId())){
 					oaPersonDefineTableColumn.setTable(oaPersonDefineTable);
 					oaPersonDefineTableColumn.preInsert();
@@ -102,6 +101,6 @@ public class OaPersonDefineTableService extends CrudService<OaPersonDefineTableD
     }
 
     private String getDeleteTableSql(String tableName){
-        return "BEGIN EXECUTE IMMEDIATE 'DROP TABLE [" + tableName + "]';EXCEPTION WHEN OTHERS THEN NULL;END;";
+        return "BEGIN EXECUTE IMMEDIATE 'DROP TABLE " + tableName + "';EXCEPTION WHEN OTHERS THEN NULL;END;";
     }
 }

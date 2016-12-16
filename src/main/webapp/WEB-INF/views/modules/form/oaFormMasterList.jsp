@@ -17,19 +17,16 @@
 	</script>
 </head>
 <body>
-	<ul class="nav nav-tabs">
-		<li class="active"><a href="${ctx}/form/oaFormMaster/">编辑器设计表单列表</a></li>
-		<shiro:hasPermission name="form:oaFormMaster:edit"><li><a href="${ctx}/form/oaFormMaster/form">编辑器设计表单添加</a></li></shiro:hasPermission>
-	</ul>
+    <ul class="breadcrumb">
+        <li id="levelMenu1"><a href="#"></a> <span class="divider">/</span></li>
+        <li id="levelMenu2" class="active"></li>
+    </ul>
 	<form:form id="searchForm" modelAttribute="oaFormMaster" action="${ctx}/form/oaFormMaster/" method="post" class="breadcrumb form-search">
 		<input id="pageNo" name="pageNo" type="hidden" value="${page.pageNo}"/>
 		<input id="pageSize" name="pageSize" type="hidden" value="${page.pageSize}"/>
 		<ul class="ul-form">
 			<li><label>表单标题：</label>
 				<form:input path="title" htmlEscape="false" maxlength="100" class="input-medium"/>
-			</li>
-			<li><label>表单别名：</label>
-				<form:input path="alias" htmlEscape="false" maxlength="100" class="input-medium"/>
 			</li>
 			<li><label>对应表：</label>
 				<form:input path="tableName" htmlEscape="false" maxlength="100" class="input-medium"/>
@@ -38,6 +35,9 @@
 				<form:radiobuttons path="formType" items="${fns:getDictList('form_type')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
 			</li>
 			<li class="btns"><input id="btnSubmit" class="btn btn-primary" type="submit" value="查询"/></li>
+            <shiro:hasPermission name="form:oaFormMaster:edit">
+                <li class="btns"><a href="${ctx}/form/oaFormMaster/form" role="button" class="btn btn-primary">添加</a></li>
+            </shiro:hasPermission>
 			<li class="clearfix"></li>
 		</ul>
 	</form:form>
@@ -93,6 +93,7 @@
 				</td>
 				<shiro:hasPermission name="form:oaFormMaster:edit"><td>
     				<a href="${ctx}/form/oaFormMaster/form?id=${oaFormMaster.id}">修改</a>
+    				<a href="${ctx}/form/oaFormMaster/view?id=${oaFormMaster.id}">预览</a>
 					<a href="${ctx}/form/oaFormMaster/delete?id=${oaFormMaster.id}" onclick="return confirmx('确认要删除该编辑器设计表单吗？', this.href)">删除</a>
 				</td></shiro:hasPermission>
 			</tr>

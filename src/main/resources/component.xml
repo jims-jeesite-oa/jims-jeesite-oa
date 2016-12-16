@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<components>
+    <component>
+        <value>text</value>
+        <name>标志输入</name>
+        <content><![CDATA[
+            <input name="" type="text" value=""/>
+        ]]></content>
+    </component>
+    <component>
+        <value>treeSelect</value>
+        <name>人员信息</name>
+        <content><![CDATA[
+            <sys:treeselect id="" name="" value="" labelName="office.name" labelValue="${oaFormMaster.office.name}"
+					title="部门" url="/sys/office/treeData?type=2" cssClass="required" allowClear="true" notAllowSelectParent="true"/>
+				<span class="help-inline"><font color="red">*</font> </span>
+        ]]></content>
+    </component>
+</components>
+
