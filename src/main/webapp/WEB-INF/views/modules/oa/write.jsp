@@ -41,8 +41,16 @@
         }
         //发送
         function send() {
-            form1.action = '${ctx}/oa/mailInfo/send';
-            form1.submit();
+
+            var rr=document.getElementById("rr").value
+            if(rr!=null && rr !=""){
+                form1.action = '${ctx}/oa/mailInfo/sendOut';
+                form1.submit();
+            } else{
+                form1.action = '${ctx}/oa/mailInfo/send';
+                form1.submit();
+            }
+
         }
 
 
@@ -63,7 +71,15 @@
 
             <form:hidden path="id"></form:hidden>
             <tr>
-                <td class="td1">收件人</td>
+                <td class="td1">外部收件人</td>
+                <td class="td">
+                    <div class="controls">
+                        <form:input path="outSide" htmlEscape="true" type="text"
+                                    style="width:800px;" id="rr" ></form:input>
+                    </div>
+            </tr>
+            <tr>
+                <td class="td1" id="person">收件人</td>
                 <td class="td">
                     <div class="controls">
                         <sys:treeselect id="receiverId" name="receiverId"

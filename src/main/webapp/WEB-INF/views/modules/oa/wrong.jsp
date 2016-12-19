@@ -3,7 +3,7 @@
 <html>
 <head>
     <link rel="stylesheet" href="${ctxStatic}/tree/css/mailCss/noneStyle.css" type="text/css"/>
-    <title>发送成功</title>
+    <title>发送失败</title>
     <meta name="decorator" content="default"/>
     <script type="text/javascript">
         $(document).ready(function () {
@@ -40,14 +40,14 @@
         <tr>
             <td style="width: 53px;height: 45px" rowspan="4" valign="top">
                 <img src="${ctxStatic}/tree/css/mailCss/img/mail90.png" style="width: 53px;height: 45px"></td>
-            <td style="font-size: 20px; color: #008000;font-weight: 500;height: 30px">您的邮件已发送</td>
+            <td style="font-size: 20px; color: #008000;font-weight: 500;height: 30px">您的邮件发送失败</td>
         </tr>
         <tr>
-            <td style="font-size:50%;color:#B2AFAF;height: 30px">此邮件发送成功，并已保存到“已发送”的文件夹</td>
+            <td style="font-size:50%;color:#B2AFAF;height: 30px">此邮件发送失败，没有绑定外部邮箱，不能发送</td>
         </tr>
         <tr>
             <td style="height: 50px">
-                <input type="button" class="btn btn-primary" value="再写一封"  onclick="location='${ctx}/oa/mailInfo/none'" >
+                <input type="button" class="btn btn-primary" value="去绑定"  onclick="location='${ctx}/oa/mailInfo/account'" >
             </td>
         </tr>
 

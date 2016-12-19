@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.oa.dao.MailAccountDao">
+    
+	<sql id="mailAccountColumns">
+		a.id AS "id",
+		a.mail_name AS "mailName",
+		a.mail_address AS "mailAddress",
+		a.mail_accept AS "mailAccept",
+		a.mail_send AS "mailSend",
+		a.username AS "username",
+		a.password AS "password",
+		a.login_id AS "loginId",
+		a.port     AS "port"
+	</sql>
+	
+	<sql id="mailAccountJoins">
+	</sql>
+    
+	<select id="get" resultType="MailAccount">
+		SELECT 
+			<include refid="mailAccountColumns"/>
+		FROM mail_account a
+		<include refid="mailAccountJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="MailAccount">
+		SELECT 
+			<include refid="mailAccountColumns"/>
+		FROM mail_account a
+		<include refid="mailAccountJoins"/>
+		<where>
+			<if test="loginId != null and loginId !=''">
+                a.login_id=#{loginId}
+            </if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="MailAccount">
+		SELECT 
+			<include refid="mailAccountColumns"/>
+		FROM mail_account a
+		<include refid="mailAccountJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO mail_account(
+			id,
+			mail_name,
+			mail_address,
+			mail_accept,
+			mail_send,
+			username,
+			password,
+			login_id,
+			port
+		) VALUES (
+			#{id},
+			#{mailName},
+			#{mailAddress},
+			#{mailAccept},
+			#{mailSend},
+			#{username},
+			#{password},
+			#{loginId},
+			#{port}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE mail_account SET 	
+			mail_name = #{mailName},
+			mail_address = #{mailAddress},
+			mail_accept = #{mailAccept},
+			mail_send = #{mailSend},
+			username = #{username},
+			password = #{password},
+			login_id=#{loginId},
+			port=#{port}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM mail_account
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

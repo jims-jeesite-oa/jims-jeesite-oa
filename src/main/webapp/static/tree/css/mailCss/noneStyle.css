@@ -34,12 +34,15 @@ website:	http://code.google.com/p/jquerytree/
 }
 
 .reTd {
-    width: 40%;
-    /*border: 1px solid red;*/
+    width: 55%;
     padding-left: 25px;
 }
 
 .reTr {
+    border-top: 2px solid #F5F5F5;
+    height: 35px;
+}
+.reOut{
     border-top: 2px solid #F5F5F5;
     height: 35px;
 }

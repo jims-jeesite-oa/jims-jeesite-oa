@@ -31,8 +31,23 @@
             })
 
             $(".reTr").on('click', function () {
-                var id= $(this).attr("data-id")
+                var id = $(this).attr("data-id")
                 window.location.href = '${ctx}/oa/mailInfo/find?id=' + id
+            })
+
+
+            $(".checkOut").click(function (e) {
+                e.stopPropagation()
+            })
+
+            $(".reOut").on('click', function () {
+
+                var mailInfo = $(this).attr("data-id")
+                var theme = $(this).attr("data-selected")
+                var theme1 = $(this).attr("data-icon")
+                var time = $(this).attr("data-drop")
+                <%--window.location.href = '${ctx}/oa/mailInfo/findMail?mailInfo=' + id+'&theme='+theme+'&name='+name+'&time='+time;--%>
+                window.location.href = '${ctx}/oa/mailInfo/findMail?name=' + theme + '&theme=' + mailInfo;
             })
         });
 
@@ -41,11 +56,11 @@
         function deleteBy() {
             var checked = false;
             var ids = document.getElementsByName("checkbox");
-            var chestr="";
+            var chestr = "";
             for (var i = 0; i < ids.length; i++) {
                 if (ids[i].checked) {
                     checked = true;
-                    chestr+=ids[i].value+",";
+                    chestr += ids[i].value + ",";
                 }
             }
             if (!checked) {
@@ -53,7 +68,7 @@
                 return;
             }
             if (confirm('彻底删除后邮件将无法恢复，您确定要删除吗？')) {
-                form1.action = '${ctx}/oa/mailInfo/thoroughDelete?ids='+chestr+'&state=INBOX';
+                form1.action = '${ctx}/oa/mailInfo/thoroughDelete?ids=' + chestr + '&state=INBOX';
                 form1.submit();
             }
         }
@@ -61,31 +76,31 @@
         //删除
         function deleteB() {
             var checked = false;
-            var chestr="";
+            var chestr = "";
             var ids = document.getElementsByName("checkbox");
             for (var i = 0; i < ids.length; i++) {
                 if (ids[i].checked) {
                     checked = true;
-                    chestr+=ids[i].value+",";
+                    chestr += ids[i].value + ",";
                 }
             }
             if (!checked) {
                 document.getElementById("ss").innerHTML = "<div style='color: #ffffff;background-color: #EF8F00;width: 135px;height: 20px;text-align: center;'>未选中任何邮件</div>";
                 return;
             }
-            form1.action = '${ctx}/oa/mailInfo/move?ids='+chestr+'&state=INBOX';
+            form1.action = '${ctx}/oa/mailInfo/move?ids=' + chestr + '&state=INBOX';
             form1.submit();
         }
 
         //已读邮件
         function read() {
             var checked = false;
-            var chestr=""
+            var chestr = ""
             var ids = document.getElementsByName("checkbox");
             for (var i = 0; i < ids.length; i++) {
                 if (ids[i].checked) {
                     checked = true;
-                    chestr+=ids[i].value+",";
+                    chestr += ids[i].value + ",";
                 }
             }
 
@@ -93,19 +108,19 @@
                 document.getElementById("ss").innerHTML = "<div style='color: #ffffff;background-color: #EF8F00;width: 135px;height: 20px;text-align: center;'>未选中任何邮件</div>";
                 return;
             }
-            form1.action = '${ctx}/oa/mailInfo/read?ids='+chestr+'&readMark=1&state=INBOX';
+            form1.action = '${ctx}/oa/mailInfo/read?ids=' + chestr + '&readMark=1&state=INBOX';
             form1.submit();
         }
 
         //未读邮件
         function unread() {
             var checked = false;
-            var chestr=""
+            var chestr = ""
             var ids = document.getElementsByName("checkbox");
             for (var i = 0; i < ids.length; i++) {
                 if (ids[i].checked) {
                     checked = true;
-                    chestr+=ids[i].value+",";
+                    chestr += ids[i].value + ",";
                 }
             }
 
@@ -113,7 +128,7 @@
                 document.getElementById("ss").innerHTML = "<div style='color: #ffffff;background-color: #EF8F00;width: 135px;height: 20px;text-align: center;'>未选中任何邮件</div>";
                 return;
             }
-            form1.action = '${ctx}/oa/mailInfo/read?ids='+chestr+'&readMark=0&state=INBOX';
+            form1.action = '${ctx}/oa/mailInfo/read?ids=' + chestr + '&readMark=0&state=INBOX';
             form1.submit();
         }
 
@@ -121,11 +136,11 @@
         function send() {
             var checked = false;
             var ids = document.getElementsByName("checkbox");
-            var chestr=""
+            var chestr = ""
             for (var i = 0; i < ids.length; i++) {
                 if (ids[i].checked) {
                     checked = true;
-                    chestr+=ids[i].value+",";
+                    chestr += ids[i].value + ",";
                 }
             }
             if (!checked) {
@@ -133,7 +148,7 @@
                 return;
             }
 
-            form1.action = '${ctx}/oa/mailInfo/remove?ids='+chestr+'&state=INBOX&state1=SENT';
+            form1.action = '${ctx}/oa/mailInfo/remove?ids=' + chestr + '&state=INBOX&state1=SENT';
             form1.submit();
         }
         //移动到收件箱
@@ -148,9 +163,24 @@
             if (!checked) {
                 document.getElementById("ss").innerHTML = "<div style='color: #ffffff;background-color: #EF8F00;width: 135px;height: 20px;text-align: center;'>不能移动到相同的目录</div>";
                 return;
-            }else{
+            } else {
                 document.getElementById("ss").innerHTML = "<div style='color: #ffffff;background-color: #EF8F00;width: 135px;height: 20px;text-align: center;'>不能移动到相同的目录</div>";
                 return;
+            }
+        }
+
+
+        /**
+         *查询内部邮件或者外部邮件
+         */
+        function find() {
+            var flag = document.getElementById("type").value
+            if (flag == "1") {
+                form1.action = '${ctx}/oa/mailInfo/findOut';
+                form1.submit();
+            } else {
+                form1.action = '${ctx}/oa/mailInfo/listBySend?state=INBOX';
+                form1.submit();
             }
         }
 
@@ -169,13 +199,16 @@
                class="form-horizontal">
         <table class="table">
             <tr class="tr1">
-                <td colspan="2" style="padding-left: 15px">收件箱 (<font>共 </font>&nbsp;${page.count} &nbsp;封,其中 <font color="#30A5FF">未读邮件</font>&nbsp;${page.delete} &nbsp;封 )</td>
+                <td colspan="2" style="padding-left: 15px">收件箱 (<font>共 </font>&nbsp;${page.count} &nbsp;封,其中 <font
+                        color="#30A5FF">未读邮件</font>&nbsp;${page.delete} &nbsp;封 )
+                </td>
             </tr>
             <tr>
                 <td class="reTd">
-                    <input type="button" value="删除"  class="btn btn-success"
+                    <input type="button" value="删除" class="btn btn-success"
                            onclick="deleteB()">
-                    <input type="button" value="彻底删除"  class="btn btn-warning" onclick="deleteBy()">
+                    <input type="button" value="彻底删除" class="btn btn-warning" onclick="deleteBy()">
+
                     <div class="btn-group">
                         <a class="btn dropdown-toggle btn-success" data-toggle="dropdown" href="#">
                             标记为
@@ -187,7 +220,8 @@
                                                                                src="${ctxStatic}/tree/css/mailCss/img/mail020.png">已读邮件</a>
                             </li>
                             <li><a href="#" onclick="unread()">&nbsp; &nbsp;<img style="width:26px;height: 19px;"
-                                                                                 src="${ctxStatic}/tree/css/mailCss/img/mail010.png">未读邮件    </a>
+                                                                                 src="${ctxStatic}/tree/css/mailCss/img/mail010.png">未读邮件
+                            </a>
                             </li>
                         </ul>
                     </div>
@@ -199,13 +233,25 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li><a href="#" onclick="inbox()">&nbsp; &nbsp;<img style="width:26px;height: 19px;"
-                                                                                src="${ctxStatic}/tree/css/mailCss/img/mail020.png">收件箱   </a>
+                                                                                src="${ctxStatic}/tree/css/mailCss/img/mail020.png">收件箱
+                            </a>
                             </li>
                             <li><a href="#" onclick="send()">&nbsp; &nbsp;<img style="width:26px;height: 19px;"
-                                                                               src="${ctxStatic}/tree/css/mailCss/img/mail020.png">已发送  </a>
+                                                                               src="${ctxStatic}/tree/css/mailCss/img/mail020.png">已发送
+                            </a>
                             </li>
                         </ul>
                     </div>
+                    <form:form id="inputForm" modelAttribute="mailInfo" action="" method="post"
+                               class="breadcrumb form-search">
+                        邮件类型
+                        <form:select path="flag" class="input-medium" cssStyle="width: 100px" id="type">
+                            <form:option value="" label=""/>    <%--htmlEscape="false"--%>
+                            <form:options items="${fns:getDictList('mail_info')}" itemLabel="label" itemValue="value"
+                                          htmlEscape="true"/>
+                        </form:select>
+                        <input id="btnSubmit" class="btn btn-primary" type="button" value="查询" onclick="find()"/>
+                    </form:form>
                 </td>
                 <td>
                     <div id="ss"></div>
@@ -217,41 +263,72 @@
             <tr>
                 <th></th>
                 <th></th>
+                <th align="left">发件人</th>
                 <th align="left">主题</th>
-                <th align="left">正文</th>
                 <th align="left">时间</th>
                 <th></th>
             </tr>
             </thead>
             <tbody>
-            <form:form id="inputForm" modelAttribute="mailInfo" action="${ctx}/oa/mailInfo/move" method="post" class="form-horizontal">
-            <c:forEach items="${page.list}" var="mailInfo">
-                <tr class="reTr" data-id="${mailInfo.id}">
-                    <td class="reCheckbox">
-                        <input type="checkbox" name="checkbox" value="${mailInfo.id}" class="check">
-                    </td>
-                    <td style=" width: 25px ;" align="left">
-                        <c:if test="${mailInfo.readMark eq 1}">
-                            <img src="${ctxStatic}/tree/css/mailCss/img/mail020.png"/>
-                        </c:if>
-                        <c:if test="${mailInfo.readMark eq 0}">
-                            <img src="${ctxStatic}/tree/css/mailCss/img/mail010.png"/>
-                        </c:if>
-                    </td>
-                    <td style="width:25%;">
-                        ${mailInfo.theme}
-                    </td>
-                    <td style="width:40%;">
-                            ${fns:abbr(mailInfo.content,50)}
-                    </td>
-                    <td style="width:15%;">
-                        <fmt:formatDate value="${mailInfo.time}" type="both" pattern="yyyy年MM月dd日 " />
-                    </td>
-                    <td style="width:10%;" align="center">
-                       <%-- <img src="${ctxStatic}/tree/css/mailCss/img/mail030.png"/>--%>
-                    </td>
-                </tr>
-            </c:forEach>
+            <form:form id="inputForm" modelAttribute="mailInfo" action="${ctx}/oa/mailInfo/move" method="post"
+                       class="form-horizontal">
+                <c:forEach items="${page.list}" var="mailInfo">
+
+                    <c:if test="${mailInfo.flag eq 1}">
+                        <tr class="reOut"  data-id="${mailInfo.theme}" data-selected="${mailInfo.name}" >
+                            <td class="reCheckbox">
+                                <input type="checkbox" name="checkbox" value="${mailInfo.id}" class="checkOut">
+                            </td>
+                            <td style=" width: 25px ;" align="left">
+                                <c:if test="${mailInfo.readMark eq 1}">
+                                    <img src="${ctxStatic}/tree/css/mailCss/img/mail020.png"/>
+                                </c:if>
+                                <c:if test="${mailInfo.readMark eq 0}">
+                                    <img src="${ctxStatic}/tree/css/mailCss/img/mail010.png"/>
+                                </c:if>
+                            </td>
+                            <td style="width:25%;">
+                                    ${mailInfo.name}
+                            </td>
+                            <td style="width:40%;">
+                                    ${fns:abbr(mailInfo.theme,50)}
+                            </td>
+                            <td style="width:15%;">
+                                <fmt:formatDate value="${mailInfo.time}" type="both" pattern="yyyy年MM月dd日 "/>
+                            </td>
+                            <td style="width:10%;" align="center">
+                                    <%-- <img src="${ctxStatic}/tree/css/mailCss/img/mail030.png"/>--%>
+                            </td>
+                        </tr>
+                    </c:if>
+                    <c:if test="${mailInfo.flag eq 0}">
+                        <tr class="reTr" data-id="${mailInfo.id}">
+                            <td class="reCheckbox">
+                                <input type="checkbox" name="checkbox" value="${mailInfo.id}" class="check">
+                            </td>
+                            <td style=" width: 25px ;" align="left">
+                                <c:if test="${mailInfo.readMark eq 1}">
+                                    <img src="${ctxStatic}/tree/css/mailCss/img/mail020.png"/>
+                                </c:if>
+                                <c:if test="${mailInfo.readMark eq 0}">
+                                    <img src="${ctxStatic}/tree/css/mailCss/img/mail010.png"/>
+                                </c:if>
+                            </td>
+                            <td style="width:25%;">
+                                    ${mailInfo.name}
+                            </td>
+                            <td style="width:40%;">
+                                    ${fns:abbr(mailInfo.theme,50)}
+                            </td>
+                            <td style="width:15%;">
+                                <fmt:formatDate value="${mailInfo.time}" type="both" pattern="yyyy年MM月dd日 "/>
+                            </td>
+                            <td style="width:10%;" align="center">
+                                    <%-- <img src="${ctxStatic}/tree/css/mailCss/img/mail030.png"/>--%>
+                            </td>
+                        </tr>
+                    </c:if>
+                </c:forEach>
             </form:form>
             </tbody>
         </table>

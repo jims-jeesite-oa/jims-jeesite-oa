@@ -26,10 +26,33 @@ public class MailInfo extends DataEntity<MailInfo> {
 	private String ownId;		// 拥有此邮件人
 	private String state;		// 状态:收件箱(INBOX),已发送(SENT),草稿箱(DRAFTS),已删除(DELETED)
 
+    private String outSide;     //外部收件人
+
+    private String flag;      //1代表外部邮件    0代表内部邮件
+
+
     private String name;   //用户姓名
 
     private String receiverNames;
     private String ccNames;
+
+
+    public String getFlag() {
+        return flag;
+    }
+
+    public void setFlag(String flag) {
+        this.flag = flag;
+    }
+
+    public String getOutSide() {
+
+        return outSide;
+    }
+
+    public void setOutSide(String outSide) {
+        this.outSide = outSide;
+    }
 
     public String getReceiverNames() {
         return receiverNames;
