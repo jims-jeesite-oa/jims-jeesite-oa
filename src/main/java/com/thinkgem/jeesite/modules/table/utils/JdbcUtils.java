@@ -116,7 +116,8 @@ public class JdbcUtils {
         }
         sql.append("create_by VARCHAR2(64) not null,create_date DATE not null,")
                 .append("update_by VARCHAR2(64) not null,update_date DATE not null,")
-                .append("remarks VARCHAR2(255),del_flag CHAR(1) default '0' not null)");
+                .append("remarks VARCHAR2(255),del_flag CHAR(1) default '0' not null,")
+                .append("proc_ins_id VARCHAR2(64))");
         if(StringUtils.isNotBlank(table.getTableComment())){
             comments.add("comment on table " + table.getTableName()
                     + " is '" + table.getTableComment() + "'");

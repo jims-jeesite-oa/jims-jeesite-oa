@@ -7,6 +7,7 @@
 		a.office_id AS "office.id",
 		a.title AS "title",
 		a.alias AS "alias",
+		a.form_no AS "formNo",
 		a.table_name AS "tableName",
 		a.form_type AS "formType",
 		a.publish_status AS "publishStatus",
@@ -92,6 +93,7 @@
 			office_id,
 			title,
 			alias,
+			form_no,
 			table_name,
 			form_type,
 			publish_status,
@@ -110,6 +112,7 @@
 			#{office.id},
 			#{title},
 			#{alias},
+			#{formNo},
 			#{tableName},
 			#{formType},
 			#{publishStatus},
@@ -131,6 +134,7 @@
 			office_id = #{office.id},
 			title = #{title},
 			alias = #{alias},
+			form_no = #{formNo},
 			table_name = #{tableName},
 			form_type = #{formType},
 			publish_status = #{publishStatus},
@@ -157,5 +161,15 @@
         <include refid="oaFormMasterJoins"/>
         WHERE a.office_id = #{officeId}
         and a.table_name=#{tableName}
+    </select>
+
+    <select id="findByNo" resultType="OaFormMaster">
+        SELECT
+        <include refid="oaFormMasterColumns"/>
+        FROM oa_form_master a
+        <include refid="oaFormMasterJoins"/>
+        <where> a.office_id = #{1}
+            AND a.form_no = #{0}
+        </where>
     </select>
 </mapper>

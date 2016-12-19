@@ -44,6 +44,12 @@
 				<span class="help-inline"><font color="red">*</font> </span>
 			</div>
 		</div>
+        <div class="control-group">
+            <label class="control-label">表单编号：</label>
+            <div class="controls">
+                <form:input path="formNo" htmlEscape="false" maxlength="50" class="input-xlarge "/>
+            </div>
+        </div>
 		<div class="control-group">
 			<label class="control-label">表单标题：</label>
 			<div class="controls">

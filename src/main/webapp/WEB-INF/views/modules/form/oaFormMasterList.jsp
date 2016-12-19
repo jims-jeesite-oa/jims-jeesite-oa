@@ -93,7 +93,6 @@
 				</td>
 				<shiro:hasPermission name="form:oaFormMaster:edit"><td>
     				<a href="${ctx}/form/oaFormMaster/form?id=${oaFormMaster.id}">修改</a>
-    				<a href="${ctx}/form/oaFormMaster/view?id=${oaFormMaster.id}">预览</a>
 					<a href="${ctx}/form/oaFormMaster/delete?id=${oaFormMaster.id}" onclick="return confirmx('确认要删除该编辑器设计表单吗？', this.href)">删除</a>
 				</td></shiro:hasPermission>
 			</tr>

@@ -21,9 +21,7 @@ import com.thinkgem.jeesite.modules.sys.entity.User;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 字典工具类
@@ -82,6 +80,40 @@ public class CommonUtils {
             }
         }
         return manList;
+    }
+
+
+    public static Map<String,Object> mapConvert(Map map) {
+        Map<String,Object> dataMap= new HashMap<String, Object>(0);
+        if(map!=null){
+            Iterator it=map.entrySet().iterator();
+            while(it.hasNext()){
+                Map.Entry entry=(Map.Entry)it.next();
+                Object ok=entry.getKey();
+                Object ov=entry.getValue()==null?"":entry.getValue();
+                String key=ok.toString();
+                String keyval="";
+                String[] value=new String[1];
+                if(ov instanceof String[]){
+                    value=(String[])ov;
+                }else{
+                    value[0]=ov.toString();
+                }
+                keyval+=value[0];
+                for(int k=1;k<value.length;k++){
+                    keyval+=","+value[k];
+                }
+                dataMap.put(key, keyval);
+            }
+        }
+        return dataMap;
+    }
+
+    public static Map attributeMapFilter(Map map, String[] filterName) {
+        for (int i = 0; i < filterName.length; i++) {
+            if (map.containsKey(filterName[i])) map.remove(filterName[i]);
+        }
+        return map;
     }
 
 }

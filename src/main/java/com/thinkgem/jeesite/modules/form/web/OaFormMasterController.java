@@ -81,13 +81,6 @@ public class OaFormMasterController extends BaseController {
 		return "modules/form/oaFormMasterForm";
 	}
 
-    @RequiresPermissions("form:oaFormMaster:view")
-    @RequestMapping(value = "view")
-    public String view(OaFormMaster oaFormMaster, Model model) {
-        model.addAttribute("oaFormMaster", oaFormMaster);
-        return "modules/oa/flowView";
-    }
-
 	@RequiresPermissions("form:oaFormMaster:edit")
 	@RequestMapping(value = "save")
 	public String save(OaFormMaster oaFormMaster, Model model, RedirectAttributes redirectAttributes) {

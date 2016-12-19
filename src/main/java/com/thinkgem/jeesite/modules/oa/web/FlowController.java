@@ -1,23 +1,21 @@
 package com.thinkgem.jeesite.modules.oa.web;
 
-import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.web.BaseController;
-import com.thinkgem.jeesite.modules.oa.entity.TestAudit;
-import com.thinkgem.jeesite.modules.oa.service.TestAuditService;
-import com.thinkgem.jeesite.modules.sys.entity.User;
+import com.thinkgem.jeesite.modules.form.entity.OaFormMaster;
+import com.thinkgem.jeesite.modules.form.service.OaFormMasterService;
+import com.thinkgem.jeesite.modules.oa.entity.FlowData;
+import com.thinkgem.jeesite.modules.oa.service.FlowService;
+import com.thinkgem.jeesite.modules.oa.units.CommonUtils;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 
 /**
  * 流程Controller
@@ -29,137 +27,75 @@ import javax.servlet.http.HttpServletResponse;
 public class FlowController extends BaseController {
 
 	@Autowired
-	private TestAuditService testAuditService;
-	
-	@ModelAttribute
-	public TestAudit get(@RequestParam(required=false) String id){//, 
-//			@RequestParam(value="act.procInsId", required=false) String procInsId) {
-		TestAudit testAudit = null;
-		if (StringUtils.isNotBlank(id)){
-			testAudit = testAuditService.get(id);
-//		}else if (StringUtils.isNotBlank(procInsId)){
-//			testAudit = testAuditService.getByProcInsId(procInsId);
-		}
-		if (testAudit == null){
-			testAudit = new TestAudit();
-		}
-		return testAudit;
-	}
-	
-	@RequiresPermissions("oa:testAudit:view")
-	@RequestMapping(value = {"list", ""})
-	public String list(TestAudit testAudit, HttpServletRequest request, HttpServletResponse response, Model model) {
-		User user = UserUtils.getUser();
-		if (!user.isAdmin()){
-			testAudit.setCreateBy(user);
-		}
-        Page<TestAudit> page = testAuditService.findPage(new Page<TestAudit>(request, response), testAudit); 
-        model.addAttribute("page", page);
-		return "modules/oa/testAuditList";
-	}
-	
-	/**
-	 * 申请单填写
-	 * @param testAudit
-	 * @param model
-	 * @return
-	 */
-	@RequiresPermissions("oa:testAudit:view")
-	@RequestMapping(value = "form")
-	public String form(TestAudit testAudit, Model model) {
-		
-		String view = "testAuditForm";
-		
-		// 查看审批申请单
-		if (StringUtils.isNotBlank(testAudit.getId())){//.getAct().getProcInsId())){
+	private FlowService flowService;
 
+    @Autowired
+    private OaFormMasterService oaFormMasterService;
+
+	@RequestMapping(value = "form")
+	public String form(FlowData flow, Model model) {
+		String view = "flowForm";
+		// 查看审批申请单
+		if (StringUtils.isNotBlank(flow.getId())){
 			// 环节编号
-			String taskDefKey = testAudit.getAct().getTaskDefKey();
-			
-			// 查看工单
-			if(testAudit.getAct().isFinishTask()){
-				view = "testAuditView";
+			String taskDefKey = flow.getAct().getTaskDefKey();
+			// 查看
+			if(flow.getAct().isFinishTask()){
+				view = "flowView";
 			}
 			// 修改环节
 			else if ("modify".equals(taskDefKey)){
-				view = "testAuditForm";
+				view = "flowForm";
 			}
-			// 审核环节
-			else if ("audit".equals(taskDefKey)){
-				view = "testAuditAudit";
-//				String formKey = "/oa/testAudit";
-//				return "redirect:" + ActUtils.getFormUrl(formKey, testAudit.getAct());
-			}
-			// 审核环节2
-			else if ("audit2".equals(taskDefKey)){
-				view = "testAuditAudit";
-			}
-			// 审核环节3
-			else if ("audit3".equals(taskDefKey)){
-				view = "testAuditAudit";
-			}
-			// 审核环节4
-			else if ("audit4".equals(taskDefKey)){
-				view = "testAuditAudit";
-			}
-			// 兑现环节
-			else if ("apply_end".equals(taskDefKey)){
-				view = "testAuditAudit";
-			}
+            // 审核
+            else if (taskDefKey.startsWith("audit") || "apply_end".equals(taskDefKey)){
+                view = "flowAudit";
+            }
 		}
-
-		model.addAttribute("testAudit", testAudit);
+        OaFormMaster form = oaFormMasterService.findByNo(flow.getFormNo(), UserUtils.getUser().getOffice().getId());
+        flow.setTableName(form.getTableName());
+//        form.getContent();
+		model.addAttribute("flow", flow);
 		return "modules/oa/" + view;
 	}
-	
-	/**
-	 * 申请单保存/修改
-	 * @param testAudit
-	 * @param model
-	 * @param redirectAttributes
-	 * @return
-	 */
-	@RequiresPermissions("oa:testAudit:edit")
-	@RequestMapping(value = "save")
-	public String save(TestAudit testAudit, Model model, RedirectAttributes redirectAttributes) {
-		if (!beanValidator(model, testAudit)){
-			return form(testAudit, model);
-		}
-		testAuditService.save(testAudit);
-		addMessage(redirectAttributes, "提交审批'" + testAudit.getUser().getName() + "'成功");
-		return "redirect:" + adminPath + "/act/task/todo/";
-	}
 
-	/**
-	 * 工单执行（完成任务）
-	 * @param testAudit
-	 * @param model
-	 * @return
-	 */
-	@RequiresPermissions("oa:testAudit:edit")
-	@RequestMapping(value = "saveAudit")
-	public String saveAudit(TestAudit testAudit, Model model) {
-		if (StringUtils.isBlank(testAudit.getAct().getFlag())
-				|| StringUtils.isBlank(testAudit.getAct().getComment())){
-			addMessage(model, "请填写审核意见。");
-			return form(testAudit, model);
-		}
-		testAuditService.auditSave(testAudit);
-		return "redirect:" + adminPath + "/act/task/todo/";
-	}
-	
-	/**
-	 * 删除工单
-	 * @param id
-	 * @param redirectAttributes
-	 * @return
-	 */
-	@RequiresPermissions("oa:testAudit:edit")
-	@RequestMapping(value = "delete")
-	public String delete(TestAudit testAudit, RedirectAttributes redirectAttributes) {
-		testAuditService.delete(testAudit);
-		addMessage(redirectAttributes, "删除审批成功");
-		return "redirect:" + adminPath + "/oa/testAudit/?repage";
-	}
+    @RequestMapping(value = "save")
+    public String save(FlowData flowData, HttpServletRequest request, RedirectAttributes redirectAttributes) throws Exception {
+        String message = null;
+        Map data = request.getParameterMap();
+        if (data != null) {
+            data = CommonUtils.mapConvert(data);
+            String tableName = (String) data.get("tableName");
+            String[] filterName = {"tableName", "act.taskId", "act.taskName", "act.taskDefKey",
+                    "act.procInsId", "act.procDefId", "act.flag", "id", ""};
+            data = CommonUtils.attributeMapFilter(data, filterName);
+            flowData.setTableName(tableName);
+            flowData.setDatas(data);
+            try {
+                try {
+                    flowService.save(flowData);
+                    message = "业务提交成功";
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    message = "业务提交失败";
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                message = e.getMessage();
+            }
+        }
+        addMessage(redirectAttributes, message);
+        return "redirect:" + adminPath + "/act/task/todo/";
+    }
 
+    @RequestMapping(value = "saveAudit")
+    public String saveAudit(FlowData flowData, Model model) {
+        if (StringUtils.isBlank(flowData.getAct().getFlag())
+                || StringUtils.isBlank(flowData.getAct().getComment())){
+            addMessage(model, "请填写审核意见。");
+            return form(flowData, model);
+        }
+        flowService.auditSave(flowData);
+        return "redirect:" + adminPath + "/act/task/todo/";
+    }
 }
