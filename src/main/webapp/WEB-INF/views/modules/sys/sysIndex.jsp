@@ -236,20 +236,24 @@
             <ul>
                 <c:set var="showMenu" value="1"/>
                 <c:forEach items="${fns:getMenuList()}" var="menu" varStatus="idxStatus" >
-                    <c:if test="${menu.parent.id eq '1'&&menu.isShow eq '1' && showMenu le 9}">
+                    <c:if test="${menu.parent.id eq '1'&&menu.isShow eq '1' && showMenu le 10}">
+                        <c:if test="${showMenu eq 10}">
+                            <li>
+                                <a class="menu moreMenu" href="#">
+                                    <span class="icon-more"></span> </a>
+                            </li>
+                        </c:if>
+                        <c:if test="${showMenu lt 10}">
+                            <li>
+                                <a class="menu" href="javascript:" data-href="${ctx}/sys/menu/tree?parentId=${menu.id}"
+                                   data-id="${menu.id}">
+                                    <span class="icon-${menu.icon}"></span>
+                                    <span class="topMenuText">${menu.name}</span></a>
+                            </li>
+                        </c:if>
                         <c:set var="showMenu" value="${showMenu + 1}"/>
-                        <li>
-                            <a class="menu" href="javascript:" data-href="${ctx}/sys/menu/tree?parentId=${menu.id}"
-                               data-id="${menu.id}">
-                                <span class="icon-${menu.icon}"></span>
-                                <span class="topMenuText">${menu.name}</span></a>
-                        </li>
                     </c:if>
                 </c:forEach>
-                <li>
-                    <a class="menu moreMenu" href="#">
-                        <span class="icons-more"></span> </a>
-                </li>
             </ul>
         </div>
     </div>
