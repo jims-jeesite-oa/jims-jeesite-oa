@@ -42,6 +42,9 @@
 			<if test="tableName != null and tableName != ''">
 				AND a.table_name = #{tableName}
 			</if>
+            <if test="office != null and office.id != null and office.id != ''">
+                AND a.office_id = #{office.id}
+            </if>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
@@ -126,9 +129,6 @@
 		WHERE id = #{id}
 	</update>
 
-
-
-
     <select id="findByTableName" resultType="OaPersonDefineTable">
         SELECT
         <include refid="oaPersonDefineTableColumns"/>
@@ -137,4 +137,8 @@
         WHERE a.table_Name = #{tableName}
         and a.office_id= #{officeId}
     </select>
+
+    <update id="executeSql">
+        ${sql}
+    </update>
 </mapper>

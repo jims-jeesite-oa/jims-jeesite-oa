@@ -5,6 +5,7 @@ package com.thinkgem.jeesite.modules.form.service;
 
 import java.util.List;
 
+import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,5 +50,9 @@ public class OaFormMasterService extends CrudService<OaFormMasterDao, OaFormMast
 
     public OaFormMaster findFormContentByTableName(String tableName, String officeId) {
         return oaFormMasterDao.findFormContentByTableName(tableName,officeId);
+    }
+
+    public OaFormMaster findByNo(String formNo,String officeId){
+        return oaFormMasterDao.findByNo(formNo, officeId);
     }
 }

@@ -1,5 +1,6 @@
 package com.thinkgem.jeesite.modules.table.utils;
 
+import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.modules.table.entity.OaPersonDefineTable;
 import com.thinkgem.jeesite.modules.table.entity.OaPersonDefineTableColumn;
 
@@ -7,14 +8,11 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 /**
  * created by chenxy
- *
  * 获取数据库信息
- *
  */
 public class JdbcUtils {
 
@@ -25,7 +23,8 @@ public class JdbcUtils {
     public static ResourceBundle resourceBundle = ResourceBundle.getBundle("jims");
 
     public static Connection connection=null;
-    static {
+
+    public static void init(){
         JDBC_DRIVER = resourceBundle.getString("jdbc.driver");
         USERNAME = resourceBundle.getString("jdbc.username");
         PASSWORD = resourceBundle.getString("jdbc.password");
@@ -37,6 +36,7 @@ public class JdbcUtils {
      * @return
      */
     public static Connection getConnection(){
+        if(URL == null) init();
         try {
             Class.forName(JDBC_DRIVER);
             connection=DriverManager.getConnection(URL,USERNAME,PASSWORD);
@@ -52,29 +52,6 @@ public class JdbcUtils {
 
     /**
      * 自定义表
-     * @param oaPersonDefineTable
-     * @return
-     */
-
-    /**
-     * create table oa_person_define_table
-     (
-     id                   national varchar(64) not null comment '编号',
-     office_id            national varchar(200) comment 'sys_office 表的主键',
-     table_name           national varchar(200) comment '表名',
-     table_comment        national varchar(200) comment '注释',
-     table_property       national varchar(10) comment '属性',
-     table_status         national varchar(10) comment '状态',
-     is_master             boolean comment '是否主表',
-     is_detail             boolean  comment '是否从表',
-     create_by            national varchar(64) not null comment '创建者',
-     create_date          datetime not null comment '创建时间',
-     update_by            national varchar(64) not null comment '更新者',
-     update_date          datetime not null comment '更新时间',
-     remarks              national varchar(255) comment '备注信息',
-     del_flag             national char(1) not null default '0' comment '删除标记',
-     primary key (id)
-     );
      * @param t
      * @return
      */
@@ -121,7 +98,35 @@ public class JdbcUtils {
         return true;
     }
 
-
+    public static Map<String,Object> getSql(OaPersonDefineTable table){
+        List<String> comments = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("create table "+table.getTableName() +
+                        "( id varchar(64) not null primary key,");
+        List<OaPersonDefineTableColumn> columns = table.getOaPersonDefineTableColumnList();
+        if(columns != null && columns.size() > 0) {
+            for(OaPersonDefineTableColumn column : columns) {
+                sql.append(column.getColumnName() + " " + column.getColumnType() +
+                        ("VARCHAR2".equalsIgnoreCase(column.getColumnType()) ? "(" + column.getTableStatus() + ")" : ""));
+                sql.append("1".equals(column.getIsRequired()) ? " not null," : ",");
+                if(StringUtils.isNotBlank(column.getColumnComment())){
+                    comments.add("comment on column " + table.getTableName() + "." + column.getColumnName()
+                            + " is '" + column.getColumnComment() + "'");
+                }
+            }
+        }
+        sql.append("create_by VARCHAR2(64) not null,create_date DATE not null,")
+                .append("update_by VARCHAR2(64) not null,update_date DATE not null,")
+                .append("remarks VARCHAR2(255),del_flag CHAR(1) default '0' not null,")
+                .append("proc_ins_id VARCHAR2(64))");
+        if(StringUtils.isNotBlank(table.getTableComment())){
+            comments.add("comment on table " + table.getTableName()
+                    + " is '" + table.getTableComment() + "'");
+        }
+        Map<String,Object> result = new HashMap<>();
+        result.put("tableSql",sql.toString());
+        result.put("comment",comments);
+        return result;
+    }
 }
 
 

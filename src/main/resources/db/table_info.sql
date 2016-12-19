@@ -1371,6 +1371,7 @@ create table OA_FORM_MASTER
 (
   id             VARCHAR2(64) not null,
   office_id      VARCHAR2(64) not null,
+  form_no        VARCHAR2(50),
   title          VARCHAR2(100),
   alias          VARCHAR2(100),
   table_name     VARCHAR2(100),
@@ -1390,8 +1391,10 @@ create table OA_FORM_MASTER
 ;
 comment on column OA_FORM_MASTER.id
   is '编号';
-comment on column OA_FORM_MASTER.office_id
+comment on column OA_FORM_MASTER.form_no
   is '医院机构Id';
+comment on column OA_FORM_MASTER.title
+  is '表单编号';
 comment on column OA_FORM_MASTER.title
   is '表单标题';
 comment on column OA_FORM_MASTER.alias

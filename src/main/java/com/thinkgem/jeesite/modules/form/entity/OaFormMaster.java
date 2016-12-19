@@ -20,6 +20,7 @@ public class OaFormMaster extends DataEntity<OaFormMaster> {
 	private Office office;		// 医院机构Id
 	private String title;		// 表单标题
 	private String alias;		// 表单别名
+	private String formNo;		// 表单编号
 	private String tableName;		// 对应表
 	private String formType;		// 表单分类
 	private String publishStatus;		// 发布状态
@@ -125,5 +126,13 @@ public class OaFormMaster extends DataEntity<OaFormMaster> {
 	public void setFormDesc(String formDesc) {
 		this.formDesc = formDesc;
 	}
-	
+
+    @Length(min=0, max=50, message="表单编号必须介于 0 和 50 之间")
+    public String getFormNo() {
+        return formNo;
+    }
+
+    public void setFormNo(String formNo) {
+        this.formNo = formNo;
+    }
 }

@@ -4,7 +4,7 @@
     
 	<sql id="oaPersonDefineTableColumnColumns">
 		a.id AS "id",
-		a.table_id AS "tableId",
+		a.table_id AS "table.id",
 		a.column_name AS "columnName",
 		a.column_comment AS "columnComment",
 		a.column_type AS "columnType",
@@ -40,8 +40,8 @@
 		<include refid="oaPersonDefineTableColumnJoins"/>
 		<where>
 			a.del_flag = #{DEL_FLAG_NORMAL}
-			<if test="tableId != null and tableId != ''">
-				AND a.table_id = #{tableId}
+			<if test="table.id != null and table.id != ''">
+				AND a.table_id = #{table.id}
 			</if>
 		</where>
 		<choose>
@@ -92,7 +92,7 @@
 			control_type_id
 		) VALUES (
 			#{id},
-			#{tableId},
+			#{table.id},
 			#{columnName},
 			#{columnComment},
 			#{columnType},
@@ -112,7 +112,7 @@
 	
 	<update id="update">
 		UPDATE oa_person_define_table_column SET 	
-			table_id = #{tableId},
+			table_id = #{table.id},
 			column_name = #{columnName},
 			column_comment = #{columnComment},
 			column_type = #{columnType},
@@ -135,7 +135,7 @@
 				WHERE id = #{id}
 			</when>
 			<otherwise>
-				WHERE table_id = #{tableId}
+				WHERE table_id = #{table.id}
 			</otherwise>
 		</choose>
 	</update>
@@ -146,5 +146,11 @@
         FROM oa_person_define_table_column a
         <include refid="oaPersonDefineTableColumnJoins"/>
         WHERE a.table_id = #{tableId}
+    </select>
+
+    <select id="getMaxColumnIndex" resultType="String">
+        select nvl(substr(max(column_name),4),0)
+        from oa_person_define_table_column
+        where upper(column_name) like 'COL%'
     </select>
 </mapper>

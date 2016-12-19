@@ -4,6 +4,7 @@
 package com.thinkgem.jeesite.modules.table.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.thinkgem.jeesite.modules.table.utils.JdbcUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,13 +51,18 @@ public class OaPersonDefineTableService extends CrudService<OaPersonDefineTableD
 	@Transactional(readOnly = false)
 	public void save(OaPersonDefineTable oaPersonDefineTable) {
 		super.save(oaPersonDefineTable);
+        int index = 1;
 		for (OaPersonDefineTableColumn oaPersonDefineTableColumn : oaPersonDefineTable.getOaPersonDefineTableColumnList()){
 			if (oaPersonDefineTableColumn.getId() == null){
 				continue;
 			}
 			if (OaPersonDefineTableColumn.DEL_FLAG_NORMAL.equals(oaPersonDefineTableColumn.getDelFlag())){
-				if (StringUtils.isBlank(oaPersonDefineTableColumn.getId())){
-					oaPersonDefineTableColumn.setTableId(oaPersonDefineTable);
+                //字段为空时默认 COL+序列
+//                if(StringUtils.isBlank(oaPersonDefineTableColumn.getColumnName())){
+                    oaPersonDefineTableColumn.setColumnName("COL" + index++);
+
+                if (StringUtils.isBlank(oaPersonDefineTableColumn.getId())){
+					oaPersonDefineTableColumn.setTable(oaPersonDefineTable);
 					oaPersonDefineTableColumn.preInsert();
 					oaPersonDefineTableColumnDao.insert(oaPersonDefineTableColumn);
 				}else{
@@ -67,13 +73,22 @@ public class OaPersonDefineTableService extends CrudService<OaPersonDefineTableD
 				oaPersonDefineTableColumnDao.delete(oaPersonDefineTableColumn);
 			}
 		}
-        JdbcUtils.createTable(oaPersonDefineTable);
+        dao.executeSql(getDeleteTableSql(oaPersonDefineTable.getTableName()));
+        Map<String,Object> result = JdbcUtils.getSql(oaPersonDefineTable);
+        dao.executeSql((String)result.get("tableSql"));
+        List<String> comments = (List<String>) result.get("comment");
+        if(comments != null && comments.size() > 0){
+            for(String comment : comments){
+                dao.executeSql(comment);
+            }
+        }
  	}
 	
 	@Transactional(readOnly = false)
 	public void delete(OaPersonDefineTable oaPersonDefineTable) {
 		super.delete(oaPersonDefineTable);
 		oaPersonDefineTableColumnDao.delete(new OaPersonDefineTableColumn(oaPersonDefineTable));
+        dao.executeSql(getDeleteTableSql(oaPersonDefineTable.getTableName()));
 	}
 
     public OaPersonDefineTable findByTableName(String tableName, String officeId) {
@@ -83,5 +98,9 @@ public class OaPersonDefineTableService extends CrudService<OaPersonDefineTableD
 
     public List<OaPersonDefineTableColumn> findColumnListByTableId(String tableId) {
       return this.oaPersonDefineTableColumnDao.findColumnListByTableId(tableId);
+    }
+
+    private String getDeleteTableSql(String tableName){
+        return "BEGIN EXECUTE IMMEDIATE 'DROP TABLE " + tableName + "';EXCEPTION WHEN OTHERS THEN NULL;END;";
     }
 }

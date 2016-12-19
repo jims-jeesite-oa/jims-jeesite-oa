@@ -19,4 +19,9 @@ public interface OaPersonDefineTableColumnDao extends CrudDao<OaPersonDefineTabl
 
     List<OaPersonDefineTableColumn> findColumnListByTableId(String tableId);
 
+    /**
+     * 获取最大的列索引
+     * @return
+     */
+    String getMaxColumnIndex();
 }
