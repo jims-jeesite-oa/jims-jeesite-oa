@@ -1,15 +1,13 @@
 package com.thinkgem.jeesite.modules.oa.service;
 
 import com.google.common.collect.Maps;
-import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.service.CrudService;
 import com.thinkgem.jeesite.common.utils.DateUtils;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.modules.act.service.ActTaskService;
-import com.thinkgem.jeesite.modules.act.utils.ActUtils;
 import com.thinkgem.jeesite.modules.oa.dao.FlowDao;
 import com.thinkgem.jeesite.modules.oa.entity.FlowData;
-import com.thinkgem.jeesite.modules.oa.units.oConvertUtils;
+import com.thinkgem.jeesite.modules.oa.units.OConvertUtils;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import com.thinkgem.jeesite.modules.table.dao.OaPersonDefineTableColumnDao;
 import com.thinkgem.jeesite.modules.table.dao.OaPersonDefineTableDao;
@@ -196,7 +194,7 @@ public class FlowService extends CrudService<FlowDao, FlowData> {
             String columnName = column.getColumnName().toLowerCase();
             Object beforeV = data.get(columnName);
             //如果值不为空
-            if(oConvertUtils.isNotEmpty(beforeV)){
+            if(OConvertUtils.isNotEmpty(beforeV)){
                 //获取字段配置-字段类型
                 String type = column.getColumnType();
                 //根据类型进行值的适配
