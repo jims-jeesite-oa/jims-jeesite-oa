@@ -306,4 +306,12 @@
         <function-signature>java.util.List getSelfTable()</function-signature>
         <example>${fns:getSelfTable()}</example>
     </function>
+
+    <function>
+        <description>获取控件</description>
+        <name>getControl</name>
+        <function-class>com.thinkgem.jeesite.modules.form.util.ComponentUtils</function-class>
+        <function-signature>java.util.List getControl()</function-signature>
+        <example>${fns:getControl()}</example>
+    </function>
 </taglib>

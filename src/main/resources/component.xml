@@ -2,22 +2,33 @@
 <components>
     <component>
         <value>text</value>
+        <type>controlType</type>
         <name>标志输入</name>
         <content><![CDATA[
             <input name="" type="text" value=""/>
         ]]></content>
     </component>
     <component>
-        <value>treeSelect</value>
-        <name>人员信息</name>
+        <value>date</value>
+        <type>controlType</type>
+        <name>日期</name>
         <content><![CDATA[
-            <sys:treeselect id="" name="" value="" labelName="office.name" labelValue="${oaFormMaster.office.name}"
-					title="部门" url="/sys/office/treeData?type=2" cssClass="required" allowClear="true" notAllowSelectParent="true"/>
-				<span class="help-inline"><font color="red">*</font> </span>
+            <input name="" type="text" readonly="readonly" maxlength="20" class="input-medium Wdate "
+					value="" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
+        ]]></content>
+    </component>
+    <component>
+        <value>datetime</value>
+        <type>controlType</type>
+        <name>时间</name>
+        <content><![CDATA[
+            <input name="" type="text" readonly="readonly" maxlength="20" class="input-medium Wdate "
+					value="" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',isShowClear:false});"/>
         ]]></content>
     </component>
     <component>
         <value>flowForm</value>
+        <type>template</type>
         <name>填写模板</name>
         <content><![CDATA[
             <%@ page contentType="text/html;charset=UTF-8" %>
@@ -89,6 +100,7 @@
 
     <component>
         <value>flowAudit</value>
+        <type>template</type>
         <name>审批模板</name>
         <content><![CDATA[
             <%@ page contentType="text/html;charset=UTF-8" %>

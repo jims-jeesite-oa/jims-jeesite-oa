@@ -1,6 +1,7 @@
 package com.thinkgem.jeesite.modules.oa.web;
 
 import com.thinkgem.jeesite.common.config.Global;
+import com.thinkgem.jeesite.common.utils.Encodes;
 import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.modules.act.entity.Act;
 import com.thinkgem.jeesite.modules.form.entity.Component;
@@ -91,6 +92,8 @@ public class FlowController extends BaseController {
             String[] filterName = {"tableName", "act.taskId", "act.taskName", "act.taskDefKey",
                     "act.procInsId", "act.procDefId", "act.flag", "id", ""};
             data = CommonUtils.attributeMapFilter(data, filterName);
+            String procDefId = flowData.getAct().getProcDefId();
+            flowData.setFlowFlag(procDefId.substring(0,procDefId.indexOf(":")));
             flowData.setTableName(tableName);
             flowData.setDatas(data);
             try {
@@ -153,6 +156,9 @@ public class FlowController extends BaseController {
         map.put("ctx", Global.getAdminPath());
         Act act = flowData.getAct();
         if(act != null){
+            if(act.getTaskName() != null) {
+                act.setTaskName(Encodes.urlDecode(Encodes.urlDecode(act.getTaskName())));
+            }
             map.put("act",act);
         }
         return map;

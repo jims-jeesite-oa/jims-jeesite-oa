@@ -169,8 +169,8 @@
                     <td>
                          <select id="oaPersonDefineTableColumnList{{idx}}_controlTypeId" name="oaPersonDefineTableColumnList[{{idx}}].controlTypeId" data-value="{{row.controlTypeId}}" class="input-small ">
                             <option value=""></option>
-                            <c:forEach items="${fns:getDictList('component')}" var="dict">
-                                <option value="${dict.value}">${dict.label}</option>
+                            <c:forEach items="${fns:getControl()}" var="dict">
+                                <option value="${dict.value}">${dict.name}</option>
                             </c:forEach>
                         </select>
                     </td>

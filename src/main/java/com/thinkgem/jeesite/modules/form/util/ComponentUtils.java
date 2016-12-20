@@ -15,6 +15,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -73,6 +74,18 @@ public class ComponentUtils {
             }
         }
         return null;
+    }
+
+    //获取控件
+    public static List<Component> getControl(){
+        List<Component> components = getComponentList();
+        List<Component> controls = new ArrayList<>();
+        for(Component c : components ){
+            if("controlType".equals(c.getType())) {
+                controls.add(c);
+            }
+        }
+        return controls;
     }
 
     /**

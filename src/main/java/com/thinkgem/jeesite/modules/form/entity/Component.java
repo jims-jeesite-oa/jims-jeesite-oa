@@ -18,6 +18,8 @@ public class Component implements Serializable{
     private static final long serialVersionUID = 1L;
     @XmlElement(name = "value")
     private String value;
+    @XmlElement(name = "type")
+    private String type;
     @XmlElement(name = "name")
     private String name;
     @XmlElement(name = "content")
@@ -45,5 +47,13 @@ public class Component implements Serializable{
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

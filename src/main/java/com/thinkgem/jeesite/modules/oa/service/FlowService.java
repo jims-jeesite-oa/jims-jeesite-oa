@@ -116,8 +116,8 @@ public class FlowService extends CrudService<FlowDao, FlowData> {
             String sql = "select ";
             String split = "";
             for(OaPersonDefineTableColumn column : columns) {
-                if("DATE".equals(column.getColumnType().toUpperCase())) {
-                    sql += split + "to_char(" + column.getColumnName() + ",'yyyy-MM-dd HH24:mi:ss')";
+                if("DATE".equals(column.getControlTypeId().toUpperCase())) {
+                    sql += split + "replace(to_char(" + column.getColumnName() + ",'yyyy-MM-dd HH24:mi:ss'),' 00:00:00','') " + column.getColumnName();
                 } else {
                     sql += split + column.getColumnName();
                 }
@@ -149,20 +149,22 @@ public class FlowService extends CrudService<FlowDao, FlowData> {
             flowData.preInsert();
 			insertTable(flowData);
 			// 启动流程
-			actTaskService.startProcess("test_audit", flowData.getTableName(), flowData.getId(), String.valueOf(flowData.getDatas().get("COL1")));
+			actTaskService.startProcess(flowData.getFlowFlag(), flowData.getTableName(), flowData.getId(),"自定义流程");
 
 		}
 		// 重新编辑申请
 		else{
             flowData.preUpdate();
 			updateTable(flowData);
-
+            if(flowData.getAct().getComment() == null) {
+                flowData.getAct().setComment("");
+            }
             flowData.getAct().setComment(("yes".equals(flowData.getAct().getFlag())?"[重申] ":"[销毁] ")+flowData.getAct().getComment());
 
 			// 完成流程任务
 			Map<String, Object> vars = Maps.newHashMap();
 			vars.put("pass", "yes".equals(flowData.getAct().getFlag())? "1" : "0");
-			actTaskService.complete(flowData.getAct().getTaskId(), flowData.getAct().getProcInsId(), flowData.getAct().getComment(), String.valueOf(flowData.getDatas().get("COL1")), vars);
+			actTaskService.complete(flowData.getAct().getTaskId(), flowData.getAct().getProcInsId(), flowData.getAct().getComment(), "自定义流程", vars);
 		}
 	}
 
