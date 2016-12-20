@@ -29,7 +29,7 @@
 	<script type="text/javascript">
 		$(document).ready(function() {
             <#if id??>
-                $.get("${ctx}/act/task/histoicFlow?procInsId=${procInsId}&t="+new Date().getTime(), function(data){
+                $.get("${ctx}/act/task/histoicFlow?procInsId=${act.procInsId}&t="+new Date().getTime(), function(data){
                     $("#histoicFlowList").html(data);
                 });
             </#if>
@@ -99,7 +99,7 @@
 	<meta name="decorator" content="default"/>
 	<script type="text/javascript">
 		$(document).ready(function() {
-            $.get("${ctx}/act/task/histoicFlow?procInsId=${procInsId}&t="+new Date().getTime(), function(data){
+            $.get("${ctx}/act/task/histoicFlow?procInsId=${act.procInsId}&t="+new Date().getTime(), function(data){
                 $("#histoicFlowList").html(data);
             });
 			$("#inputForm").validate({
