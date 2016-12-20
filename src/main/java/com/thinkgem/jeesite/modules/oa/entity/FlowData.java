@@ -20,6 +20,7 @@ public class FlowData extends ActEntity<FlowData> {
     private String tableName;
     private Map<String,Object> datas;
     private String formNo;
+    private String flowFlag;
 
     public String getTableName() {
         return tableName;
@@ -43,5 +44,13 @@ public class FlowData extends ActEntity<FlowData> {
 
     public void setFormNo(String formNo) {
         this.formNo = formNo;
+    }
+
+    public String getFlowFlag() {
+        return flowFlag;
+    }
+
+    public void setFlowFlag(String flowFlag) {
+        this.flowFlag = flowFlag;
     }
 }

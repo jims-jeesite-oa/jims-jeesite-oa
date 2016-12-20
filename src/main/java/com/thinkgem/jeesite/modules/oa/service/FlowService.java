@@ -101,7 +101,7 @@ public class FlowService extends CrudService<FlowDao, FlowData> {
                     comma = ", ";
                 }
             }
-            updateValue.append(",update_by=" + handleSqlValue(flowData.getUpdateBy(), "varchar2"))
+            updateValue.append(comma + "update_by=" + handleSqlValue(flowData.getUpdateBy(), "varchar2"))
                     .append(",update_date=" + handleSqlValue(flowData.getUpdateDate() == null ? null : DateUtils.formatDateTime(flowData.getUpdateDate()), "date"));
             String sql = "UPDATE " + tableName + " SET " + updateValue + " where id='" + flowData.getId() + "'";
             oaPersonDefineTableDao.executeSql(sql);
@@ -109,13 +109,27 @@ public class FlowService extends CrudService<FlowDao, FlowData> {
         }
     }
 
+	public Map<String,Object> getByProcInsId(String tableName,String procInsId) {
+        OaPersonDefineTable defineTable = oaPersonDefineTableDao.findByTableName(tableName, UserUtils.getUser().getOffice().getId());
+        if(defineTable != null){
+            List<OaPersonDefineTableColumn> columns = oaPersonDefineTableColumnDao.findColumnListByTableId(defineTable.getId());
+            String sql = "select ";
+            String split = "";
+            for(OaPersonDefineTableColumn column : columns) {
+                if("DATE".equals(column.getColumnType().toUpperCase())) {
+                    sql += split + "to_char(" + column.getColumnName() + ",'yyyy-MM-dd HH24:mi:ss')";
+                } else {
+                    sql += split + column.getColumnName();
+                }
+                split = ",";
+            }
+            sql += " from " + tableName + " where proc_ins_id='" + procInsId + "'";
+            return oaPersonDefineTableDao.getByProcInsId(sql);
+        }
+		return null;
+	}
 
 
-
-	
-//	public TestAudit getByProcInsId(String procInsId) {
-//		return dao.getByProcInsId(procInsId);
-//	}
 //
 //	public Page<TestAudit> findPage(Page<TestAudit> page, TestAudit testAudit) {
 //		testAudit.setPage(page);
@@ -135,7 +149,7 @@ public class FlowService extends CrudService<FlowDao, FlowData> {
             flowData.preInsert();
 			insertTable(flowData);
 			// 启动流程
-			actTaskService.startProcess("test_audit", flowData.getTableName(), flowData.getId(), String.valueOf(flowData.getDatas().get("col1")));
+			actTaskService.startProcess("test_audit", flowData.getTableName(), flowData.getId(), String.valueOf(flowData.getDatas().get("COL1")));
 
 		}
 		// 重新编辑申请
@@ -148,7 +162,7 @@ public class FlowService extends CrudService<FlowDao, FlowData> {
 			// 完成流程任务
 			Map<String, Object> vars = Maps.newHashMap();
 			vars.put("pass", "yes".equals(flowData.getAct().getFlag())? "1" : "0");
-			actTaskService.complete(flowData.getAct().getTaskId(), flowData.getAct().getProcInsId(), flowData.getAct().getComment(), String.valueOf(flowData.getDatas().get("col1")), vars);
+			actTaskService.complete(flowData.getAct().getTaskId(), flowData.getAct().getProcInsId(), flowData.getAct().getComment(), String.valueOf(flowData.getDatas().get("COL1")), vars);
 		}
 	}
 
@@ -191,7 +205,7 @@ public class FlowService extends CrudService<FlowDao, FlowData> {
         //step.2 迭代将要持久化的数据
         for(OaPersonDefineTableColumn column : columns){
             //根据表单配置的字段名 获取 前台数据
-            String columnName = column.getColumnName().toLowerCase();
+            String columnName = column.getColumnName();
             Object beforeV = data.get(columnName);
             //如果值不为空
             if(OConvertUtils.isNotEmpty(beforeV)){

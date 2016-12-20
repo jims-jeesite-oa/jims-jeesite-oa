@@ -16,5 +16,151 @@
 				<span class="help-inline"><font color="red">*</font> </span>
         ]]></content>
     </component>
+    <component>
+        <value>flowForm</value>
+        <name>填写模板</name>
+        <content><![CDATA[
+            <%@ page contentType="text/html;charset=UTF-8" %>
+<%@ include file="/WEB-INF/views/include/taglib.jsp"%>
+<html>
+<head>
+	<title>审批管理</title>
+	<meta name="decorator" content="default"/>
+	<script type="text/javascript">
+		$(document).ready(function() {
+            <#if id??>
+                $.get("${ctx}/act/task/histoicFlow?procInsId=${procInsId}&t="+new Date().getTime(), function(data){
+                    $("#histoicFlowList").html(data);
+                });
+            </#if>
+			$("#inputForm").validate({
+				submitHandler: function(form){
+					loading('正在提交，请稍等...');
+					form.submit();
+				},
+				errorContainer: "#messageBox",
+				errorPlacement: function(error, element) {
+					$("#messageBox").text("输入有误，请先更正。");
+					if (element.is(":checkbox")||element.is(":radio")||element.parent().is(".input-append")){
+						error.appendTo(element.parent().parent());
+					} else {
+						error.insertAfter(element);
+					}
+				}
+			});
+		});
+	</script>
+</head>
+<body>
+	<form id="inputForm" action="${ctx}/oa/flow/save" method="post" class="form-horizontal">
+		<input type="hidden" name="id" value="${id}"/>
+		<input type="hidden" name="act.taskId" value="${act.taskId}"/>
+		<input type="hidden" name="act.taskName" value="${act.taskName}"/>
+		<input type="hidden" name="act.taskDefKey" value="${act.taskDefKey}"/>
+		<input type="hidden" name="act.procInsId" value="${act.procInsId}"/>
+		<input type="hidden" name="act.procDefId" value="${act.procDefId}"/>
+		<input type="hidden" id="flag" name="act.flag" value="${act.flag}"/>
+        <input type="hidden" name="tableName" value="${tableName}"/>
+		<sys:message content="${message}"/>
+		<fieldset>
+			<legend>审批申请</legend>
+			<table class="table-form">
+				$flowTableInfo$
+			</table>
+		</fieldset>
+		<div class="form-actions">
+            <input id="btnSubmit" class="btn btn-primary" type="submit" value="提交申请" onclick="$('#flag').val('yes')"/>&nbsp;
+            <#if id?? && id != ''>
+                <input id="btnSubmit2" class="btn btn-inverse" type="submit" value="销毁申请" onclick="$('#flag').val('no')"/>&nbsp;
+            </#if>
+			<input id="btnCancel" class="btn" type="button" value="返 回" onclick="history.go(-1)"/>
+		</div>
+		<#if id?? && id != ''>
+			<legend>流转信息</legend>
+            <div id="histoicFlowList">
+                正在加载流转信息...
+            </div>
+		</#if>
+	</form>
+</body>
+</html>
+        ]]></content>
+    </component>
+
+    <component>
+        <value>flowAudit</value>
+        <name>审批模板</name>
+        <content><![CDATA[
+            <%@ page contentType="text/html;charset=UTF-8" %>
+<%@ include file="/WEB-INF/views/include/taglib.jsp"%>
+<html>
+<head>
+	<title>审批管理</title>
+	<meta name="decorator" content="default"/>
+	<script type="text/javascript">
+		$(document).ready(function() {
+            $.get("${ctx}/act/task/histoicFlow?procInsId=${procInsId}&t="+new Date().getTime(), function(data){
+                $("#histoicFlowList").html(data);
+            });
+			$("#inputForm").validate({
+				submitHandler: function(form){
+					loading('正在提交，请稍等...');
+					form.submit();
+				},
+				errorContainer: "#messageBox",
+				errorPlacement: function(error, element) {
+					$("#messageBox").text("输入有误，请先更正。");
+					if (element.is(":checkbox")||element.is(":radio")||element.parent().is(".input-append")){
+						error.appendTo(element.parent().parent());
+					} else {
+						error.insertAfter(element);
+					}
+				}
+			});
+		});
+	</script>
+</head>
+<body>
+	<form id="inputForm" action="${ctx}/oa/flow/save" method="post" class="form-horizontal">
+		<input type="hidden" name="id" value="${id}"/>
+		<input type="hidden" name="act.taskId" value="${act.taskId}"/>
+		<input type="hidden" name="act.taskName" value="${act.taskName}"/>
+		<input type="hidden" name="act.taskDefKey" value="${act.taskDefKey}"/>
+		<input type="hidden" name="act.procInsId" value="${act.procInsId}"/>
+		<input type="hidden" name="act.procDefId" value="${act.procDefId}"/>
+		<input type="hidden" id="flag" name="act.flag" value="${act.flag}"/>
+        <input type="hidden" name="tableName" value="${tableName}"/>
+		<sys:message content="${message}"/>
+		<fieldset>
+			<legend>${act.taskName}</legend>
+            <table class="table-form">
+                $flowTableInfo$
+                <tr>
+					<td class="tit">您的意见</td>
+					<td colspan="5">
+						<textarea name="act.comment" class="required" rows="5" maxlength="20" cssStyle="width:800px">
+						</textarea>
+					</td>
+				</tr>
+            </table>
+		</fieldset>
+		<div class="form-actions">
+		    <#if act.taskDefKey = 'apply_end'>
+                  <input id="btnSubmit" class="btn btn-primary" type="submit" value="兑 现" onclick="$('#flag').val('yes')"/>&nbsp;
+            <#else>
+              <input id="btnSubmit" class="btn btn-primary" type="submit" value="同 意" onclick="$('#flag').val('yes')"/>&nbsp;
+                <input id="btnSubmit" class="btn btn-inverse" type="submit" value="驳 回" onclick="$('#flag').val('no')"/>&nbsp;
+            </#if>
+			<input id="btnCancel" class="btn" type="button" value="返 回" onclick="history.go(-1)"/>
+		</div>
+		<legend>流转信息</legend>
+        <div id="histoicFlowList">
+            正在加载流转信息...
+        </div>
+	</form>
+</body>
+</html>
+        ]]></content>
+    </component>
 </components>
 

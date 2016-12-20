@@ -26,15 +26,15 @@
 	</script>
 </head>
 <body>
-	<form:form id="inputForm" modelAttribute="flow" action="${ctx}/oa/flow/save" method="post" class="form-horizontal">
-		<form:hidden path="id"/>
-		<form:hidden path="act.taskId"/>
-		<form:hidden path="act.taskName"/>
-		<form:hidden path="act.taskDefKey"/>
-		<form:hidden path="act.procInsId"/>
-		<form:hidden path="act.procDefId"/>
-		<form:hidden id="flag" path="act.flag"/>
-        <input type="hidden" name="tableName"/>
+	<form id="inputForm" action="${ctx}/oa/flow/save" method="post" class="form-horizontal">
+		<input type="hidden" name="id" value="${flow.id}"/>
+		<input type="hidden" name="act.taskId" value="${flow.act.taskId}"/>
+		<input type="hidden" name="act.taskName" value="${flow.act.taskName}"/>
+		<input type="hidden" name="act.taskDefKey" value="${flow.act.taskDefKey}"/>
+		<input type="hidden" name="act.procInsId" value="${flow.act.procInsId}"/>
+		<input type="hidden" name="act.procDefId" value="${flow.act.procDefId}"/>
+		<input type="hidden" id="flag" name="act.flag" value="${flow.act.flag}"/>
+        <input type="hidden" name="tableName" value="${flow.tableName}"/>
 		<sys:message content="${message}"/>
 		<fieldset>
 			<legend>审批申请</legend>
@@ -62,8 +62,8 @@
 			<input id="btnCancel" class="btn" type="button" value="返 回" onclick="history.go(-1)"/>
 		</div>
 		<c:if test="${not empty flow.id}">
-			<act:histoicFlow procInsId="${flow.act.procInsId}" />
+			<act:histoicFlow procInsId="${act.procInsId}" />
 		</c:if>
-	</form:form>
+	</form>
 </body>
 </html>

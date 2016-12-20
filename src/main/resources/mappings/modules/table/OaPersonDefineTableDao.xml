@@ -141,4 +141,8 @@
     <update id="executeSql">
         ${sql}
     </update>
+
+    <select id="getByProcInsId" resultType="java.util.Map">
+        ${sql}
+    </select>
 </mapper>

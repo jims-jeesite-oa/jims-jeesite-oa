@@ -8,6 +8,8 @@ import com.thinkgem.jeesite.common.persistence.annotation.MyBatisDao;
 import com.thinkgem.jeesite.modules.table.entity.OaPersonDefineTable;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Map;
+
 /**
  * 自定义数据源DAO接口
  * @author chenxy
@@ -28,4 +30,6 @@ public interface OaPersonDefineTableDao extends CrudDao<OaPersonDefineTable> {
      * @param sql
      */
     int executeSql(@Param("sql")String sql);
+
+    Map<String,Object> getByProcInsId(@Param("sql")String sql);
 }

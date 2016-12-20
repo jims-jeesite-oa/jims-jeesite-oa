@@ -87,22 +87,22 @@ public class OaFormMasterController extends BaseController {
 		if (!beanValidator(model, oaFormMaster)){
 			return form(oaFormMaster, model);
 		}
-        OaPersonDefineTable oaPersonDefineTable=this.oaPersonDefineTableService.findByTableName(oaFormMaster.getTableName(), oaFormMaster.getOffice().getId());
-        List<OaPersonDefineTableColumn> oaPersonDefineTableColumns=this.oaPersonDefineTableService.findColumnListByTableId(oaPersonDefineTable.getId());
-        String tableContent=oaFormMaster.getContent();
-        for(OaPersonDefineTableColumn column : oaPersonDefineTableColumns){
-            if(column != null && !"".equals(column)){
-                Component component = ComponentUtils.getComponent(column.getControlTypeId());
-                String content = "";
-                if(component != null) {
-                    content = component.getContent().replace("name=\"\"", "name=\"" + column.getColumnName() + "\"").replace("value=\"\"", "value=\"${" + column.getColumnName() + "}\"");
-                }
-                tableContent=tableContent.replace("[" + column.getColumnComment() + "]",content);
-            }
-        }
-        oaFormMaster.setContent(tableContent);
-        if (tableContent != null){
-            oaFormMaster.setContent(StringEscapeUtils.unescapeHtml4(tableContent));
+//        OaPersonDefineTable oaPersonDefineTable=this.oaPersonDefineTableService.findByTableName(oaFormMaster.getTableName(), oaFormMaster.getOffice().getId());
+//        List<OaPersonDefineTableColumn> oaPersonDefineTableColumns=this.oaPersonDefineTableService.findColumnListByTableId(oaPersonDefineTable.getId());
+//        String tableContent=oaFormMaster.getContent();
+//        for(OaPersonDefineTableColumn column : oaPersonDefineTableColumns){
+//            if(column != null && !"".equals(column)){
+//                Component component = ComponentUtils.getComponent(column.getControlTypeId());
+//                String content = "";
+//                if(component != null) {
+//                    content = component.getContent().replace("name=\"\"", "name=\"" + column.getColumnName() + "\"").replace("value=\"\"", "value=\"${" + column.getColumnName() + "}\"");
+//                }
+//                tableContent=tableContent.replace("[" + column.getColumnComment() + "]",content);
+//            }
+//        }
+//        oaFormMaster.setContent(tableContent);
+        if (oaFormMaster.getContent() != null){
+            oaFormMaster.setContent(StringEscapeUtils.unescapeHtml4(oaFormMaster.getContent()));
         }
  		oaFormMasterService.save(oaFormMaster);
 		addMessage(redirectAttributes, "保存编辑器设计表单成功");
