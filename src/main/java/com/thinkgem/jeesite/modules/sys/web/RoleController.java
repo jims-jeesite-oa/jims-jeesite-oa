@@ -276,4 +276,20 @@ public class RoleController extends BaseController {
 		return "false";
 	}
 
+    @RequiresPermissions("user")
+    @ResponseBody
+    @RequestMapping(value = "treeData")
+    public List<Map<String, Object>> treeData(@RequestParam(required=false) String officeId, HttpServletResponse response) {
+        List<Map<String, Object>> mapList = Lists.newArrayList();
+        List<Role> list = systemService.findRoleByOfficeId(officeId);
+        for (int i=0; i<list.size(); i++){
+            Role r = list.get(i);
+            Map<String, Object> map = Maps.newHashMap();
+            map.put("id", "u_"+r.getId());
+            map.put("pId", officeId);
+            map.put("name", StringUtils.replace(r.getName(), " ", ""));
+            mapList.add(map);
+        }
+        return mapList;
+    }
 }

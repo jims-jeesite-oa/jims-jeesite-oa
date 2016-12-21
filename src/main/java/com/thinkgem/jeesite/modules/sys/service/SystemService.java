@@ -129,6 +129,23 @@ public class SystemService extends BaseService implements InitializingBean {
 		}
 		return list;
 	}
+
+    /**
+     * 通过部门ID获取角色列表，仅返回角色id和name（树查询角色时用）
+     * @param user
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public List<Role> findRoleByOfficeId(String officeId) {
+        List<Role> list = (List<Role>)CacheUtils.get(UserUtils.CACHE_ROLE_LIST, UserUtils.USER_CACHE_LIST_BY_OFFICE_ID_ + officeId);
+        if (list == null){
+            Role role = new Role();
+            role.setOffice(new Office(officeId));
+            list = roleDao.findRoleByOfficeId(role);
+            CacheUtils.put(UserUtils.CACHE_ROLE_LIST, UserUtils.USER_CACHE_LIST_BY_OFFICE_ID_ + officeId, list);
+        }
+        return list;
+    }
 	
 	@Transactional(readOnly = false)
 	public void saveUser(User user) {

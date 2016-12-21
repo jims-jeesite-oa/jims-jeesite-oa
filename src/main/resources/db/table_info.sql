@@ -1391,9 +1391,9 @@ create table OA_FORM_MASTER
 ;
 comment on column OA_FORM_MASTER.id
   is '编号';
-comment on column OA_FORM_MASTER.form_no
+comment on column OA_FORM_MASTER.office_id
   is '医院机构Id';
-comment on column OA_FORM_MASTER.title
+comment on column OA_FORM_MASTER.form_no
   is '表单编号';
 comment on column OA_FORM_MASTER.title
   is '表单标题';

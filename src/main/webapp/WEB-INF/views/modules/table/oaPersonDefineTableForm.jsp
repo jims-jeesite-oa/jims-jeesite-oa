@@ -98,13 +98,13 @@
 		<sys:message content="${message}"/>
         <fieldset>
             <legend>基本信息</legend>
-            <div class="control-group">
-                <label class="control-label">所属机构：</label>
-                <div class="controls">
-                    <sys:treeselect id="office" name="office.id" value="${oaPersonDefineTable.office.id}" labelName="office.name" labelValue="${oaPersonDefineTable.office.name}"
-                        title="部门" url="/sys/office/treeData?type=1" cssClass="" allowClear="true" notAllowSelectParent="true"/>
-                </div>
-            </div>
+            <%--<div class="control-group">--%>
+                <%--<label class="control-label">所属机构：</label>--%>
+                <%--<div class="controls">--%>
+                    <%--<sys:treeselect id="office" name="office.id" value="${oaPersonDefineTable.office.id}" labelName="office.name" labelValue="${oaPersonDefineTable.office.name}"--%>
+                        <%--title="部门" url="/sys/office/treeData?type=1" cssClass="" allowClear="true" notAllowSelectParent="true"/>--%>
+                <%--</div>--%>
+            <%--</div>--%>
             <div class="control-group">
                 <label class="control-label">表名(以英文开头)：</label>
                 <div class="controls">
@@ -189,7 +189,7 @@
                     </td>
                     <td>
                         <sys:treeselect id="oaPersonDefineTableColumnList{{idx}}_auditPost" name="oaPersonDefineTableColumnList[{{idx}}].auditPost" value="${row.auditPost}" labelName="${row.auditPost}" labelValue="{{row.auditPostName}}"
-                            title="用户" url="/sys/office/treeData?type=2" cssStyle="width:100px" allowClear="true" notAllowSelectParent="true"/>
+                            title="用户" url="/sys/office/treeData?type=3&child=role" cssStyle="width:100px" allowClear="true" notAllowSelectParent="true"/>
                     </td>
                     <td>
                         <input id="oaPersonDefineTableColumnList{{idx}}_remarks" name="oaPersonDefineTableColumnList[{{idx}}].remarks" type="text" value="{{row.remarks}}" maxlength="255" class="input-small "/>

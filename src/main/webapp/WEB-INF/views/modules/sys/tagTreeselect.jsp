@@ -6,9 +6,10 @@
 	<meta name="decorator" content="blank"/>
 	<%@include file="/WEB-INF/views/include/treeview.jsp" %>
 	<script type="text/javascript">
-		var key, lastValue = "", nodeList = [], type = getQueryString("type", "${url}");
+		var key, lastValue = "", nodeList = [], type = getQueryString("type", "${url}"), url = "";
+        url = getQueryString("child", "${url}") == 'role' ? "${ctx}/sys/role/treeData" : "${ctx}/sys/user/treeData";
 		var tree, setting = {view:{selectedMulti:false,dblClickExpand:false},check:{enable:"${checked}",nocheckInherit:true},
-				async:{enable:(type==3),url:"${ctx}/sys/user/treeData",autoParam:["id=officeId"]},
+				async:{enable:(type==3),url:url,autoParam:["id=officeId"]},
 				data:{simpleData:{enable:true}},callback:{<%--
 					beforeClick: function(treeId, treeNode){
 						if("${checked}" == "true"){
@@ -51,7 +52,7 @@
 					+ new Date().getTime(), function(zNodes){
 				// 初始化树结构
 				tree = $.fn.zTree.init($("#tree"), setting, zNodes);
-				
+
 				// 默认展开一级节点
 				var nodes = tree.getNodesByParam("level", 0);
 				for(var i=0; i<nodes.length; i++) {
