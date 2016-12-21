@@ -24,6 +24,10 @@ public class OaPersonDefineTableColumn extends DataEntity<OaPersonDefineTableCol
 	private String isShow;		// 是否显示到列表
 	private String isProcess;		// 是否流程变量
 	private String controlTypeId;		// 控件类型Id
+    private String isAudit;         // 是否为审批字段
+    private String auditPost ;      // 审批人
+
+    private String auditPostName ;
 	
 	public OaPersonDefineTableColumn() {
 		super();
@@ -116,5 +120,28 @@ public class OaPersonDefineTableColumn extends DataEntity<OaPersonDefineTableCol
 	public void setControlTypeId(String controlTypeId) {
 		this.controlTypeId = controlTypeId;
 	}
-	
+
+    public String getIsAudit() {
+        return isAudit;
+    }
+
+    public void setIsAudit(String isAudit) {
+        this.isAudit = isAudit;
+    }
+
+    public String getAuditPost() {
+        return auditPost;
+    }
+
+    public void setAuditPost(String auditPost) {
+        this.auditPost = auditPost;
+    }
+
+    public String getAuditPostName() {
+        return auditPostName;
+    }
+
+    public void setAuditPostName(String auditPostName) {
+        this.auditPostName = auditPostName;
+    }
 }

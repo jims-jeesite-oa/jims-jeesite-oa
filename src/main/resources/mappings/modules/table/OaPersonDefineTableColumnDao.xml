@@ -18,11 +18,15 @@
 		a.update_date AS "updateDate",
 		a.remarks AS "remarks",
 		a.del_flag AS "delFlag",
-		a.control_type_id AS "controlTypeId"
+		a.control_type_id AS "controlTypeId",
+		a.is_audit AS "isAudit",
+		a.audit_post AS "auditPost",
+		r.name AS "auditPostName"
 	</sql>
 	
 	<sql id="oaPersonDefineTableColumnJoins">
 		LEFT JOIN oa_person_define_table b ON b.id = a.table_id
+		LEFT JOIN sys_role r ON r.id = a.audit_post
 	</sql>
     
 	<select id="get" resultType="OaPersonDefineTableColumn">
@@ -43,6 +47,9 @@
 			<if test="table.id != null and table.id != ''">
 				AND a.table_id = #{table.id}
 			</if>
+            <if test="isAudit != null and isAudit != ''">
+                AND a.is_audit = #{isAudit}
+            </if>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
@@ -89,7 +96,9 @@
 			update_date,
 			remarks,
 			del_flag,
-			control_type_id
+			control_type_id,
+			is_audit,
+			audit_post
 		) VALUES (
 			#{id},
 			#{table.id},
@@ -106,7 +115,9 @@
 			#{updateDate},
 			#{remarks},
 			#{delFlag},
-			#{controlTypeId}
+			#{controlTypeId},
+			#{isAudit},
+			#{auditPost}
 		)
 	</insert>
 	
@@ -123,7 +134,9 @@
 			update_by = #{updateBy.id},
 			update_date = #{updateDate},
 			remarks = #{remarks},
-			control_type_id = #{controlTypeId}
+			control_type_id = #{controlTypeId},
+			is_audit = #{isAudit},
+			audit_post = #{auditPost}
 		WHERE id = #{id}
 	</update>
 	
@@ -146,6 +159,7 @@
         FROM oa_person_define_table_column a
         <include refid="oaPersonDefineTableColumnJoins"/>
         WHERE a.table_id = #{tableId}
+         and a.del_flag = '0'
     </select>
 
     <select id="getMaxColumnIndex" resultType="String">

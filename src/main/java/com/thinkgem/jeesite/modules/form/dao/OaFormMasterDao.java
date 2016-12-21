@@ -6,6 +6,7 @@ package com.thinkgem.jeesite.modules.form.dao;
 import com.thinkgem.jeesite.common.persistence.CrudDao;
 import com.thinkgem.jeesite.common.persistence.annotation.MyBatisDao;
 import com.thinkgem.jeesite.modules.form.entity.OaFormMaster;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 编辑器设计表单DAO接口
@@ -16,5 +17,5 @@ import com.thinkgem.jeesite.modules.form.entity.OaFormMaster;
 public interface OaFormMasterDao extends CrudDao<OaFormMaster> {
     OaFormMaster findFormContentByTableName(String tableName, String officeId);
 
-    OaFormMaster findByNo(String formNo,String officeId);
+    OaFormMaster findByNo(@Param("formNo")String formNo,@Param("officeId")String officeId);
 }

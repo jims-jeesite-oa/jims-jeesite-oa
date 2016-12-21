@@ -31,9 +31,6 @@
 			<li><label>对应表：</label>
 				<form:input path="tableName" htmlEscape="false" maxlength="100" class="input-medium"/>
 			</li>
-			<li><label>表单分类：</label>
-				<form:radiobuttons path="formType" items="${fns:getDictList('form_type')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
-			</li>
 			<li class="btns"><input id="btnSubmit" class="btn btn-primary" type="submit" value="查询"/></li>
             <shiro:hasPermission name="form:oaFormMaster:edit">
                 <li class="btns"><a href="${ctx}/form/oaFormMaster/form" role="button" class="btn btn-primary">添加</a></li>

@@ -1681,7 +1681,9 @@ create table OA_PERSON_DEFINE_TABLE_COLUMN
   update_date     DATE not null,
   remarks         VARCHAR2(255),
   del_flag        CHAR(1) default '0' not null,
-  control_type_id VARCHAR2(64)
+  control_type_id VARCHAR2(64),
+  is_audit        char(1),
+  audit_post      varchar2(64)
 )
 ;
 comment on column OA_PERSON_DEFINE_TABLE_COLUMN.id
@@ -1716,6 +1718,10 @@ comment on column OA_PERSON_DEFINE_TABLE_COLUMN.del_flag
   is '删除标记';
 comment on column OA_PERSON_DEFINE_TABLE_COLUMN.control_type_id
   is '控件类型Id';
+comment on column OA_PERSON_DEFINE_TABLE_COLUMN.is_audit
+  is '是否为审批字段';
+comment on column OA_PERSON_DEFINE_TABLE_COLUMN.audit_post
+  is '审批人';
 alter table OA_PERSON_DEFINE_TABLE_COLUMN
   add constraint PK_OA_PERSON_DEFINE_T_C primary key (ID);
 

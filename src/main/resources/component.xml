@@ -11,7 +11,7 @@
     <component>
         <value>date</value>
         <type>controlType</type>
-        <name>日期</name>
+        <name>日期输入</name>
         <content><![CDATA[
             <input name="" type="text" readonly="readonly" maxlength="20" class="input-medium Wdate "
 					value="" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
@@ -20,7 +20,7 @@
     <component>
         <value>datetime</value>
         <type>controlType</type>
-        <name>时间</name>
+        <name>时间输入</name>
         <content><![CDATA[
             <input name="" type="text" readonly="readonly" maxlength="20" class="input-medium Wdate "
 					value="" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',isShowClear:false});"/>
@@ -133,7 +133,7 @@
 	</script>
 </head>
 <body>
-	<form id="inputForm" action="${ctx}/oa/flow/save" method="post" class="form-horizontal">
+	<form id="inputForm" action="${ctx}/oa/flow/saveAudit" method="post" class="form-horizontal">
 		<input type="hidden" name="id" value="${id}"/>
 		<input type="hidden" name="act.taskId" value="${act.taskId}"/>
 		<input type="hidden" name="act.taskName" value="${act.taskName}"/>
@@ -147,11 +147,12 @@
 			<legend>${act.taskName}</legend>
             <table class="table-form">
                 $flowTableInfo$
+            </table>
+            <legend>您的意见</legend>
+            <table class="table-form">
                 <tr>
-					<td class="tit">您的意见</td>
-					<td colspan="5">
-						<textarea name="act.comment" class="required" rows="5" maxlength="20" cssStyle="width:800px">
-						</textarea>
+					<td>
+						<textarea name="act.comment" class="required" rows="5" style="width: 98%" /></textarea>
 					</td>
 				</tr>
             </table>

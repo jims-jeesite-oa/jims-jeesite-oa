@@ -1,3 +1,4 @@
+<%@ page import="com.thinkgem.jeesite.modules.table.entity.OaPersonDefineTable" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ include file="/WEB-INF/views/include/taglib.jsp"%>
 <html>
@@ -24,7 +25,10 @@
 			});
 		});
 		function addRow(list, idx, tpl, row){
-
+            if(!row) row = {}
+            if(!row.isAudit) row.isAudit = '0'
+            if(!row.tableStatus) row.tableStatus = 100
+            if(!row.columnType) row.columnType = 'text'
 			$(list).append(Mustache.render(tpl, {
 				idx: idx, delBtn: true, row: row
 			}));
@@ -39,6 +43,8 @@
 					}
 				}
 			});
+            changeAudit('oaPersonDefineTableColumnList' + idx + '_auditPost',row.isAudit)
+            changeColumnType('oaPersonDefineTableColumnList' + idx + '_columnType','oaPersonDefineTableColumnList' + idx + '_tableStatus')
 		}
 		function delRow(obj, prefix){
 			var id = $(prefix+"_id");
@@ -55,6 +61,28 @@
 				$(obj).parent().parent().removeClass("error");
 			}
 		}
+        function changeAudit(auditMan,val){
+            if(val == '1') {
+                $('#' + auditMan + 'Name').removeClass('disabled')
+                $('#' + auditMan + 'Button').removeClass('disabled')
+            } else {
+                $('#' + auditMan + 'Id').val('')
+                $('#' + auditMan + 'Name').val('')
+                $('#' + auditMan + 'Name').addClass('disabled')
+                $('#' + auditMan + 'Button').addClass('disabled')
+            }
+        }
+        function changeColumnType(id, s){
+            var v = $('#' + id).val()
+            if(v != 'VARCHAR2' && v != 'REMARK') {
+                $('#' + s).val('')
+                $('#' + s).attr('disabled',true)
+            } else {
+                if($('#' + s).val() == '') $('#' + s).val(100)
+                $('#' + s).removeAttr('disabled')
+            }
+        }
+
 	</script>
 </head>
 <body>
@@ -105,19 +133,19 @@
                 </div>
             </div>
             <legend>字段列表</legend>
+            <p>提示：数据类型为‘文本’、‘备注’时输入‘列的长度’，审核字段为‘是’时选择‘审核人’。</p>
             <div class="control-group">
             <table id="contentTable" class="table table-striped table-bordered table-condensed">
                 <thead>
                     <tr>
                         <th class="hide"></th>
-                        <th>列名</th>
-                        <th>列的类型</th>
+                        <th>数据列名</th>
+                        <th>数据类型</th>
                         <th>列的长度</th>
-                        <th>是否必填&nbsp;&nbsp;&nbsp;</th>
-                        <th>是否显示到列表</th>
-                        <th>是否流程变量</th>
+                        <th>控件显示方式</th>
+                        <th>审核字段</th>
+                        <th>审核人</th>
                         <th>备注信息</th>
-                        <th>控件类型Id</th>
                         <shiro:hasPermission name="table:oaPersonDefineTable:edit"><th width="10">&nbsp;</th></shiro:hasPermission>
                     </tr>
                 </thead>
@@ -138,8 +166,7 @@
                         <input id="oaPersonDefineTableColumnList{{idx}}_columnComment" name="oaPersonDefineTableColumnList[{{idx}}].columnComment" type="text" value="{{row.columnComment}}" maxlength="200" class="input-small "/>
                     </td>
                     <td>
-                        <select id="oaPersonDefineTableColumnList{{idx}}_columnType" name="oaPersonDefineTableColumnList[{{idx}}].columnType" data-value="{{row.columnType}}" class="input-small ">
-                            <option value=""></option>
+                        <select id="oaPersonDefineTableColumnList{{idx}}_columnType" name="oaPersonDefineTableColumnList[{{idx}}].columnType" data-value="{{row.columnType}}" class="input-small " onchange="changeColumnType(this.id,'oaPersonDefineTableColumnList{{idx}}_tableStatus')">
                             <c:forEach items="${fns:getDictList('column_type')}" var="dict">
                                 <option value="${dict.value}">${dict.label}</option>
                             </c:forEach>
@@ -149,30 +176,23 @@
                         <input id="oaPersonDefineTableColumnList{{idx}}_tableStatus" name="oaPersonDefineTableColumnList[{{idx}}].tableStatus" type="text" value="{{row.tableStatus}}" maxlength="11" class="input-small "/>
                     </td>
                     <td>
-                        <c:forEach items="${fns:getDictList('is_required')}" var="dict" varStatus="dictStatus">
-                            <span><input id="oaPersonDefineTableColumnList{{idx}}_isRequired${dictStatus.index}" name="oaPersonDefineTableColumnList[{{idx}}].isRequired" type="radio" value="${dict.value}" data-value="{{row.isRequired}}"><label for="oaPersonDefineTableColumnList{{idx}}_isRequired${dictStatus.index}">${dict.label}</label></span>
-                        </c:forEach>
-                    </td>
-                    <td>
-                        <c:forEach items="${fns:getDictList('is_show')}" var="dict" varStatus="dictStatus">
-                            <span><input id="oaPersonDefineTableColumnList{{idx}}_isShow${dictStatus.index}" name="oaPersonDefineTableColumnList[{{idx}}].isShow" type="radio" value="${dict.value}" data-value="{{row.isShow}}"><label for="oaPersonDefineTableColumnList{{idx}}_isShow${dictStatus.index}">${dict.label}</label></span>
-                        </c:forEach>
-                    </td>
-                    <td>
-                        <c:forEach items="${fns:getDictList('is_process')}" var="dict" varStatus="dictStatus">
-                            <span><input id="oaPersonDefineTableColumnList{{idx}}_isProcess${dictStatus.index}" name="oaPersonDefineTableColumnList[{{idx}}].isProcess" type="radio" value="${dict.value}" data-value="{{row.isProcess}}"><label for="oaPersonDefineTableColumnList{{idx}}_isProcess${dictStatus.index}">${dict.label}</label></span>
-                        </c:forEach>
-                    </td>
-                    <td>
-                        <input id="oaPersonDefineTableColumnList{{idx}}_remarks" name="oaPersonDefineTableColumnList[{{idx}}].remarks" type="text" value="{{row.remarks}}" maxlength="255" class="input-small "/>
-                    </td>
-                    <td>
                          <select id="oaPersonDefineTableColumnList{{idx}}_controlTypeId" name="oaPersonDefineTableColumnList[{{idx}}].controlTypeId" data-value="{{row.controlTypeId}}" class="input-small ">
-                            <option value=""></option>
                             <c:forEach items="${fns:getControl()}" var="dict">
                                 <option value="${dict.value}">${dict.name}</option>
                             </c:forEach>
                         </select>
+                    </td>
+                    <td>
+                        <c:forEach items="${fns:getDictList('yes_no')}" var="dict" varStatus="dictStatus">
+                            <span onclick="changeAudit('oaPersonDefineTableColumnList{{idx}}_auditPost',${dict.value})"><input id="oaPersonDefineTableColumnList{{idx}}_isAudit${dictStatus.index}" name="oaPersonDefineTableColumnList[{{idx}}].isAudit" type="radio" value="${dict.value}" data-value="{{row.isAudit}}"><label for="oaPersonDefineTableColumnList{{idx}}_isAudit${dictStatus.index}">${dict.label}</label></span>
+                        </c:forEach>
+                    </td>
+                    <td>
+                        <sys:treeselect id="oaPersonDefineTableColumnList{{idx}}_auditPost" name="oaPersonDefineTableColumnList[{{idx}}].auditPost" value="${row.auditPost}" labelName="${row.auditPost}" labelValue="{{row.auditPostName}}"
+                            title="用户" url="/sys/office/treeData?type=2" cssStyle="width:100px" allowClear="true" notAllowSelectParent="true"/>
+                    </td>
+                    <td>
+                        <input id="oaPersonDefineTableColumnList{{idx}}_remarks" name="oaPersonDefineTableColumnList[{{idx}}].remarks" type="text" value="{{row.remarks}}" maxlength="255" class="input-small "/>
                     </td>
                     <shiro:hasPermission name="table:oaPersonDefineTable:edit"><td class="text-center" width="10">
                         {{#delBtn}}<span class="close" onclick="delRow(this, '#oaPersonDefineTableColumnList{{idx}}')" title="删除">

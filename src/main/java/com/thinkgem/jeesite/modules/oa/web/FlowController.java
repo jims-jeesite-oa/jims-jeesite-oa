@@ -68,7 +68,7 @@ public class FlowController extends BaseController {
                 view = "flowAudit";
             }
 		}
-        OaFormMaster form = oaFormMasterService.findByNo(flow.getFormNo(), UserUtils.getUser().getOffice().getId());
+        OaFormMaster form = oaFormMasterService.findByNo(flow.getFormNo(), null);
         flow.setDatas(flowService.getByProcInsId(form.getTableName(), flow.getAct().getProcInsId()));
         flow.setTableName(form.getTableName());
         Component c = ComponentUtils.getComponent(view);
@@ -125,13 +125,13 @@ public class FlowController extends BaseController {
     }
 
     private void initComponent(OaFormMaster oaFormMaster,String view){
-        OaPersonDefineTable oaPersonDefineTable=this.oaPersonDefineTableService.findByTableName(oaFormMaster.getTableName(), oaFormMaster.getOffice().getId());
+        OaPersonDefineTable oaPersonDefineTable=this.oaPersonDefineTableService.findByTableName(oaFormMaster.getTableName(), null);
         List<OaPersonDefineTableColumn> oaPersonDefineTableColumns=this.oaPersonDefineTableService.findColumnListByTableId(oaPersonDefineTable.getId());
         String tableContent=oaFormMaster.getContent();
         for(OaPersonDefineTableColumn column : oaPersonDefineTableColumns){
             if(column != null && !"".equals(column)){
                 String content = "";
-                if("flowForm".equals(view)){
+                if("flowForm".equals(view) && !"REMARK".equalsIgnoreCase(column.getColumnType())){
                     Component component = ComponentUtils.getComponent(column.getControlTypeId());
                     if(component != null) {
                         content = component.getContent().replace("name=\"\"", "name=\"" + column.getColumnName() + "\"").replace("value=\"\"", "value=\"${" + column.getColumnName() + "}\"");

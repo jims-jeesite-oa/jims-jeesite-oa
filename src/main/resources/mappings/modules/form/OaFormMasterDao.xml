@@ -168,8 +168,10 @@
         <include refid="oaFormMasterColumns"/>
         FROM oa_form_master a
         <include refid="oaFormMasterJoins"/>
-        <where> a.office_id = #{1}
-            AND a.form_no = #{0}
+        <where> a.form_no = #{formNo}
+            <if test="officeId != null and officeId != ''">
+                AND a.office_id = #{officeId}
+            </if>
         </where>
     </select>
 </mapper>

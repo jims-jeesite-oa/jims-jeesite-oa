@@ -3,8 +3,10 @@
  */
 package com.thinkgem.jeesite.modules.sys.utils;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import com.thinkgem.jeesite.common.utils.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.UnavailableSecurityManagerException;
 import org.apache.shiro.session.InvalidSessionException;
@@ -310,5 +312,29 @@ public class UserUtils {
 //		}
 //		return new HashMap<String, Object>();
 //	}
+
+    /**
+     * 根据id获取用户姓名
+     * @param id
+     * @return
+     */
+    public static String getUsername(String id){
+        User user = (User)CacheUtils.get(USER_CACHE, USER_CACHE_ID_ + id);
+        if (user ==  null){
+            user = userDao.get(id);
+            if (user == null){
+                return null;
+            }
+        }
+        return user.getName();
+    }
+
+    public static List<Role> getCurrentUserRole(){
+        Role role = new Role();
+        role.getSqlMap().put("dsf", BaseService.dataScopeFilter(getUser().getCurrentUser(), "o", "u"));
+        List<Role> roleList = roleDao.findList(role);
+        if(roleList == null) roleList = new ArrayList<>();
+        return roleList;
+    }
 	
 }

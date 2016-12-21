@@ -104,6 +104,14 @@
     <example>${fns:getCache(cacheName, defaultValue)}</example>  
   </function>
 
+  <function>
+    <description>根据id获取用户姓名</description>
+    <name>getUsername</name>
+    <function-class>com.thinkgem.jeesite.modules.sys.utils.UserUtils</function-class>
+    <function-signature>java.lang.String getUsername(java.lang.String)</function-signature>
+    <example>${fns:getUsername(id)}</example>
+  </function>
+
     <function>
         <description>获取当前用户能评阅的人</description>
         <name>getAllPermission</name>

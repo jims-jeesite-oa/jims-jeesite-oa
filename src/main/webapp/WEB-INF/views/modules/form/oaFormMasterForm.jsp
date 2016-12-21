@@ -36,14 +36,14 @@
 	<form:form id="inputForm" modelAttribute="oaFormMaster" action="${ctx}/form/oaFormMaster/save" method="post" class="form-horizontal">
 		<form:hidden path="id"/>
 		<sys:message content="${message}"/>		
-		<div class="control-group">
-			<label class="control-label">医院机构Id：</label>
-			<div class="controls">
-				<sys:treeselect id="office" name="office.id" value="${oaFormMaster.office.id}" labelName="office.name" labelValue="${oaFormMaster.office.name}"
-					title="部门" url="/sys/office/treeData?type=2" cssClass="required" allowClear="true" notAllowSelectParent="true"/>
-				<span class="help-inline"><font color="red">*</font> </span>
-			</div>
-		</div>
+		<%--<div class="control-group">--%>
+			<%--<label class="control-label">医院机构：</label>--%>
+			<%--<div class="controls">--%>
+				<%--<sys:treeselect id="office" name="office.id" value="${oaFormMaster.office.id}" labelName="office.name" labelValue="${oaFormMaster.office.name}"--%>
+					<%--title="部门" url="/sys/office/treeData?type=2" cssClass="required" allowClear="true" notAllowSelectParent=""/>--%>
+				<%--<span class="help-inline"><font color="red">*</font> </span>--%>
+			<%--</div>--%>
+		<%--</div>--%>
         <div class="control-group">
             <label class="control-label">表单编号：</label>
             <div class="controls">
@@ -71,27 +71,9 @@
 			</div>
 		</div>
 		<div class="control-group">
-			<label class="control-label">表单分类：</label>
-			<div class="controls">
-				<form:radiobuttons path="formType" items="${fns:getDictList('form_type')}" itemLabel="label" itemValue="value" htmlEscape="false" class=""/>
-			</div>
-		</div>
-		<div class="control-group">
 			<label class="control-label">发布状态：</label>
 			<div class="controls">
 				<form:radiobuttons path="publishStatus" items="${fns:getDictList('publish_status')}" itemLabel="label" itemValue="value" htmlEscape="false" class=""/>
-			</div>
-		</div>
-		<div class="control-group">
-			<label class="control-label">数据模板：</label>
-			<div class="controls">
-				<form:radiobuttons path="dataTemplete" items="${fns:getDictList('data_templete')}" itemLabel="label" itemValue="value" htmlEscape="false" class=""/>
-			</div>
-		</div>
-		<div class="control-group">
-			<label class="control-label">设计类型：</label>
-			<div class="controls">
-				<form:radiobuttons path="designType" items="${fns:getDictList('design_type')}" itemLabel="label" itemValue="value" htmlEscape="false" class=""/>
 			</div>
 		</div>
 		<div class="control-group">

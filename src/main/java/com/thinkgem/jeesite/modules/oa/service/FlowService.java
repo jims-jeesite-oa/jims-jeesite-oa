@@ -8,6 +8,7 @@ import com.thinkgem.jeesite.modules.act.service.ActTaskService;
 import com.thinkgem.jeesite.modules.oa.dao.FlowDao;
 import com.thinkgem.jeesite.modules.oa.entity.FlowData;
 import com.thinkgem.jeesite.modules.oa.units.OConvertUtils;
+import com.thinkgem.jeesite.modules.sys.entity.Role;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import com.thinkgem.jeesite.modules.table.dao.OaPersonDefineTableColumnDao;
 import com.thinkgem.jeesite.modules.table.dao.OaPersonDefineTableDao;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.beans.PropertyDescriptor;
 import java.util.List;
 import java.util.Map;
 
@@ -110,7 +112,7 @@ public class FlowService extends CrudService<FlowDao, FlowData> {
     }
 
 	public Map<String,Object> getByProcInsId(String tableName,String procInsId) {
-        OaPersonDefineTable defineTable = oaPersonDefineTableDao.findByTableName(tableName, UserUtils.getUser().getOffice().getId());
+        OaPersonDefineTable defineTable = oaPersonDefineTableDao.findByTableName(tableName,null);
         if(defineTable != null){
             List<OaPersonDefineTableColumn> columns = oaPersonDefineTableColumnDao.findColumnListByTableId(defineTable.getId());
             String sql = "select ";
@@ -181,16 +183,29 @@ public class FlowService extends CrudService<FlowDao, FlowData> {
 		String taskDefKey = flowData.getAct().getTaskDefKey();
 
 		// 审核环节
-//		if ("audit".equals(taskDefKey)){}
-//		else if ("audit2".equals(taskDefKey)){
-//			testAudit.setHrText(testAudit.getAct().getComment());
-//			dao.updateHrText(testAudit);
-//		}
-//		else if ("apply_end".equals(taskDefKey)){}
-//		// 未知环节，直接返回
-//		else{
-//			return;
-//		}
+		if (taskDefKey.startsWith("audit")){
+            List<Role> roles = UserUtils.getCurrentUserRole();
+            OaPersonDefineTable table = oaPersonDefineTableDao.findByTableName(flowData.getTableName(), null);
+            OaPersonDefineTableColumn param = new OaPersonDefineTableColumn(table);
+            param.setIsAudit("1");
+            List<OaPersonDefineTableColumn> columns = oaPersonDefineTableColumnDao.findList(param);
+            outer : for(Role role : roles) {
+                for(OaPersonDefineTableColumn column : columns) {
+                    if(role.getId().equals(column.getAuditPost())) {
+                        String sql = "update " + flowData.getTableName() + " set "
+                                + column.getColumnName() + "='" + flowData.getAct().getComment()
+                                + "' where id='" + flowData.getId() + "'";
+                        oaPersonDefineTableDao.executeSql(sql);
+                        break outer;
+                    }
+                }
+            }
+        }
+		else if ("apply_end".equals(taskDefKey)){}
+		// 未知环节，直接返回
+		else{
+			return;
+		}
 		// 提交流程任务
 		Map<String, Object> vars = Maps.newHashMap();
 		vars.put("pass", "yes".equals(flowData.getAct().getFlag())? "1" : "0");

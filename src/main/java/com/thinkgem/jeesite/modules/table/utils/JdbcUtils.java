@@ -105,6 +105,9 @@ public class JdbcUtils {
         List<OaPersonDefineTableColumn> columns = table.getOaPersonDefineTableColumnList();
         if(columns != null && columns.size() > 0) {
             for(OaPersonDefineTableColumn column : columns) {
+                if("REMARK".equalsIgnoreCase(column.getColumnType())) {
+                    column.setColumnType("VARCHAR2");
+                }
                 sql.append(column.getColumnName() + " " + column.getColumnType() +
                         ("VARCHAR2".equalsIgnoreCase(column.getColumnType()) ? "(" + column.getTableStatus() + ")" : ""));
                 sql.append("1".equals(column.getIsRequired()) ? " not null," : ",");
