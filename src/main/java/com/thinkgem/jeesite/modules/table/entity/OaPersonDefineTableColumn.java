@@ -26,6 +26,7 @@ public class OaPersonDefineTableColumn extends DataEntity<OaPersonDefineTableCol
 	private String controlTypeId;		// 控件类型Id
     private String isAudit;         // 是否为审批字段
     private String auditPost ;      // 审批人
+    private Integer sort;   // 显示顺序
 
     private String auditPostName ;
 	
@@ -143,5 +144,13 @@ public class OaPersonDefineTableColumn extends DataEntity<OaPersonDefineTableCol
 
     public void setAuditPostName(String auditPostName) {
         this.auditPostName = auditPostName;
+    }
+
+    public Integer getSort() {
+        return sort;
+    }
+
+    public void setSort(Integer sort) {
+        this.sort = sort;
     }
 }

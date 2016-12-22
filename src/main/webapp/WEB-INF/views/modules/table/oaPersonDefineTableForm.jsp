@@ -27,6 +27,7 @@
 		function addRow(list, idx, tpl, row){
             if(!row) row = {}
             if(!row.isAudit) row.isAudit = '0'
+            if(!row.isShow) row.isShow = '0'
             if(!row.tableStatus) row.tableStatus = 100
             if(!row.columnType) row.columnType = 'text'
 			$(list).append(Mustache.render(tpl, {
@@ -108,7 +109,7 @@
             <div class="control-group">
                 <label class="control-label">表名(以英文开头)：</label>
                 <div class="controls">
-                    <form:input path="tableName" htmlEscape="false" cssClass="required abc startEn" maxlength="200" class="input-xlarge "/>
+                    <form:input path="tableName" htmlEscape="false" cssClass="required abc startEn" maxlength="200" class="input-xlarge" readonly="${oaPersonDefineTable.id == null ? '': 'true'}"/>
                 </div>
             </div>
             <div class="control-group">
@@ -135,7 +136,7 @@
             <legend>字段列表</legend>
             <p>提示：数据类型为‘文本’、‘备注’时输入‘列的长度’，审核字段为‘是’时选择‘审核人’。</p>
             <div class="control-group">
-            <table id="contentTable" class="table table-striped table-bordered table-condensed">
+            <table id="contentTable" class="table table-striped table-bordered table-condensed"  >
                 <thead>
                     <tr>
                         <th class="hide"></th>
@@ -145,6 +146,8 @@
                         <th>控件显示方式</th>
                         <th>审核字段</th>
                         <th>审核人</th>
+                        <th>列表显示</th>
+                        <th>显示顺序</th>
                         <th>备注信息</th>
                         <shiro:hasPermission name="table:oaPersonDefineTable:edit"><th width="10">&nbsp;</th></shiro:hasPermission>
                     </tr>
@@ -162,7 +165,7 @@
                         <input id="oaPersonDefineTableColumnList{{idx}}_delFlag" name="oaPersonDefineTableColumnList[{{idx}}].delFlag" type="hidden" value="0"/>
                         <input id="oaPersonDefineTableColumnList{{idx}}_columnName" name="oaPersonDefineTableColumnList[{{idx}}].columnName" type="hidden" value="{{row.columnName}}"/>
                     </td>
-                    <td>
+                    <td nowrap="nowrap">
                         <input id="oaPersonDefineTableColumnList{{idx}}_columnComment" name="oaPersonDefineTableColumnList[{{idx}}].columnComment" type="text" value="{{row.columnComment}}" maxlength="200" class="input-small required"/>
                     </td>
                     <td>
@@ -172,8 +175,8 @@
                             </c:forEach>
                         </select>
                     </td>
-                    <td>
-                        <input id="oaPersonDefineTableColumnList{{idx}}_tableStatus" name="oaPersonDefineTableColumnList[{{idx}}].tableStatus" type="text" value="{{row.tableStatus}}" maxlength="11" class="input-small "/>
+                    <td nowrap="nowrap">
+                        <input id="oaPersonDefineTableColumnList{{idx}}_tableStatus" name="oaPersonDefineTableColumnList[{{idx}}].tableStatus" type="text" value="{{row.tableStatus}}" maxlength="11" class="input-small number"/>
                     </td>
                     <td>
                          <select id="oaPersonDefineTableColumnList{{idx}}_controlTypeId" name="oaPersonDefineTableColumnList[{{idx}}].controlTypeId" data-value="{{row.controlTypeId}}" class="input-small ">
@@ -182,7 +185,7 @@
                             </c:forEach>
                         </select>
                     </td>
-                    <td>
+                    <td nowrap="nowrap">
                         <c:forEach items="${fns:getDictList('yes_no')}" var="dict" varStatus="dictStatus">
                             <span onclick="changeAudit('oaPersonDefineTableColumnList{{idx}}_auditPost',${dict.value})"><input id="oaPersonDefineTableColumnList{{idx}}_isAudit${dictStatus.index}" name="oaPersonDefineTableColumnList[{{idx}}].isAudit" type="radio" value="${dict.value}" data-value="{{row.isAudit}}"><label for="oaPersonDefineTableColumnList{{idx}}_isAudit${dictStatus.index}">${dict.label}</label></span>
                         </c:forEach>
@@ -191,8 +194,16 @@
                         <sys:treeselect id="oaPersonDefineTableColumnList{{idx}}_auditPost" name="oaPersonDefineTableColumnList[{{idx}}].auditPost" value="{{row.auditPost}}" labelName="${row.auditPost}" labelValue="{{row.auditPostName}}"
                             title="角色" url="/sys/office/treeData?type=3&child=role" cssStyle="width:100px" allowClear="true" notAllowSelectParent="true"/>
                     </td>
-                    <td>
-                        <input id="oaPersonDefineTableColumnList{{idx}}_remarks" name="oaPersonDefineTableColumnList[{{idx}}].remarks" type="text" value="{{row.remarks}}" maxlength="255" class="input-small "/>
+                    <td nowrap="nowrap">
+                        <c:forEach items="${fns:getDictList('yes_no')}" var="dict" varStatus="dictStatus">
+                            <span><input id="oaPersonDefineTableColumnList{{idx}}_isShow${dictStatus.index}" name="oaPersonDefineTableColumnList[{{idx}}].isShow" type="radio" value="${dict.value}" data-value="{{row.isShow}}"><label for="oaPersonDefineTableColumnList{{idx}}_isShow${dictStatus.index}">${dict.label}</label></span>
+                        </c:forEach>
+                    </td>
+                    <td nowrap="nowrap">
+                        <input id="oaPersonDefineTableColumnList{{idx}}_sort" name="oaPersonDefineTableColumnList[{{idx}}].sort" type="text" value="{{row.sort}}" maxlength="11" class="input-small required number"/>
+                    </td>
+                    <td nowrap="nowrap">
+                        <input id="oaPersonDefineTableColumnList{{idx}}_remarks" name="oaPersonDefineTableColumnList[{{idx}}].remarks" type="text" value="{{row.remarks}}" maxlength="255" class="input-small"/>
                     </td>
                     <shiro:hasPermission name="table:oaPersonDefineTable:edit"><td class="text-center" width="10">
                         {{#delBtn}}<span class="close" onclick="delRow(this, '#oaPersonDefineTableColumnList{{idx}}')" title="删除">

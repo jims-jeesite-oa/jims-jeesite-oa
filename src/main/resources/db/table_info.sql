@@ -1683,6 +1683,7 @@ create table OA_PERSON_DEFINE_TABLE_COLUMN
   del_flag        CHAR(1) default '0' not null,
   control_type_id VARCHAR2(64),
   is_audit        char(1),
+  show            number,
   audit_post      varchar2(64)
 )
 ;
@@ -1722,6 +1723,8 @@ comment on column OA_PERSON_DEFINE_TABLE_COLUMN.is_audit
   is '是否为审批字段';
 comment on column OA_PERSON_DEFINE_TABLE_COLUMN.audit_post
   is '审批人';
+comment on column OA_PERSON_DEFINE_TABLE_COLUMN.show
+  is '显示顺序';
 alter table OA_PERSON_DEFINE_TABLE_COLUMN
   add constraint PK_OA_PERSON_DEFINE_T_C primary key (ID);
 

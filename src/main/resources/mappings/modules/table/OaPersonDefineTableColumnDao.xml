@@ -21,6 +21,7 @@
 		a.control_type_id AS "controlTypeId",
 		a.is_audit AS "isAudit",
 		a.audit_post AS "auditPost",
+		a.sort AS "sort",
 		r.name AS "auditPostName"
 	</sql>
 	
@@ -56,7 +57,7 @@
 				ORDER BY ${page.orderBy}
 			</when>
 			<otherwise>
-				ORDER BY a.create_date ASC
+				ORDER BY a.sort,a.create_date ASC
 			</otherwise>
 		</choose>
 	</select>
@@ -74,7 +75,7 @@
 				ORDER BY ${page.orderBy}
 			</when>
 			<otherwise>
-				ORDER BY a.create_date ASC
+				ORDER BY a.sort,a.create_date ASC
 			</otherwise>
 		</choose>
 	</select>
@@ -98,6 +99,7 @@
 			del_flag,
 			control_type_id,
 			is_audit,
+			sort,
 			audit_post
 		) VALUES (
 			#{id},
@@ -117,6 +119,7 @@
 			#{delFlag},
 			#{controlTypeId},
 			#{isAudit},
+			#{sort},
 			#{auditPost}
 		)
 	</insert>
@@ -136,6 +139,7 @@
 			remarks = #{remarks},
 			control_type_id = #{controlTypeId},
 			is_audit = #{isAudit},
+			sort = #{sort},
 			audit_post = #{auditPost}
 		WHERE id = #{id}
 	</update>
@@ -160,6 +164,7 @@
         <include refid="oaPersonDefineTableColumnJoins"/>
         WHERE a.table_id = #{tableId}
          and a.del_flag = '0'
+         order by a.sort
     </select>
 
     <select id="getMaxColumnIndex" resultType="String">
