@@ -134,7 +134,7 @@
                 </div>
             </div>
             <legend>字段列表</legend>
-            <p>提示：数据类型为‘文本’、‘备注’时输入‘列的长度’，审核字段为‘是’时选择‘审核人’。</p>
+            <span class="help-inline">提示：数据类型为‘文本’、‘备注’时输入‘列的长度’，审核字段为‘是’时选择‘审核人’。</span>
             <div class="control-group">
             <table id="contentTable" class="table table-striped table-bordered table-condensed"  >
                 <thead>

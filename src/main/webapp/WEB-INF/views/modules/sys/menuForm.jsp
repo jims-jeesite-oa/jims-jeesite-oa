@@ -80,13 +80,13 @@
 				<span class="help-inline">点击菜单跳转的页面</span>
 			</div>
 		</div>
-		<div class="control-group">
-			<label class="control-label">目标:</label>
-			<div class="controls">
-				<form:input path="target" htmlEscape="false" maxlength="10" class="input-small"/>
-				<span class="help-inline">链接地址打开的目标窗口，默认：mainFrame</span>
-			</div>
-		</div>
+		<%--<div class="control-group">--%>
+			<%--<label class="control-label">目标:</label>--%>
+			<%--<div class="controls">--%>
+				<%--<form:input path="target" htmlEscape="false" maxlength="10" class="input-small"/>--%>
+				<%--<span class="help-inline">链接地址打开的目标窗口，默认：mainFrame</span>--%>
+			<%--</div>--%>
+		<%--</div>--%>
 		<div class="control-group">
 			<label class="control-label">图标:</label>
 			<div class="controls">
