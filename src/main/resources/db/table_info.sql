@@ -1370,7 +1370,7 @@ alter table OA_CONTROL_TYPE
 create table OA_FORM_MASTER
 (
   id             VARCHAR2(64) not null,
-  office_id      VARCHAR2(64) not null,
+  office_id      VARCHAR2(64),
   form_no        VARCHAR2(50),
   title          VARCHAR2(100),
   alias          VARCHAR2(100),

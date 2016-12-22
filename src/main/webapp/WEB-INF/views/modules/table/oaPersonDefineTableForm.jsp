@@ -188,8 +188,8 @@
                         </c:forEach>
                     </td>
                     <td>
-                        <sys:treeselect id="oaPersonDefineTableColumnList{{idx}}_auditPost" name="oaPersonDefineTableColumnList[{{idx}}].auditPost" value="${row.auditPost}" labelName="${row.auditPost}" labelValue="{{row.auditPostName}}"
-                            title="用户" url="/sys/office/treeData?type=3&child=role" cssStyle="width:100px" allowClear="true" notAllowSelectParent="true"/>
+                        <sys:treeselect id="oaPersonDefineTableColumnList{{idx}}_auditPost" name="oaPersonDefineTableColumnList[{{idx}}].auditPost" value="{{row.auditPost}}" labelName="${row.auditPost}" labelValue="{{row.auditPostName}}"
+                            title="角色" url="/sys/office/treeData?type=3&child=role" cssStyle="width:100px" allowClear="true" notAllowSelectParent="true"/>
                     </td>
                     <td>
                         <input id="oaPersonDefineTableColumnList{{idx}}_remarks" name="oaPersonDefineTableColumnList[{{idx}}].remarks" type="text" value="{{row.remarks}}" maxlength="255" class="input-small "/>

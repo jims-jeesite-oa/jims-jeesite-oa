@@ -3,7 +3,7 @@
     <component>
         <value>text</value>
         <type>controlType</type>
-        <name>标志输入</name>
+        <name>标准输入</name>
         <content><![CDATA[
             <input name="" type="text" value=""/>
         ]]></content>

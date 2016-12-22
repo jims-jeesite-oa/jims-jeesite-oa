@@ -74,7 +74,7 @@
 			<label class="control-label">内容：</label>
 			<div class="controls">
                 <form:textarea id="content" htmlEscape="true"  rows="4" maxlength="200" class="input-xxlarge" path="content"/>
-                <sys:ckeditor replace="content" />
+                <sys:ckeditor replace="content" toolbar="simple"/>
 			</div>
 		</div>
 		<div class="control-group">

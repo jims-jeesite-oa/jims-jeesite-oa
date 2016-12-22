@@ -33,7 +33,18 @@ CKEDITOR.editorConfig = function( config ) {
 	    ['Styles','Format','Font','FontSize'],
 	    ['TextColor','BGColor']
 	];
-	config.toolbar = 'default';
+    config.toolbar_simple = [
+        ['Source','Preview','-'],
+        ['Cut','Copy','Paste','Undo','Redo','Font','FontSize'],
+        ['TextColor','BGColor'],
+        ['Bold','Italic','Underline','Strike','-'],
+        ['Subscript','Superscript','-'],
+        ['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-'],
+        ['Table','HorizontalRule','-'],
+        ['Maximize']
+
+    ];
+	if(!config.toolbar) config.toolbar = 'default';
 	if(config.ckfinderPath){
 		config.filebrowserBrowseUrl = config.ckfinderPath+'/ckfinder.html?type=files&start=files:'+config.ckfinderUploadPath;
 		config.filebrowserImageBrowseUrl = config.ckfinderPath+'/ckfinder.html?type=images&start=images:'+config.ckfinderUploadPath;
