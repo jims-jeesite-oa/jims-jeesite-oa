@@ -9,6 +9,14 @@
         ]]></content>
     </component>
     <component>
+        <value>number</value>
+        <type>controlType</type>
+        <name>数字输入</name>
+        <content><![CDATA[
+            <input name="" type="text" value="" class="number"/>
+        ]]></content>
+    </component>
+    <component>
         <value>date</value>
         <type>controlType</type>
         <name>日期输入</name>

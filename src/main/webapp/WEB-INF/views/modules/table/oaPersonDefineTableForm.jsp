@@ -108,13 +108,13 @@
             <div class="control-group">
                 <label class="control-label">表名(以英文开头)：</label>
                 <div class="controls">
-                    <form:input path="tableName" htmlEscape="false" maxlength="200" class="input-xlarge "/>
+                    <form:input path="tableName" htmlEscape="false" cssClass="required abc startEn" maxlength="200" class="input-xlarge "/>
                 </div>
             </div>
             <div class="control-group">
                 <label class="control-label">注释：</label>
                 <div class="controls">
-                    <form:input path="tableComment" htmlEscape="false" maxlength="200" class="input-xlarge "/>
+                    <form:input path="tableComment" htmlEscape="false" maxlength="200" class="input-xlarge required"/>
                 </div>
             </div>
             <%--<div class="control-group">--%>
@@ -163,7 +163,7 @@
                         <input id="oaPersonDefineTableColumnList{{idx}}_columnName" name="oaPersonDefineTableColumnList[{{idx}}].columnName" type="hidden" value="{{row.columnName}}"/>
                     </td>
                     <td>
-                        <input id="oaPersonDefineTableColumnList{{idx}}_columnComment" name="oaPersonDefineTableColumnList[{{idx}}].columnComment" type="text" value="{{row.columnComment}}" maxlength="200" class="input-small "/>
+                        <input id="oaPersonDefineTableColumnList{{idx}}_columnComment" name="oaPersonDefineTableColumnList[{{idx}}].columnComment" type="text" value="{{row.columnComment}}" maxlength="200" class="input-small required"/>
                     </td>
                     <td>
                         <select id="oaPersonDefineTableColumnList{{idx}}_columnType" name="oaPersonDefineTableColumnList[{{idx}}].columnType" data-value="{{row.columnType}}" class="input-small " onchange="changeColumnType(this.id,'oaPersonDefineTableColumnList{{idx}}_tableStatus')">

@@ -47,13 +47,13 @@
         <div class="control-group">
             <label class="control-label">表单编号：</label>
             <div class="controls">
-                <form:input path="formNo" htmlEscape="false" maxlength="50" class="input-xlarge "/>
+                <form:input path="formNo" htmlEscape="false" maxlength="50" class="input-xlarge required abc"/>
             </div>
         </div>
 		<div class="control-group">
 			<label class="control-label">表单标题：</label>
 			<div class="controls">
-				<form:input path="title" htmlEscape="false" maxlength="100" class="input-xlarge "/>
+				<form:input path="title" htmlEscape="false" maxlength="100" class="input-xlarge required"/>
 			</div>
 		</div>
 		<div class="control-group">
@@ -65,7 +65,7 @@
 		<div class="control-group">
 			<label class="control-label">对应表：</label>
 			<div class="controls">
-                <form:select path="tableName" class="input-xlarge ">
+                <form:select path="tableName" class="input-xlarge required">
                     <form:options items="${fns:getSelfTable()}" itemLabel="tableComment" itemValue="tableName" htmlEscape="false"/>
                 </form:select>
 			</div>
