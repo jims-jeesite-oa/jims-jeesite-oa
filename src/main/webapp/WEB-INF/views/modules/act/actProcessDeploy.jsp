@@ -25,11 +25,13 @@
 	</script>
 </head>
 <body>
-	<ul class="nav nav-tabs">
-		<li><a href="${ctx}/act/process/">流程管理</a></li>
-		<li class="active"><a href="${ctx}/act/process/deploy/">部署流程</a></li>
-		<li><a href="${ctx}/act/process/running/">运行中的流程</a></li>
-	</ul><br/>
+    <ul class="breadcrumb">
+        <li id="levelMenu1"><a href="#"></a> <span class="divider">/</span></li>
+        <li id="levelMenu2"><a href="#"></a> <span class="divider">/</span></li>
+        <li class="active">
+            部署流程
+        </li>
+    </ul>
 	<sys:message content="${message}"/>
 	<form id="inputForm" action="${ctx}/act/process/deploy" method="post" enctype="multipart/form-data" class="form-horizontal">
 		<div class="control-group">

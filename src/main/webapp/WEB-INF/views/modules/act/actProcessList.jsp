@@ -33,11 +33,10 @@
 	</script>
 </head>
 <body>
-	<ul class="nav nav-tabs">
-		<li class="active"><a href="${ctx}/act/process/">流程管理</a></li>
-		<li><a href="${ctx}/act/process/deploy/">部署流程</a></li>
-		<li><a href="${ctx}/act/process/running/">运行中的流程</a></li>
-	</ul>
+    <ul class="breadcrumb">
+        <li id="levelMenu1"><a href="#"></a> <span class="divider">/</span></li>
+        <li id="levelMenu2" class="active"></li>
+    </ul>
 	<form id="searchForm" action="${ctx}/act/process/" method="post" class="breadcrumb form-search">
 		<select id="category" name="category" class="input-medium">
 			<option value="">全部分类</option>
@@ -46,6 +45,7 @@
 			</c:forEach>
 		</select>
 		&nbsp;<input id="btnSubmit" class="btn btn-primary" type="submit" value="查询"/>
+        <a href="${ctx}/act/process/deploy/" role="button" class="btn btn-primary">部署流程</a>
 	</form>
 	<sys:message content="${message}"/>
 	<table class="table table-striped table-bordered table-condensed table-nowrap">

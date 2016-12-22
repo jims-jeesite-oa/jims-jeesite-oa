@@ -23,7 +23,27 @@
 				}
 			});
 		});
+        function updateSelfFlow(id, selfFlow){
+            $.jBox($("#selfFlowBox").html(), {title:"选择流程", buttons:{"关闭":true}, submit: function(){}});
+        }
+        function selfHref(){
+            $('#href').val($('#selfFlowBoxselfFlow').val())
+            $.jBox.close()
+        }
 	</script>
+    <script type="text/template" id="selfFlowBox">
+        <form id="selfFlowForm" action="#" method="post" style="text-align:center;" class="form-search"><br/>
+            <select id="selfFlowBoxselfFlow" name="selfFlow" onselect="">
+                <c:forEach items="${fno:processList('')}" var="object">
+                    <c:set var="process" value="${object[0]}" />
+                    <c:set var="deployment" value="${object[1]}" />
+                    <option value="/act/task/form?procDefId=${process.id}">${process.name}</option>
+                </c:forEach>
+            </select>
+            <br/><br/>　　
+            <input id="selfFlowBtn" onclick="selfHref()" class="btn btn-primary" type="button" value="   确    定   "/>　　
+        </form>
+    </script>
 </head>
 <body>
     <ul class="breadcrumb">
@@ -53,7 +73,10 @@
 		<div class="control-group">
 			<label class="control-label">链接:</label>
 			<div class="controls">
-				<form:input path="href" htmlEscape="false" maxlength="2000" class="input-xxlarge"/>
+				<form:input id="href" path="href" htmlEscape="false" maxlength="2000" class="input-xxlarge"/>
+                <shiro:hasPermission name="sys:menu:edit">
+                    <a href="javascript:" onclick="updateSelfFlow()" class="btn">选择自定义</a>
+                </shiro:hasPermission>
 				<span class="help-inline">点击菜单跳转的页面</span>
 			</div>
 		</div>

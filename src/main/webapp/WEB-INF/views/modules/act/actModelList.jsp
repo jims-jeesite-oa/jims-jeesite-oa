@@ -33,10 +33,10 @@
 	</script>
 </head>
 <body>
-	<ul class="nav nav-tabs">
-		<li class="active"><a href="${ctx}/act/model/">模型管理</a></li>
-		<li><a href="${ctx}/act/model/create">新建模型</a></li>
-	</ul>
+    <ul class="breadcrumb">
+        <li id="levelMenu1"><a href="#"></a> <span class="divider">/</span></li>
+        <li id="levelMenu2" class="active"></li>
+    </ul>
 	<form id="searchForm" action="${ctx}/act/model/" method="post" class="breadcrumb form-search">
 		<select id="category" name="category" class="input-medium">
 			<option value="">全部分类</option>
@@ -45,6 +45,7 @@
 			</c:forEach>
 		</select>
 		&nbsp;<input id="btnSubmit" class="btn btn-primary" type="submit" value="查询"/>
+        <a href="${ctx}/act/model/create" role="button" class="btn btn-primary">添加</a>
 	</form>
 	<sys:message content="${message}"/>
 	<table class="table table-striped table-bordered table-condensed table-nowrap">

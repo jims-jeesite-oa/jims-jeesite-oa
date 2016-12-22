@@ -71,12 +71,6 @@
 			</div>
 		</div>
 		<div class="control-group">
-			<label class="control-label">发布状态：</label>
-			<div class="controls">
-				<form:radiobuttons path="publishStatus" items="${fns:getDictList('publish_status')}" itemLabel="label" itemValue="value" htmlEscape="false" class=""/>
-			</div>
-		</div>
-		<div class="control-group">
 			<label class="control-label">内容：</label>
 			<div class="controls">
                 <form:textarea id="content" htmlEscape="true"  rows="4" maxlength="200" class="input-xxlarge" path="content"/>

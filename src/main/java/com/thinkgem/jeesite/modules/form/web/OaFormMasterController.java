@@ -49,10 +49,6 @@ public class OaFormMasterController extends BaseController {
 
     @Autowired
     private OaPersonDefineTableService oaPersonDefineTableService;
-
-    @Autowired
-    private OaControlTypeService oaControlTypeService;
-
 	
 	@ModelAttribute
 	public OaFormMaster get(@RequestParam(required=false) String id) {
