@@ -507,9 +507,9 @@ public class MailInfoController extends BaseController {
             Session session = getSession(mailAccounts.get(0).getMailSend(), mailAccounts.get(0).getUsername(), mailAccounts.get(0).getPassword(), mailAccounts.get(0).getPort());
             if (mailInfo.getContent() != null) {
                 mailInfo.setContent(StringEscapeUtils.unescapeHtml4(
-                        mailInfo.getContent()));
+                        mailInfo.getContent().replace("\"","")));
             }
-            send(getMessage1(session, mailInfo, mailAccounts.get(0).getUsername()));
+            send(getMessage3(session, mailInfo, mailAccounts.get(0).getUsername()));
             return "modules/oa/success";
         } else {
             return "modules/oa/wrong";
@@ -532,15 +532,14 @@ public class MailInfoController extends BaseController {
                 });
         return session;
     }
-
-    //不含附件
-    private static Message getMessage1(Session session, MailInfo mailInfo, String username) throws MessagingException {
+   //发送html格式的正文
+    private static Message getMessage3(Session session, MailInfo mailInfo, String username) throws MessagingException{
         Message message = new MimeMessage(session);
         message.setFrom(new InternetAddress(username));
         message.setRecipients(Message.RecipientType.TO,
                 InternetAddress.parse(mailInfo.getOutSide()));
         message.setSubject(mailInfo.getTheme());
-        message.setText(mailInfo.getContent());
+        message.setContent(mailInfo.getContent(), "text/html");
         return message;
     }
 
@@ -566,8 +565,6 @@ public class MailInfoController extends BaseController {
         mailAccount.setLoginId(UserUtils.getUser().getId());
         List<MailAccount> mailAccounts = mailAccountService.findList(mailAccount);
         PraseMimeMessage praseMimeMessage = new PraseMimeMessage();
-       /* List<MailInfo> list=lender.test(mailAccounts.get(0).getUsername(), mailAccounts.get(0).getPassword(),
-                mailAccounts.get(0).getPort(), mailAccounts.get(0).getMailSend());*/
         List<MailInfo> list = praseMimeMessage.test(mailAccounts.get(0).getUsername(), mailAccounts.get(0).getPassword(),
                 mailAccounts.get(0).getPort(), mailAccounts.get(0).getMailAccept());
         Page<MailInfo> page = mailInfoService.findPage(new Page<MailInfo>(request, response), mailInfo);
@@ -589,15 +586,42 @@ public class MailInfoController extends BaseController {
      * @throws Exception
      */
     @RequestMapping(value = {"findMail", ""})
-    public String findMail(MailInfo mailInfo, Model model, String content, String theme, String name, String time) throws Exception {
+    public String findMail(MailInfo mailInfo, Model model, String id, String name) throws Exception {
+        MailAccount mailAccount = new MailAccount();
+        mailAccount.setLoginId(UserUtils.getUser().getId());
+        List<MailAccount> mailAccounts = mailAccountService.findList(mailAccount);
+        PraseMimeMessage praseMimeMessage = new PraseMimeMessage();
+        List<MailInfo> list = praseMimeMessage.test(mailAccounts.get(0).getUsername(), mailAccounts.get(0).getPassword(),
+                mailAccounts.get(0).getPort(), mailAccounts.get(0).getMailAccept());
 
-//        mailInfo.setContent(content);
-        mailInfo.setTheme(theme);
-        mailInfo.setName(name);
-       /* SimpleDateFormat sdf=new SimpleDateFormat("yyyy年MM月dd日");
-        Date date=sdf.parse(time);
-        mailInfo.setTime(date);*/
-        model.addAttribute("mailInfo", mailInfo);
+      if (id != null && id !="") {
+            id= StringEscapeUtils.unescapeHtml4(id).replace("\"", "");
+            if(StringUtils.isEmpty(id)){
+                name=StringEscapeUtils.unescapeHtml4(name).replace("\"", "");
+                for (int i = 0; i < list.size(); i++) {
+                    if (StringUtils.equals(name,list.get(i).getName())) {
+
+                        mailInfo.setContent(list.get(i).getContent());
+                        mailInfo.setTheme(list.get(i).getTheme());
+                        mailInfo.setName(list.get(i).getName());
+                        mailInfo.setTime(list.get(i).getTime());
+                        mailInfo.setReceiverNames(list.get(i).getReceiverNames());
+                        model.addAttribute("mailInfo", mailInfo);
+                    }
+                }
+            }
+            for (int i = 0; i < list.size(); i++) {
+                if (StringUtils.equals(id,list.get(i).getUID())) {
+                    System.out.println(list.get(i).getUID()) ;
+                    mailInfo.setContent(list.get(i).getContent());
+                    mailInfo.setTheme(list.get(i).getTheme());
+                    mailInfo.setName(list.get(i).getName());
+                    mailInfo.setTime(list.get(i).getTime());
+                    mailInfo.setReceiverNames(list.get(i).getReceiverNames());
+                    model.addAttribute("mailInfo", mailInfo);
+                }
+            }
+        }
         return "modules/oa/find";
     }
 

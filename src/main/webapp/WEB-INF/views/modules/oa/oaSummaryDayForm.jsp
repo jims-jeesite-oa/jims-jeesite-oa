@@ -9,7 +9,7 @@
 
             $("#inputForm").validate({
                 submitHandler: function (form) {
-                   // loading('正在提交，请稍等...');
+                    // loading('正在提交，请稍等...');
                     form.submit();
                 },
                 errorContainer: "#messageBox",
@@ -34,7 +34,7 @@
 </ul>
 <form:form id="inputForm" modelAttribute="oaSummaryWeek" action="${ctx}/oa/oaSummaryDay/saveWeek" method="post"
            class="form-horizontal">
-  <%--  <form:hidden path="oaVos" value="${oaSummaryWeek.oaVos}"/>--%>
+    <%--  <form:hidden path="oaVos" value="${oaSummaryWeek.oaVos}"/>--%>
     <form:hidden path="id" value="${oaSummaryWeek.id}"/>
     <form:hidden path="weekOfYear" value="${oaSummaryWeek.weekOfYear}"/>
     第 <font color="red">${oaSummaryWeek.weekOfYear} </font> 周
@@ -55,23 +55,27 @@
         </tr>
 
     </table>
-   <div style="float:left;">
-    <table id="monitor" class="table  table-bordered table-condensed"  STYLE="float: right">
-        <c:forEach items="${oaSummaryWeek.oaVos}" var="oaSummaryDay">
-        <tr >
-            <td width="150px" class="date" id="sunday" rowspan="2"> ${fns:abbr(oaSummaryDay.date,50)}</td>
-            <td style=" text-align: center;" width="70px">任务完成</td>
+    <div style="float:left;">
+        <table id="monitor" class="table  table-bordered table-condensed" STYLE="float: right">
+            <c:forEach items="${oaSummaryWeek.oaVos}" var="oaSummaryDay">
+                <tr>
+                    <td width="150px" class="date" id="sunday" rowspan="3"> ${fns:abbr(oaSummaryDay.date,50)}</td>
+                    <td style=" text-align: center;" width="70px">任务完成</td>
 
-            <td width="910px">${oaSummaryDay.content}</td>
+                    <td width="910px">${oaSummaryDay.content}</td>
 
-        </tr>
-         <tr>
-            <td style=" text-align: center;">工作总结</td>
-            <td>${oaSummaryDay.status}</td>
-        </tr>
-        </c:forEach>
-    </table>
-   </div>
+                </tr>
+                <tr>
+                    <td style=" text-align: center;">工作总结</td>
+                    <td>${oaSummaryDay.status}</td>
+                </tr>
+                <tr>
+                    <td style=" text-align: center;">同事评阅</td>
+                    <td>${oaSummaryDay.appraise}</td>
+                </tr>
+            </c:forEach>
+        </table>
+    </div>
     <table class="table  table-bordered table-condensed">
         <tr>
             <td colspan="2" style="width: 250px;text-align: center;">本周工作总结</td>
@@ -84,18 +88,24 @@
         <tr>
             <td colspan="2" style="width: 250px;text-align: center;">评阅意见</td>
             <td style="width: 900px">
-                <form:input path="evaluate" htmlEscape="false" rows="1" maxlength="2000" class="input-xxlarge "
-                            cssStyle="width:800px;" readonly="true" value="${oaSummaryWeek.evaluate}"/>
+                <form:input path="evaluateContent" htmlEscape="false" rows="1" maxlength="2000" class="input-xxlarge "
+                            cssStyle="width:800px;" readonly="true" value="${oaSummaryWeek.evaluateContent}"/>
             </td>
         </tr>
     </table>
 
 
     <div align="center">
-        <input id="btnSubmit"  class="btn btn-primary"  type="submit" value="保 存"/>&nbsp;
-        <input id="okBtnSubmit" onclick="location='${ctx}/oa/oaSummaryDay/lackWeek?flag=1&weekOfYear=${oaSummaryWeek.weekOfYear}'" class="btn btn-primary" type="button" value="上一周"/>
-        <input id="akBtnSubmit" onclick="location='${ctx}/oa/oaSummaryDay/lackWeek?flag=3&weekOfYear=${oaSummaryWeek.weekOfYear}'" class="btn btn-primary" type="button" value="本  周"/>
-        <input id="blackSubmit" onclick="location='${ctx}/oa/oaSummaryDay/lackWeek?flag=2&weekOfYear=${oaSummaryWeek.weekOfYear}'" class="btn btn-warning" type="button" value="下一周"/>
+        <input id="btnSubmit" class="btn btn-primary" type="submit" value="保 存"/>&nbsp;
+        <input id="okBtnSubmit"
+               onclick="location='${ctx}/oa/oaSummaryDay/lackWeek?flag=1&weekOfYear=${oaSummaryWeek.weekOfYear}'"
+               class="btn btn-primary" type="button" value="上一周"/>
+        <input id="akBtnSubmit"
+               onclick="location='${ctx}/oa/oaSummaryDay/lackWeek?flag=3&weekOfYear=${oaSummaryWeek.weekOfYear}'"
+               class="btn btn-primary" type="button" value="本  周"/>
+        <input id="blackSubmit"
+               onclick="location='${ctx}/oa/oaSummaryDay/lackWeek?flag=2&weekOfYear=${oaSummaryWeek.weekOfYear}'"
+               class="btn btn-warning" type="button" value="下一周"/>
     </div>
 </form:form>
 </body>

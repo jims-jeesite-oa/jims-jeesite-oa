@@ -11,6 +11,7 @@ public class OaVo {
     private String date;
     private String  status;
     private String content;
+    private String appraise;
 
     public String getDate() {
         return date;
@@ -34,5 +35,13 @@ public class OaVo {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getAppraise() {
+        return appraise;
+    }
+
+    public void setAppraise(String appraise) {
+        this.appraise = appraise;
     }
 }

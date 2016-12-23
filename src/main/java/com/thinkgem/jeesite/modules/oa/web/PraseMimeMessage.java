@@ -1,5 +1,6 @@
 package com.thinkgem.jeesite.modules.oa.web;
 
+import com.sun.mail.imap.IMAPFolder;
 import com.thinkgem.jeesite.modules.oa.entity.MailInfo;
 
 import java.io.BufferedInputStream;
@@ -349,15 +350,18 @@ public class PraseMimeMessage{
             pmm.setAttachPath("c:/tmp/mail");  //设置邮件附件的保存路径
             pmm.saveAttachMent((Part)message[i]); //保存附件
             System.out.println("邮件正文 :"+pmm.getBodyText());
-
+            System.out.println("是否已读 :"+pmm.isNew());
             MailInfo mailInfo=new MailInfo();
             mailInfo.setContent(pmm.getBodyText());
-            SimpleDateFormat sdf=new SimpleDateFormat("yyyy年MM月dd日");
+            SimpleDateFormat sdf=new SimpleDateFormat();
             Date date = message[i].getSentDate();
             mailInfo.setTime(date);
             mailInfo.setTheme(pmm.getSubject());
-            mailInfo.setName(pmm.getFrom1());
+            mailInfo.setName(pmm.getFrom1().replace("\"", ""));
             mailInfo.setFlag("1");
+            mailInfo.setReadMark(pmm.isNew()+"");
+            mailInfo.setUID(pmm.getMessageId());
+            mailInfo.setReceiverNames(pmm.getMailAddress("TO").replace("\"", ""));
             list.add(mailInfo);
             System.out.println("*********************************第"+(i+1)+"封邮件结束*************************************");
         }

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.oa.dao.OaWeekAppraiseDao">
+    
+	<sql id="oaWeekAppraiseColumns">
+		a.id AS "id",
+		a.login_id AS "loginId",
+		a.evaluate_id AS "evaluateId",
+		a.appraise_week_date AS "appraiseWeekDate",
+		a.content AS "content",
+		a.year AS "year",
+		a.week AS "week",
+		a.flag AS "flag"
+	</sql>
+	
+	<sql id="oaWeekAppraiseJoins">
+	</sql>
+    
+	<select id="get" resultType="OaWeekAppraise">
+		SELECT 
+			<include refid="oaWeekAppraiseColumns"/>
+		FROM oa_week_appraise a
+		<include refid="oaWeekAppraiseJoins"/>
+		WHERE a.id = #{id}
+	</select>
+
+
+    <select id="findByEvaluate" resultType="OaWeekAppraise">
+        SELECT
+        <include refid="oaWeekAppraiseColumns"/>,s.name
+        FROM oa_week_appraise a,sys_user s
+        <include refid="oaWeekAppraiseJoins"/>
+        WHERE 1=1  and s.id=a.login_id
+        <if test="evaluateId!=null and evaluateId !=''">
+            and a.evaluate_id=#{evaluateId}
+        </if>
+        <if test="appraiseWeekDate!=null and appraiseWeekDate !=''">
+            and a.appraise_week_date=#{appraiseWeekDate}
+        </if>
+
+        <if test="week!=null and week !=''">
+            and a.week=#{week}
+        </if>
+        <if test="year!=null and year !=''">
+            and a.year=#{year}
+        </if>
+
+    </select>
+
+
+    <select id="findList" resultType="OaWeekAppraise">
+		SELECT 
+			<include refid="oaWeekAppraiseColumns"/>
+		FROM oa_week_appraise a
+		<include refid="oaWeekAppraiseJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="OaWeekAppraise">
+		SELECT 
+			<include refid="oaWeekAppraiseColumns"/>
+		FROM oa_week_appraise a
+		<include refid="oaWeekAppraiseJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO oa_week_appraise(
+			id,
+			login_id,
+			evaluate_id,
+			appraise_week_date,
+			content,
+			year,
+			week,
+			flag
+		) VALUES (
+			#{id},
+			#{loginId},
+			#{evaluateId},
+			#{appraiseWeekDate},
+			#{content},
+			#{year},
+			#{week},
+			#{flag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE oa_week_appraise SET 	
+			login_id = #{loginId},
+			evaluate_id = #{evaluateId},
+			appraise_week_date = #{appraiseWeekDate},
+			content = #{content},
+			year = #{year},
+			week = #{week},
+			flag = #{flag}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM oa_week_appraise
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

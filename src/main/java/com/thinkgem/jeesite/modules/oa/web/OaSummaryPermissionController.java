@@ -8,9 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.thinkgem.jeesite.modules.cms.service.CategoryService;
 import com.thinkgem.jeesite.modules.oa.entity.*;
-import com.thinkgem.jeesite.modules.oa.service.OaScheduleService;
-import com.thinkgem.jeesite.modules.oa.service.OaSummaryDayService;
-import com.thinkgem.jeesite.modules.oa.service.OaSummaryWeekService;
+import com.thinkgem.jeesite.modules.oa.service.*;
 import com.thinkgem.jeesite.modules.sys.entity.User;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -26,7 +24,6 @@ import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.common.utils.StringUtils;
-import com.thinkgem.jeesite.modules.oa.service.OaSummaryPermissionService;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -50,12 +47,18 @@ public class OaSummaryPermissionController extends BaseController {
 	private OaSummaryPermissionService oaSummaryPermissionService;
 
     @Autowired
+    private OaAppraiseService oaAppraiseService;
+
+    @Autowired
     private OaSummaryDayService oaSummaryDayService;
 
     @Autowired
     private OaScheduleService oaScheduleService;
     @Autowired
     private OaSummaryWeekService oaSummaryWeekService;
+
+    @Autowired
+    private OaWeekAppraiseService oaWeekAppraiseService;
 
 //    @RequiresPermissions("oa:oaSummaryPermission:view")
     @RequestMapping(value = {"list", ""})
@@ -88,15 +91,20 @@ public class OaSummaryPermissionController extends BaseController {
             return form(oaSummaryPermission, model);
         }
         //获取被评阅人的所有id并根据逗号进行拆分
-        String[]  ids=oaSummaryPermission.getEvaluateId().split(",");
+        String[]  ids=oaSummaryPermission.getEvaluateById().split(",");
+        String[]  idss=oaSummaryPermission.getEvaluateId().split(",");
         for(int i=0;i<ids.length;i++){
-
-            OaSummaryPermission oa=oaSummaryPermissionService.get(ids[i]);
-            if(oa==null){
-                OaSummaryPermission oaSummaryPermission1=new OaSummaryPermission();
-                oaSummaryPermission1.setEvaluateId(ids[i]);
-                oaSummaryPermission1.setEvaluateById(oaSummaryPermission.getEvaluateById());
-                oaSummaryPermissionService.save(oaSummaryPermission1);
+            for(int j=0;j<idss.length;j++){
+                OaSummaryPermission oaSummaryPermission2=new OaSummaryPermission();
+                oaSummaryPermission2.setEvaluateId(ids[i]);
+                oaSummaryPermission2.setEvaluateById(idss[j]);
+                OaSummaryPermission oa=oaSummaryPermissionService.get(oaSummaryPermission2);
+                if(oa==null){
+                    OaSummaryPermission oaSummaryPermission1=new OaSummaryPermission();
+                    oaSummaryPermission1.setEvaluateById(ids[i]);
+                    oaSummaryPermission1.setEvaluateId(idss[j]);
+                    oaSummaryPermissionService.save(oaSummaryPermission1);
+                }
             }
         }
 
@@ -125,6 +133,7 @@ public class OaSummaryPermissionController extends BaseController {
         calendar.setFirstDayOfWeek(Calendar.SUNDAY);
         calendar.setTime(date);
         oaSummaryWeek.setWeekOfYear(calendar.get(Calendar.WEEK_OF_YEAR));
+        oaSummaryWeek.setFlagBy("1");
         model.addAttribute("oaSummaryWeek", oaSummaryWeek);
         return "modules/oa/oaPermissionForm";
     }
@@ -208,9 +217,21 @@ public class OaSummaryPermissionController extends BaseController {
                 oaSchedule.setLoginId(loginId);
                 List<OaSchedule> list1 = oaScheduleService.completeBy(oaSchedule);
                 String con = null;
+                String app=null;
                 StringBuffer cons = new StringBuffer();
                 for (int i = 0; i < list1.size(); i++) {
                     con = cons.append(list1.get(i).getContent()).append("<br>").toString();
+                }
+
+                StringBuilder sb=new StringBuilder();
+                OaAppraise oaAppraise=new OaAppraise();
+                oaAppraise.setEvaluateId(loginId);
+                oaAppraise.setAppraiseDate(scheduleDate);
+                List<OaAppraise> appraises=oaAppraiseService.findByEvaluate(oaAppraise);
+                if(appraises!=null){
+                    for(int i=0;i<appraises.size();i++){
+                        app= sb.append(appraises.get(i).getContent()+"("+appraises.get(i).getName()+");<br>").toString();
+                    }
                 }
                 OaSummaryDay oaSummaryDay = new OaSummaryDay();
                 oaSummaryDay.setSumDate(scheduleDate);
@@ -218,6 +239,7 @@ public class OaSummaryPermissionController extends BaseController {
                 oaSummaryDay = oaSummaryDayService.findByDate(oaSummaryDay);
                 oaVo = new OaVo();
                 oaVo.setContent(con);
+                oaVo.setAppraise(app);
                 oaVo.setDate(date1.get(j).toString());
                 if (oaSummaryDay != null) {
                     oaVo.setStatus(oaSummaryDay.getContent());
@@ -231,8 +253,30 @@ public class OaSummaryPermissionController extends BaseController {
                 oaSummaryWeek.setOaVos(oa);
             }
             // oaSummaryWeek.setOaVos(oa);
-            oaSummaryWeek.setLoginId(loginId);
+            String year= sdf.format(currentFirstDate);
+            //拿到当前的年
+            String currentYear = year.substring(0, 10);
+            String year1 = year.substring(0, 4);
+            oaSummaryWeek.setLogin(loginId);
+            StringBuilder sb=new StringBuilder();
+            OaWeekAppraise op=new OaWeekAppraise();
+            op.setYear(year1);
+            op.setEvaluateId(loginId);
+            op.setWeek(calendar.get(Calendar.WEEK_OF_YEAR)+"");
+            List<OaWeekAppraise> appraises=oaWeekAppraiseService.findByEvaluate(op);
+            if(appraises!=null){
+                for(int i=0;i<appraises.size();i++){
+                    if(StringUtils.equals(appraises.get(i).getFlag(),"1")){
+                        sb.append(appraises.get(i).getContent()+"("+appraises.get(i).getName()+");");
+                    }
+                }
+            }
+            if(sb!=null && sb.toString()!=""){
+                oaSummaryWeek.setEvaluate(sb.toString());
+            }
+
             oaSummaryWeek.setWeekOfYear(calendar.get(Calendar.WEEK_OF_YEAR));
+            oaSummaryWeek.setFlagBy("1");
         }
         model.addAttribute("oaSummaryWeek", oaSummaryWeek);
         return "modules/oa/oaPermissionForm";
@@ -272,6 +316,7 @@ public class OaSummaryPermissionController extends BaseController {
                 String begin = sdf.format(DateFormat.getDateInstance().parse(sum));
                 Date scheduleDate = sdf.parse(begin);
                 OaVo oaVo = null;
+                String app=null;
                 oaSchedule.setScheduleDate(scheduleDate);
                 oaSchedule.setLoginId(loginId);
                 List<OaSchedule> list1 = oaScheduleService.completeBy(oaSchedule);
@@ -280,12 +325,24 @@ public class OaSummaryPermissionController extends BaseController {
                 for (int i = 0; i < list1.size(); i++) {
                     con = cons.append(list1.get(i).getContent()).append("<br>").toString();
                 }
+
+                StringBuilder sb=new StringBuilder();
+                OaAppraise oaAppraise=new OaAppraise();
+                oaAppraise.setEvaluateId(loginId);
+                oaAppraise.setAppraiseDate(scheduleDate);
+                List<OaAppraise> appraises=oaAppraiseService.findByEvaluate(oaAppraise);
+                if(appraises!=null){
+                    for(int i=0;i<appraises.size();i++){
+                        app= sb.append(appraises.get(i).getContent()+"("+appraises.get(i).getName()+");<br>").toString();
+                    }
+                }
                 OaSummaryDay oaSummaryDay = new OaSummaryDay();
                 oaSummaryDay.setSumDate(scheduleDate);
                 oaSummaryDay.setLoginId(loginId);
                 oaSummaryDay = oaSummaryDayService.findByDate(oaSummaryDay);
                 oaVo = new OaVo();
                 oaVo.setContent(con);
+                oaVo.setAppraise(app);
                 oaVo.setDate(date1.get(j).toString());
                 if (oaSummaryDay != null) {
                     oaVo.setStatus(oaSummaryDay.getContent());
@@ -296,8 +353,38 @@ public class OaSummaryPermissionController extends BaseController {
 //        oaSummaryWeek.setLoginId(loginId);
             oaSummaryWeek.setEvaluateMan(user.getName());
             oaSummaryWeek.setEvaluateManId(user.getId());
-            oaSummaryWeekService.save(oaSummaryWeek);
+
+            OaWeekAppraise oaWeekAppraise=new OaWeekAppraise();
+
+            oaWeekAppraise.setLoginId(user.getId());
+            oaWeekAppraise.setFlag(oaSummaryWeek.getFlagBy());
+            oaWeekAppraise.setEvaluateId(loginId);
+            oaWeekAppraise.setContent(oaSummaryWeek.getEvaluateContent());
+            oaWeekAppraise.setAppraiseWeekDate(oaSummaryWeek.getSumDate());
+            oaWeekAppraise.setYear(year1);
+            oaWeekAppraise.setWeek(oaSummaryWeek.getWeekOfYear() + "");
+
+            oaWeekAppraiseService.save(oaWeekAppraise);
+            StringBuilder sb=new StringBuilder();
+            OaWeekAppraise op=new OaWeekAppraise();
+            op.setYear(year1);
+            op.setEvaluateId(loginId);
+            op.setWeek(oaSummaryWeek.getWeekOfYear()+"");
+            List<OaWeekAppraise> appraises=oaWeekAppraiseService.findByEvaluate(op);
+            if(appraises!=null){
+                for(int i=0;i<appraises.size();i++){
+                    if(StringUtils.equals(appraises.get(i).getFlag(),"1")){
+                        sb.append(appraises.get(i).getContent()+"("+appraises.get(i).getName()+");");
+                    }
+                }
+            }
+            if(sb!=null && sb.toString()!=""){
+                oaSummaryWeek.setEvaluate(sb.toString());
+            }
         }
+        oaSummaryWeek.setEvaluateContent("");
+        oaSummaryWeek.setLogin(loginId);
+        oaSummaryWeek.setFlagBy("1");
         addMessage(redirectAttributes, "保存周总结评阅成功");
         model.addAttribute("oaSummaryWeek", oaSummaryWeek);
         return "modules/oa/oaPermissionForm";
@@ -330,9 +417,15 @@ public class OaSummaryPermissionController extends BaseController {
            List date1 = new ArrayList();
            //本周
            if (StringUtils.equals(flag, "1")) {
-               oaSummaryWeek.setWeekOfYear(weekOfYear - 1);
-               date1 = setDate(addDate(currentFirstDate, -7));
-               year = date1.get(0).toString();
+               if(weekOfYear==1){
+                   oaSummaryWeek.setWeekOfYear(53);
+                   date1 = setDate(addDate(currentFirstDate, -7));
+                   year = date1.get(0).toString();
+               }else{
+                   oaSummaryWeek.setWeekOfYear(weekOfYear - 1);
+                   date1 = setDate(addDate(currentFirstDate, -7));
+                   year = date1.get(0).toString();
+               }
            } else if (StringUtils.equals(flag, "2")) {
                if (weekOfYear == 53) {
                    oaSummaryWeek.setWeekOfYear(1);
@@ -366,10 +459,23 @@ public class OaSummaryPermissionController extends BaseController {
                oaSchedule.setLoginId(login);
                List<OaSchedule> list1 = oaScheduleService.completeBy(oaSchedule);
                String con = null;
+               String app=null;
                StringBuffer cons = new StringBuffer();
                if (list1.size() > 0) {
                    for (int i = 0; i < list1.size(); i++) {
                        con = cons.append(list1.get(i).getContent()).append("<br>").toString();
+                   }
+               }
+
+
+               StringBuilder sb=new StringBuilder();
+               OaAppraise oaAppraise=new OaAppraise();
+               oaAppraise.setEvaluateId(login);
+               oaAppraise.setAppraiseDate(scheduleDate);
+               List<OaAppraise> appraises=oaAppraiseService.findByEvaluate(oaAppraise);
+               if(appraises!=null){
+                   for(int i=0;i<appraises.size();i++){
+                       app= sb.append(appraises.get(i).getContent()+"("+appraises.get(i).getName()+");<br>").toString();
                    }
                }
                OaSummaryDay oaSummaryDay = new OaSummaryDay();
@@ -379,6 +485,7 @@ public class OaSummaryPermissionController extends BaseController {
 
                oaVo = new OaVo();
                oaVo.setContent(con);
+               oaVo.setAppraise(app);
                oaVo.setDate(date1.get(j).toString());
                if (oaSummaryDay != null) {
                    oaVo.setStatus(oaSummaryDay.getContent());
@@ -386,7 +493,28 @@ public class OaSummaryPermissionController extends BaseController {
                oa.add(oaVo);
            }
            oaSummaryWeek.setOaVos(oa);
+           String currentYear = year.substring(0, 10);
+           String year1 = year.substring(0, 4);
+           StringBuilder sb=new StringBuilder();
+           OaWeekAppraise op=new OaWeekAppraise();
+           op.setYear(year1);
+           op.setEvaluateId(login);
+           op.setWeek(oaSummaryWeek.getWeekOfYear()+"");
+           List<OaWeekAppraise> appraises=oaWeekAppraiseService.findByEvaluate(op);
+           if(appraises!=null){
+               for(int i=0;i<appraises.size();i++){
+                   if(StringUtils.equals(appraises.get(i).getFlag(),"1")){
+                       sb.append(appraises.get(i).getContent()+"("+appraises.get(i).getName()+");");
+                   }
+               }
+           }
+           if(sb!=null && sb.toString()!=""){
+               oaSummaryWeek.setEvaluate(sb.toString());
+           }
        }
+        oaSummaryWeek.setFlagBy("1");
+        oaSummaryWeek.setLogin(login);
+
         model.addAttribute("oaSummaryWeek", oaSummaryWeek);
         return "modules/oa/oaPermissionForm";
     }

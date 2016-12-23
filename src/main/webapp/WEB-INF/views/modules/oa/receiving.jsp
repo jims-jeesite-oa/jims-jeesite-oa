@@ -40,15 +40,51 @@
                 e.stopPropagation()
             })
 
+
+
             $(".reOut").on('click', function () {
 
-                var mailInfo = $(this).attr("data-id")
-                var theme = $(this).attr("data-selected")
-                var theme1 = $(this).attr("data-icon")
-                var time = $(this).attr("data-drop")
-                <%--window.location.href = '${ctx}/oa/mailInfo/findMail?mailInfo=' + id+'&theme='+theme+'&name='+name+'&time='+time;--%>
-                window.location.href = '${ctx}/oa/mailInfo/findMail?name=' + theme + '&theme=' + mailInfo;
+                var uid = $(this).attr("data-id")
+                var name = $(this).attr("data-drop")
+//                var receiveNames = $(this).attr("data-count")
+//                var time = $(this).attr("data-items")
+//                var d = new Date(time)
+//                var date1 = d.pattern("yyyy-MM-dd HH:mm:ss");
+//                var content=$(this).attr("data-content");
+                 window.location.href = '${ctx}/oa/mailInfo/findMail?id=' + uid+"&name="+name;
             })
+
+            //格式化日期
+            Date.prototype.pattern=function(fmt) {
+                var o = {
+                    "M+" : this.getMonth()+1, //月份
+                    "d+" : this.getDate(), //日
+                    "h+" : this.getHours() == 0 ? 12 : this.getHours(), //小时
+                    "H+" : this.getHours(), //小时
+                    "m+" : this.getMinutes(), //分
+                    "s+" : this.getSeconds(), //秒
+                    "q+" : Math.floor((this.getMonth()+3)/3), //季度
+                    "S" : this.getMilliseconds() //毫秒
+                };
+                var week = {"0":"\u65e5","1":"\u4e00","2":"\u4e8c","3":"\u4e09","4":"\u56db","5":"\u4e94","6":"\u516d"};
+                if(/(y+)/.test(fmt)){
+                    fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
+                }
+                if(/(E+)/.test(fmt)){
+                    fmt=fmt.replace(RegExp.$1, ((RegExp.$1.length>1) ? (RegExp.$1.length>2 ? "\u661f\u671f" : "\u5468") : "")+week[this.getDay()+""]);
+                }
+                for(var k in o){
+                    if(new RegExp("("+ k +")").test(fmt)){
+                        fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
+                    }
+                }
+                var m = {
+                    "s":"m",
+                    "d":"h"
+                };
+                return fmt;
+            }
+
         });
 
 
@@ -275,15 +311,15 @@
                 <c:forEach items="${page.list}" var="mailInfo">
 
                     <c:if test="${mailInfo.flag eq 1}">
-                        <tr class="reOut"  data-id="${mailInfo.theme}" data-selected="${mailInfo.name}" >
+                        <tr class="reOut"  data-id="${mailInfo.UID}"  data-drop="${mailInfo.name}">
                             <td class="reCheckbox">
                                 <input type="checkbox" name="checkbox" value="${mailInfo.id}" class="checkOut">
                             </td>
                             <td style=" width: 25px ;" align="left">
-                                <c:if test="${mailInfo.readMark eq 1}">
+                                <c:if test="${mailInfo.readMark eq 'true'}">
                                     <img src="${ctxStatic}/tree/css/mailCss/img/mail020.png"/>
                                 </c:if>
-                                <c:if test="${mailInfo.readMark eq 0}">
+                                <c:if test="${mailInfo.readMark eq 'false'}">
                                     <img src="${ctxStatic}/tree/css/mailCss/img/mail010.png"/>
                                 </c:if>
                             </td>
@@ -297,7 +333,7 @@
                                 <fmt:formatDate value="${mailInfo.time}" type="both" pattern="yyyy年MM月dd日 "/>
                             </td>
                             <td style="width:10%;" align="center">
-                                    <%-- <img src="${ctxStatic}/tree/css/mailCss/img/mail030.png"/>--%>
+
                             </td>
                         </tr>
                     </c:if>

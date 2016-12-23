@@ -6,11 +6,8 @@ package com.thinkgem.jeesite.modules.oa.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.thinkgem.jeesite.modules.oa.entity.OaSchedule;
-import com.thinkgem.jeesite.modules.oa.entity.OaSummaryWeek;
-import com.thinkgem.jeesite.modules.oa.entity.OaVo;
-import com.thinkgem.jeesite.modules.oa.service.OaScheduleService;
-import com.thinkgem.jeesite.modules.oa.service.OaSummaryWeekService;
+import com.thinkgem.jeesite.modules.oa.entity.*;
+import com.thinkgem.jeesite.modules.oa.service.*;
 import com.thinkgem.jeesite.modules.sys.entity.User;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -25,8 +22,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.common.utils.StringUtils;
-import com.thinkgem.jeesite.modules.oa.entity.OaSummaryDay;
-import com.thinkgem.jeesite.modules.oa.service.OaSummaryDayService;
 import sun.util.calendar.CalendarDate;
 
 import java.text.DateFormat;
@@ -55,6 +50,12 @@ public class OaSummaryDayController extends BaseController {
     @Autowired
     private OaSummaryWeekService oaSummaryWeekService;
 
+    @Autowired
+    private OaAppraiseService oaAppraiseService;
+
+    @Autowired
+    private OaWeekAppraiseService oaWeekAppraiseService;
+
 
     @ModelAttribute
     public OaSummaryDay get(@RequestParam(required = false) String id) {
@@ -73,10 +74,13 @@ public class OaSummaryDayController extends BaseController {
     public String list(@ModelAttribute("oaSummaryDay") OaSummaryDay oaSummaryDay, HttpServletRequest request, HttpServletResponse response, Model model) throws Exception {
         User user = UserUtils.getUser();
         oaSummaryDay.setLoginId(user.getId());
+        String loginId=user.getId();
         //当前日期
         DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String s = sdf.format(new Date());
         Date date = sdf.parse(s);
+
+
         //如果有日期，点击查询时的操作
         if (oaSummaryDay.getSumDate() != null) {
             Date before = oaSummaryDay.getSumDate();
@@ -87,9 +91,39 @@ public class OaSummaryDayController extends BaseController {
             List<OaSchedule> list = oaScheduleService.completeBy(oaSchedule);
             if (oaSummaryDay != null) {
                 oaSummaryDay.setOaScheduleList(list);
+                StringBuilder sb=new StringBuilder();
+                OaAppraise oaAppraise=new OaAppraise();
+                oaAppraise.setEvaluateId(loginId);
+                oaAppraise.setAppraiseDate(before);
+                List<OaAppraise> appraises=oaAppraiseService.findByEvaluate(oaAppraise);
+                if(appraises!=null){
+                    for(int i=0;i<appraises.size();i++){
+                        sb.append(appraises.get(i).getContent()+"("+appraises.get(i).getName()+");");
+                    }
+                }
+                if(sb!=null && sb.toString()!=""){
+                    oaSummaryDay.setEvaluate(sb.toString());
+                }
+
+                oaSummaryDay.setEvaluate(sb.toString());
                 model.addAttribute("oaSummaryDay", oaSummaryDay);
             } else {
-                model.addAttribute("oaSummaryDay", new OaSummaryDay(list, before));
+                OaSummaryDay oaSummaryDay1=new OaSummaryDay(list, before);
+                StringBuilder sb=new StringBuilder();
+                OaAppraise oaAppraise=new OaAppraise();
+                oaAppraise.setEvaluateId(loginId);
+                oaAppraise.setAppraiseDate(before);
+                List<OaAppraise> appraises=oaAppraiseService.findByEvaluate(oaAppraise);
+                if(appraises!=null){
+                    for(int i=0;i<appraises.size();i++){
+                        sb.append(appraises.get(i).getContent()+"("+appraises.get(i).getName()+");");
+                    }
+                }
+                if(sb!=null && sb.toString()!=""){
+                    oaSummaryDay1.setEvaluate(sb.toString());
+                }
+
+                model.addAttribute("oaSummaryDay", oaSummaryDay1);
             }
         } else {
             oaSummaryDay.setSumDate(date);
@@ -100,13 +134,42 @@ public class OaSummaryDayController extends BaseController {
                 oaSchedule.setScheduleDate(oaSummaryDay.getSumDate());
                 List<OaSchedule> list = oaScheduleService.completeBy(oaSchedule);
                 oaSummaryDay.setOaScheduleList(list);
+                StringBuilder sb=new StringBuilder();
+                OaAppraise oaAppraise=new OaAppraise();
+                oaAppraise.setEvaluateId(loginId);
+                oaAppraise.setAppraiseDate(oaSummaryDay.getSumDate());
+                List<OaAppraise> appraises=oaAppraiseService.findByEvaluate(oaAppraise);
+                if(appraises!=null){
+                    for(int i=0;i<appraises.size();i++){
+                        sb.append(appraises.get(i).getContent()+"("+appraises.get(i).getName()+");");
+                    }
+                }
+                if(sb!=null && sb.toString()!=""){
+                    oaSummaryDay.setEvaluate(sb.toString());
+                }
                 model.addAttribute("oaSummaryDay", oaSummaryDay);
             } else {
+                OaSummaryDay od=new OaSummaryDay();
+                StringBuilder sb=new StringBuilder();
+                OaAppraise oaAppraise=new OaAppraise();
+                oaAppraise.setEvaluateId(loginId);
+                oaAppraise.setAppraiseDate(date);
+                List<OaAppraise> appraises=oaAppraiseService.findByEvaluate(oaAppraise);
+                if(appraises!=null){
+                    for(int i=0;i<appraises.size();i++){
+                        sb.append(appraises.get(i).getContent()+"("+appraises.get(i).getName()+");");
+                    }
+                }
+                if(sb!=null && sb.toString()!=""){
+                    od.setEvaluate(sb.toString());
+                }
                 OaSchedule oaSchedule = new OaSchedule();
                 oaSchedule.setScheduleDate(date);
                 oaSchedule.setLoginId(user.getId());
                 List<OaSchedule> list = oaScheduleService.completeBy(oaSchedule);
-                model.addAttribute("oaSummaryDay", new OaSummaryDay(list, date));
+                od.setOaScheduleList(list);
+                od.setSumDate(date);
+                model.addAttribute("oaSummaryDay", od);
             }
         }
         return "modules/oa/oaSummaryDayList";
@@ -211,9 +274,21 @@ public class OaSummaryDayController extends BaseController {
             oaSchedule.setLoginId(user.getId());
             List<OaSchedule> list1 = oaScheduleService.completeBy(oaSchedule);
             String con = null;
+            String app=null;
             StringBuffer cons = new StringBuffer();
             for (int i = 0; i < list1.size(); i++) {
                 con = cons.append(list1.get(i).getContent()).append("<br>").toString();
+            }
+
+            StringBuilder sb=new StringBuilder();
+            OaAppraise oaAppraise=new OaAppraise();
+            oaAppraise.setEvaluateId(user.getId());
+            oaAppraise.setAppraiseDate(scheduleDate);
+            List<OaAppraise> appraises=oaAppraiseService.findByEvaluate(oaAppraise);
+            if(appraises!=null){
+                for(int i=0;i<appraises.size();i++){
+                   app= sb.append(appraises.get(i).getContent()+"("+appraises.get(i).getName()+");<br>").toString();
+                }
             }
             OaSummaryDay oaSummaryDay = new OaSummaryDay();
             oaSummaryDay.setSumDate(scheduleDate);
@@ -221,6 +296,7 @@ public class OaSummaryDayController extends BaseController {
             oaSummaryDay = oaSummaryDayService.findByDate(oaSummaryDay);
             oaVo = new OaVo();
             oaVo.setContent(con);
+            oaVo.setAppraise(app);
             oaVo.setDate(date1.get(j).toString());
             if (oaSummaryDay != null) {
                 oaVo.setStatus(oaSummaryDay.getContent());
@@ -233,7 +309,27 @@ public class OaSummaryDayController extends BaseController {
             oaSummaryWeek=new OaSummaryWeek();
             oaSummaryWeek.setOaVos(oa);
         }
+        String year= sdf.format(currentFirstDate);
+        String year1 = year.substring(0, 4);
+        StringBuilder sb=new StringBuilder();
+        OaWeekAppraise op=new OaWeekAppraise();
+        op.setYear(year1);
+        op.setEvaluateId(user.getId());
+        op.setWeek(oaSummaryWeek.getWeek());
+        List<OaWeekAppraise> appraises=oaWeekAppraiseService.findByEvaluate(op);
+        if(appraises!=null){
+            for(int i=0;i<appraises.size();i++){
+                if(StringUtils.equals(appraises.get(i).getFlag(),"1")){
+                    sb.append(appraises.get(i).getContent()+"("+appraises.get(i).getName()+");");
+                }
+            }
+        }
+        if(sb!=null && sb.toString()!=""){
+            oaSummaryWeek.setEvaluateContent(sb.toString());
+        }
+
         // oaSummaryWeek.setOaVos(oa);
+
         oaSummaryWeek.setWeekOfYear(calendar.get(Calendar.WEEK_OF_YEAR));
         model.addAttribute("oaSummaryWeek", oaSummaryWeek);
         return "modules/oa/oaSummaryDayForm";
@@ -365,9 +461,15 @@ public class OaSummaryDayController extends BaseController {
         List date1 = new ArrayList();
         //本周
         if (StringUtils.equals(flag, "1")) {
-            oaSummaryWeek.setWeekOfYear(weekOfYear - 1);
-            date1 = setDate(addDate(currentFirstDate, -7));
-            year = date1.get(0).toString();
+            if(weekOfYear==1){
+                oaSummaryWeek.setWeekOfYear(53);
+                date1 = setDate(addDate(currentFirstDate, -7));
+                year = date1.get(0).toString();
+            }else{
+                oaSummaryWeek.setWeekOfYear(weekOfYear - 1);
+                date1 = setDate(addDate(currentFirstDate, -7));
+                year = date1.get(0).toString();
+            }
         } else if (StringUtils.equals(flag, "2")) {
             if (weekOfYear == 53) {
                 oaSummaryWeek.setWeekOfYear(1);
@@ -422,6 +524,24 @@ public class OaSummaryDayController extends BaseController {
             oa.add(oaVo);
         }
         oaSummaryWeek.setOaVos(oa);
+        String year= sdf.format(currentFirstDate);
+        String year1 = year.substring(0, 4);
+        StringBuilder sb=new StringBuilder();
+        OaWeekAppraise op=new OaWeekAppraise();
+        op.setYear(year1);
+        op.setEvaluateId(user.getId());
+        op.setWeek(oaSummaryWeek.getWeekOfYear()+"");
+        List<OaWeekAppraise> appraises=oaWeekAppraiseService.findByEvaluate(op);
+        if(appraises!=null){
+            for(int i=0;i<appraises.size();i++){
+                if(StringUtils.equals(appraises.get(i).getFlag(),"1")){
+                    sb.append(appraises.get(i).getContent()+"("+appraises.get(i).getName()+");");
+                }
+            }
+        }
+        if(sb!=null && sb.toString()!=""){
+            oaSummaryWeek.setEvaluateContent(sb.toString());
+        }
         model.addAttribute("oaSummaryWeek", oaSummaryWeek);
         return "modules/oa/oaSummaryDayForm";
     }
@@ -437,12 +557,14 @@ public class OaSummaryDayController extends BaseController {
      */
     @RequestMapping(value = "day")
     public String formId(OaSummaryDay oaSummaryDay, Model model) {
+        oaSummaryDay.setFlag("1");
+        model.addAttribute("oaSummaryDay",oaSummaryDay);
         return "modules/oa/oaPermissionList";
     }
 
 
     @RequestMapping(value = "loginId")
-    public String loginId(@ModelAttribute(" m") OaSummaryDay oaSummaryDay, Model model) throws Exception {
+    public String loginId(@ModelAttribute("m") OaSummaryDay oaSummaryDay, Model model) throws Exception {
         String loginId = oaSummaryDay.getLoginId();
         Date sumDate = oaSummaryDay.getSumDate();
         oaSummaryDay.setLoginId(loginId);
@@ -451,6 +573,7 @@ public class OaSummaryDayController extends BaseController {
         DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String s = sdf.format(new Date());
         Date date = sdf.parse(s);
+
         //如果有日期，点击查询时的操作
         if (oaSummaryDay.getSumDate() != null) {
             Date before = oaSummaryDay.getSumDate();
@@ -458,33 +581,78 @@ public class OaSummaryDayController extends BaseController {
             OaSchedule oaSchedule = new OaSchedule();
             oaSchedule.setScheduleDate(before);
             oaSchedule.setLoginId(loginId);
+            StringBuilder sb=new StringBuilder();
+            OaAppraise oaAppraise=new OaAppraise();
+            oaAppraise.setAppraiseDate(before);
+            oaAppraise.setEvaluateId(loginId);
+            List<OaAppraise> appraises=oaAppraiseService.findByEvaluate(oaAppraise);
+            if(appraises!=null){
+                for(int i=0;i<appraises.size();i++){
+                    if(StringUtils.equals(appraises.get(i).getFlag(),"1")){
+                        sb.append(appraises.get(i).getContent()+"("+appraises.get(i).getName()+");");
+                    }
+                }
+            }
+
             List<OaSchedule> list = oaScheduleService.completeBy(oaSchedule);
             if (oaSummaryDay != null) {
+
                 oaSummaryDay.setOaScheduleList(list);
                 oaSummaryDay.setEvaluateMan(loginId);
+
+                oaSummaryDay.setEvaluate(sb.toString());
+                oaSummaryDay.setFlag("1");
                 model.addAttribute("oaSummaryDay", oaSummaryDay);
             } else {
                 OaSummaryDay oaSummaryDay1 = new OaSummaryDay();
                 oaSummaryDay1.setLoginId(loginId);
                 oaSummaryDay1.setSumDate(sumDate);
+                if(sb!=null && sb.toString()!=""){
+                    oaSummaryDay1.setEvaluate(sb.toString());
+                }
+                oaSummaryDay1.setFlag("1");
                 model.addAttribute("oaSummaryDay", oaSummaryDay1);
             }
         } else {
             oaSummaryDay.setSumDate(date);
             oaSummaryDay = oaSummaryDayService.findByDate(oaSummaryDay);
+            StringBuilder sb=new StringBuilder();
+            OaAppraise oaAppraise=new OaAppraise();
+            oaAppraise.setAppraiseDate(date);
+            oaAppraise.setEvaluateId(loginId);
+            List<OaAppraise> appraises=oaAppraiseService.findByEvaluate(oaAppraise);
+            if(appraises!=null){
+                for(int i=0;i<appraises.size();i++){
+                    if(StringUtils.equals(appraises.get(i).getFlag(),"1")){
+                        sb.append(appraises.get(i).getContent()+"("+appraises.get(i).getName()+");");
+                    }
+                }
+            }
             if (oaSummaryDay != null) {
                 OaSchedule oaSchedule = new OaSchedule();
                 oaSchedule.setLoginId(oaSummaryDay.getLoginId());
                 oaSchedule.setScheduleDate(oaSummaryDay.getSumDate());
                 List<OaSchedule> list = oaScheduleService.completeBy(oaSchedule);
                 oaSummaryDay.setOaScheduleList(list);
+                if(sb!=null && sb.toString()!=""){
+                    oaSummaryDay.setEvaluate(sb.toString());
+                }
+                oaSummaryDay.setFlag("1");
                 model.addAttribute("oaSummaryDay", oaSummaryDay);
             } else {
+                OaSummaryDay os=new OaSummaryDay();
                 OaSchedule oaSchedule = new OaSchedule();
                 oaSchedule.setScheduleDate(date);
                 oaSchedule.setLoginId(loginId);
                 List<OaSchedule> list = oaScheduleService.completeBy(oaSchedule);
-                model.addAttribute("oaSummaryDay", new OaSummaryDay(list, date,loginId));
+                if(sb!=null && sb.toString()!=""){
+                    os.setEvaluate(sb.toString());
+                }
+                os.setOaScheduleList(list);
+                os.setFlag("1");
+                os.setLoginId(loginId);
+                os.setSumDate(date);
+                model.addAttribute("oaSummaryDay", os);
             }
         }
         return "modules/oa/oaPermissionList";
@@ -502,20 +670,44 @@ public class OaSummaryDayController extends BaseController {
     @RequiresPermissions("oa:oaSummaryDay:edit")
     @RequestMapping(value = "saveEvel")
     public String saveEvel(OaSummaryDay oaSummaryDay, Model model, RedirectAttributes redirectAttributes) {
+        String loginId=oaSummaryDay.getDd();
         User user = UserUtils.getUser();
         if (!beanValidator(model, oaSummaryDay)) {
             return form(oaSummaryDay, model);
         }
-        oaSummaryDay.setEvaluateManId(user.getId());
-        oaSummaryDay.setEvaluateMan(user.getName());
-        oaSummaryDayService.save(oaSummaryDay);
-        String id = oaSummaryDay.getId();
-        oaSummaryDay = oaSummaryDayService.get(id);
+
+        OaAppraise oaAppraise=new OaAppraise();
+        oaAppraise.setFlag(oaSummaryDay.getFlag());
+        oaAppraise.setLoginId(user.getId());
+        oaAppraise.setEvaluateId(loginId);
+        oaAppraise.setContent(oaSummaryDay.getEvaluateContent());
+        oaAppraise.setEvaluateById(user.getId());
+        oaAppraise.setAppraiseDate(oaSummaryDay.getSumDate());
+
+        oaAppraiseService.save(oaAppraise);
+
+        StringBuilder sb=new StringBuilder();
+        OaAppraise op=new OaAppraise();
+        op.setAppraiseDate(oaSummaryDay.getSumDate());
+        op.setEvaluateId(loginId);
+        List<OaAppraise> appraises=oaAppraiseService.findByEvaluate(oaAppraise);
+        if(appraises!=null){
+            for(int i=0;i<appraises.size();i++){
+                if(StringUtils.equals(appraises.get(i).getFlag(),"1")){
+                    sb.append(appraises.get(i).getContent()+"("+appraises.get(i).getName()+");");
+                }
+            }
+        }
+        if(sb!=null && sb.toString()!=""){
+            oaSummaryDay.setEvaluate(sb.toString());
+        }
         OaSchedule oaSchedule = new OaSchedule();
         oaSchedule.setScheduleDate(oaSummaryDay.getSumDate());
-        oaSchedule.setLoginId(oaSummaryDay.getLoginId());
+        oaSchedule.setLoginId(loginId);
         List<OaSchedule> list = oaScheduleService.completeBy(oaSchedule);
         oaSummaryDay.setOaScheduleList(list);
+        oaSummaryDay.setEvaluateContent("");
+        oaSummaryDay.setLoginId(loginId);
         model.addAttribute("oaSummaryDay", oaSummaryDay);
         addMessage(redirectAttributes, "保存同事评阅成功");
         return "modules/oa/oaPermissionList";

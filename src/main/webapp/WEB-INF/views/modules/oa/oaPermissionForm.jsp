@@ -72,15 +72,17 @@
         <table id="monitor" class="table  table-bordered table-condensed"  STYLE="float: right">
             <c:forEach items="${oaSummaryWeek.oaVos}" var="oaSummaryDay">
                 <tr >
-                    <td width="150px" class="date" id="sunday" rowspan="2"> ${fns:abbr(oaSummaryDay.date,50)}</td>
+                    <td width="150px" class="date" id="sunday" rowspan="3"> ${fns:abbr(oaSummaryDay.date,50)}</td>
                     <td style=" text-align: center;" width="70px">任务完成</td>
-
                     <td width="910px">${oaSummaryDay.content}</td>
-
                 </tr>
                 <tr>
                     <td style=" text-align: center;">工作总结</td>
                     <td>${oaSummaryDay.status}</td>
+                </tr>
+                <tr>
+                    <td style=" text-align: center;">同事评阅</td>
+                    <td>${oaSummaryDay.appraise}</td>
                 </tr>
             </c:forEach>
         </table>
@@ -93,12 +95,24 @@
                                cssStyle="width:800px;" value="${oaSummaryWeek.content}"/>
             </td>
         </tr>
-
+        <tr>
+            <td colspan="2" style="width: 250px;text-align: center;">同事评阅</td>
+            <td style="width: 900px">
+                <form:input path="evaluate" htmlEscape="false" rows="1" maxlength="2000" class="input-xxlarge "  readonly="true"
+                            cssStyle="width:800px;" value="${oaSummaryWeek.evaluate} " />
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" style="width: 250px;text-align: center;">评阅是否公开</td>
+            <td style="width: 900px;text-align: left">
+                    <form:radiobuttons path="flagBy" items="${fns:getDictList('oa_appraise')}" itemLabel="label" itemValue="value" htmlEscape="false" class=""/>
+            </td>
+        </tr>
         <tr>
             <td colspan="2" style="width: 250px;text-align: center;">评阅意见</td>
             <td style="width: 900px">
-                <form:input path="evaluate" htmlEscape="false" rows="1" maxlength="2000" class="input-xxlarge "
-                            cssStyle="width:800px;" value="${oaSummaryWeek.evaluate} " />
+                <form:input path="evaluateContent" htmlEscape="false" rows="1" maxlength="2000" class="input-xxlarge "
+                            cssStyle="width:800px;" value="${oaSummaryWeek.evaluateContent} " />
             </td>
         </tr>
     </table>
