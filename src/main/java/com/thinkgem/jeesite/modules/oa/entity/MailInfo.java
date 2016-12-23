@@ -29,6 +29,7 @@ public class MailInfo extends DataEntity<MailInfo> {
     private String outSide;     //外部收件人
 
     private String flag;      //1代表外部邮件    0代表内部邮件
+    private String UID;   //用于查询邮件的内容
 
 
     private String name;   //用户姓名
@@ -52,6 +53,14 @@ public class MailInfo extends DataEntity<MailInfo> {
 
     public void setOutSide(String outSide) {
         this.outSide = outSide;
+    }
+
+    public String getUID() {
+        return UID;
+    }
+
+    public void setUID(String UID) {
+        this.UID = UID;
     }
 
     public String getReceiverNames() {

@@ -88,97 +88,100 @@
 </head>
 <body>
 <div style="background-color: #ffffff">
-    <form:form  modelAttribute="mailInfo" action="" method="post"  id="form1">
-    <table style="margin-left: 5px;margin-top: 5px;width: 99%">
-        <tr>
-            <td colspan="2" align="center">
-                <div id="ss"></div>
-                <input type="hidden" value="${mailInfo.id}" id="mailId">
-            </td>
-        </tr>
-        <tr class="findTr">
-            <td colspan="2" style="">　　${mailInfo.theme}</td>
-        </tr>
-        <tr class="findTr">
-            <td width="80px">　　发件人：</td>
-            <td>${mailInfo.name}</td>
-        </tr>
-        <tr class="findTr">
-            <td width="80px">　　时　间：</td>
-            <td><fmt:formatDate value="${mailInfo.time}" type="both" pattern="yyyy年MM月dd日 HH:mm:ss"/></td>
-        </tr>
-        <c:if test="${not empty mailInfo.ccNames}">
-            <tr class="findTr">
-                <td width="80px">　　抄送人：</td>
-                <td>${mailInfo.ccNames}</td>
+    <form:form modelAttribute="mailInfo" action="" method="post" id="form1">
+        <table style="margin-left: 5px;margin-top: 5px;width: 99%">
+            <tr>
+                <td colspan="2" align="center">
+                    <div id="ss"></div>
+                    <input type="hidden" value="${mailInfo.id}" id="mailId">
+                </td>
             </tr>
-        </c:if>
-        <tr style="height: 25px; background-color: #EFF5FB;color: #ABAAAD;border-bottom: 1px solid #C1D9F3">
-            <td width="80px">　　收件人：</td>
-            <td>${mailInfo.receiverNames}</td>
-        </tr>
+            <tr class="findTr">
+                <td colspan="2" style="">　　${mailInfo.theme}</td>
+            </tr>
+            <tr class="findTr">
+                <td width="80px">　　发件人：</td>
+                <td>${mailInfo.name}</td>
+            </tr>
+            <tr class="findTr">
+                <td width="80px">　　时　间：</td>
+                <td><fmt:formatDate value="${mailInfo.time}" type="both" pattern="yyyy年MM月dd日 HH:mm:ss"/></td>
+            </tr>
+            <c:if test="${not empty mailInfo.ccNames}">
+                <tr class="findTr">
+                    <td width="80px">　　抄送人：</td>
+                    <td>${mailInfo.ccNames}</td>
+                </tr>
+            </c:if>
+            <tr style="height: 25px; background-color: #EFF5FB;color: #ABAAAD;border-bottom: 1px solid #C1D9F3">
+                <td width="80px">　　收件人：</td>
+                <td>${mailInfo.receiverNames}</td>
+            </tr>
 
 
-        <tr style="height: 160px;">
-            <td colspan="2" style="padding-left: 25px" valign="top">　　${mailInfo.content}</td>
-        </tr>
-        <tr class="findAd">
-            <td colspan="2">
-                <img src="${ctxStatic}/tree/css/mailCss/img/mail080.png">&nbsp;附件
-            </td>
-        </tr>
-        <tr class="findAdjunct">
-            <td colspan="2" class="td" style="padding-bottom: 15px; height: 25px">
-                <form:hidden id="files" path="files" htmlEscape="false" maxlength="2000" class="input-xlarge"/>
-                <sys:ckfinder input="files" type="files" uploadPath="/oa/mailInfo" selectMultiple="true" readonly="true"/>
-            </td>
-        </tr>
-        <tr style="height: 8px">
-            <td></td>
-        </tr>
-        <tr style="background-color: #C1D9F3;height: 35px">
-            <td colspan="2" style="padding-left: 5px">
-                <input type="button" value="返回" class="btn" onclick="self.location=document.referrer;">
-                <input type="button" value="彻底删除" class="btn" onclick="deleteBy('${mailInfo.state}')">
+            <tr style="height: 160px;">
+                <td colspan="2" style="padding-left: 25px" valign="top">　　
+                    <div>${mailInfo.content}</div>
+                </td>
+            </tr>
+            <tr class="findAd">
+                <td colspan="2">
+                    <img src="${ctxStatic}/tree/css/mailCss/img/mail080.png">&nbsp;附件
+                </td>
+            </tr>
+            <tr class="findAdjunct">
+                <td colspan="2" class="td" style="padding-bottom: 15px; height: 25px">
+                    <form:hidden id="files" path="files" htmlEscape="false" maxlength="2000" class="input-xlarge"/>
+                    <sys:ckfinder input="files" type="files" uploadPath="/oa/mailInfo" selectMultiple="true"
+                                  readonly="true"/>
+                </td>
+            </tr>
+            <tr style="height: 8px">
+                <td></td>
+            </tr>
+            <tr style="background-color: #C1D9F3;height: 35px">
+                <td colspan="2" style="padding-left: 5px">
+                    <input type="button" value="返回" class="btn" onclick="self.location=document.referrer;">
+                    <input type="button" value="彻底删除" class="btn" onclick="deleteBy('${mailInfo.state}')">
 
-                <div class="btn-group">
-                    <a class="btn dropdown-toggle " data-toggle="dropdown" href="#">
-                        标记为
+                    <div class="btn-group">
+                        <a class="btn dropdown-toggle " data-toggle="dropdown" href="#">
+                            标记为
                             <span class="caret">
                             </span>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#" onclick="read('${mailInfo.state}')">&nbsp; &nbsp;<img
-                                style="width:26px;height: 19px;"
-                                src="${ctxStatic}/tree/css/mailCss/img/mail020.png">已读邮件</a>
-                        </li>
-                        <li><a href="#" onclick="unread('${mailInfo.state}')">&nbsp; &nbsp;<img
-                                style="width:26px;height: 19px;"
-                                src="${ctxStatic}/tree/css/mailCss/img/mail010.png">未读邮件
                         </a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="btn-group">
-                    <a class="btn dropdown-toggle " data-toggle="dropdown" href="#">
-                        移动到
+                        <ul class="dropdown-menu">
+                            <li><a href="#" onclick="read('${mailInfo.state}')">&nbsp; &nbsp;<img
+                                    style="width:26px;height: 19px;"
+                                    src="${ctxStatic}/tree/css/mailCss/img/mail020.png">已读邮件</a>
+                            </li>
+                            <li><a href="#" onclick="unread('${mailInfo.state}')">&nbsp; &nbsp;<img
+                                    style="width:26px;height: 19px;"
+                                    src="${ctxStatic}/tree/css/mailCss/img/mail010.png">未读邮件
+                            </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="btn-group">
+                        <a class="btn dropdown-toggle " data-toggle="dropdown" href="#">
+                            移动到
                             <span class="caret">
                             </span>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#" onclick="inbox('${mailInfo.state}')">&nbsp; &nbsp;<img
-                                style="width:26px;height: 19px;"
-                                src="${ctxStatic}/tree/css/mailCss/img/mail020.png">收件箱 </a>
-                        </li>
-                        <li><a href="#" onclick="send('${mailInfo.state}')">&nbsp; &nbsp;<img
-                                style="width:26px;height: 19px;"
-                                src="${ctxStatic}/tree/css/mailCss/img/mail020.png">已发送 </a>
-                        </li>
-                    </ul>
-                </div>
-            </td>
-        </tr>
-    </table>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" onclick="inbox('${mailInfo.state}')">&nbsp; &nbsp;<img
+                                    style="width:26px;height: 19px;"
+                                    src="${ctxStatic}/tree/css/mailCss/img/mail020.png">收件箱 </a>
+                            </li>
+                            <li><a href="#" onclick="send('${mailInfo.state}')">&nbsp; &nbsp;<img
+                                    style="width:26px;height: 19px;"
+                                    src="${ctxStatic}/tree/css/mailCss/img/mail020.png">已发送 </a>
+                            </li>
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+        </table>
     </form:form>
 </div>
 </body>
