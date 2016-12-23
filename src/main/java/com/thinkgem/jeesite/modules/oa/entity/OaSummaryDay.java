@@ -26,6 +26,27 @@ public class OaSummaryDay extends DataEntity<OaSummaryDay> {
 	private String evaluateManId;		// 评阅人id
     private String loginId;    //登录人id
 
+    private String flag;    //是否公开
+    private String evaluateContent;
+
+    private String dd;
+
+    public String getDd() {
+        return dd;
+    }
+
+    public void setDd(String dd) {
+        this.dd = dd;
+    }
+
+    public String getEvaluateContent() {
+        return evaluateContent;
+    }
+
+    public void setEvaluateContent(String evaluateContent) {
+        this.evaluateContent = evaluateContent;
+    }
+
     public OaSummaryDay(List<OaSchedule> oaScheduleList,Date sumDate) {
         this.oaScheduleList = oaScheduleList;
         this.sumDate=sumDate;
@@ -34,6 +55,14 @@ public class OaSummaryDay extends DataEntity<OaSummaryDay> {
         this.oaScheduleList = oaScheduleList;
         this.sumDate=sumDate;
         this.loginId=loginId;
+    }
+
+    public String getFlag() {
+        return flag;
+    }
+
+    public void setFlag(String flag) {
+        this.flag = flag;
     }
 
     public String getLoginId() {

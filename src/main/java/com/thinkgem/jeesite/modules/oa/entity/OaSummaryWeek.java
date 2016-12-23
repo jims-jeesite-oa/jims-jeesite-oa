@@ -30,6 +30,25 @@ public class OaSummaryWeek extends DataEntity<OaSummaryWeek> {
 	private String evaluateManId;		// 评阅人id
     private String loginId;   //登录人id
 
+    private String evaluateContent;
+    private String flagBy;
+
+    public String getFlagBy() {
+        return flagBy;
+    }
+
+    public void setFlagBy(String flagBy) {
+        this.flagBy = flagBy;
+    }
+
+    public String getEvaluateContent() {
+        return evaluateContent;
+    }
+
+    public void setEvaluateContent(String evaluateContent) {
+        this.evaluateContent = evaluateContent;
+    }
+
     private String login;
 
     public String getLogin() {

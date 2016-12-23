@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.oa.dao.OaAppraiseDao">
+    
+	<sql id="oaAppraiseColumns">
+		a.id AS "id",
+		a.login_id AS "loginId",
+		a.evaluate_id AS "evaluateId",
+		a.content AS "content",
+		a.flag AS "flag" ,
+        a.evaluate_by_id AS "evaluateById",
+        a.appraise_date AS "appraiseDate"
+	</sql>
+	
+	<sql id="oaAppraiseJoins">
+	</sql>
+    
+	<select id="get" resultType="OaAppraise">
+		SELECT 
+			<include refid="oaAppraiseColumns"/>
+		FROM oa_appraise a
+		<include refid="oaAppraiseJoins"/>
+		WHERE a.id = #{id}
+	</select>
+
+    <select id="findByEvaluate" resultType="OaAppraise">
+        SELECT
+        <include refid="oaAppraiseColumns"/>,s.name
+        FROM oa_appraise a,sys_user s
+        <include refid="oaAppraiseJoins"/>
+        WHERE 1=1  and s.id=a.evaluate_by_id
+        <if test="evaluateId!=null and evaluateId !=''">
+             and a.evaluate_id=#{evaluateId}
+        </if>
+        <if test="appraiseDate!=null and appraiseDate !=''">
+            and a.appraise_date=#{appraiseDate}
+        </if>
+
+    </select>
+	
+	<select id="findList" resultType="OaAppraise">
+		SELECT 
+			<include refid="oaAppraiseColumns"/>
+		FROM oa_appraise a
+		<include refid="oaAppraiseJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="OaAppraise">
+		SELECT 
+			<include refid="oaAppraiseColumns"/>
+		FROM oa_appraise a
+		<include refid="oaAppraiseJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO oa_appraise(
+			id,
+			login_id,
+			evaluate_id,
+			content,
+			flag,
+			evaluate_by_id,
+			appraise_date
+		) VALUES (
+			#{id},
+			#{loginId},
+			#{evaluateId},
+			#{content},
+			#{flag},
+			#{evaluateById},
+			#{appraiseDate}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE oa_appraise SET 	
+			login_id = #{loginId},
+			evaluate_id = #{evaluateId},
+			content = #{content},
+			flag = #{flag} ,
+			evaluate_by_id=#{evaluateById},
+			appraise_date=#{appraiseDate}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM oa_appraise
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

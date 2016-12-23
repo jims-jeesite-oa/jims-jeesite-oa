@@ -70,7 +70,7 @@
         <div class="control-group">
             <label class="control-label">同事评阅：</label>
             <div class="controls">
-                <form:input path="evaluate" readonly="true" htmlEscape="false" maxlength="2000" class="input-xlarge "  value="${oaSummaryDay.evaluate}"/>
+                <form:textarea path="evaluate"  htmlEscape="false" rows="3" maxlength="2000" class="input-xxlarge " value="${oaSummaryDay.evaluate}" readonly="true"/>
             </div>
         </div>
         <div class="form-actions">

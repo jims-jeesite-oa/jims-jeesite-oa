@@ -15,7 +15,14 @@
 			<include refid="oaSummaryPermissionColumns"/>
 		FROM oa_summary_permission a
 		<include refid="oaSummaryPermissionJoins"/>
-		WHERE a.evaluate_id = #{EvaluateId}
+		WHERE  1=1
+        <if test="evaluateId !=null and evaluateId !=''">
+          and  a.evaluate_id = #{evaluateId}
+        </if>
+        <if test="evaluateById !=null and evaluateById !=''">
+            and  a.evaluate_by_id = #{evaluateById}
+        </if>
+
 	</select>
 
 

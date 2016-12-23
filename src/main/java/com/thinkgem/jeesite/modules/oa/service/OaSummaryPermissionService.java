@@ -33,6 +33,13 @@ public class OaSummaryPermissionService extends CrudService<OaSummaryPermissionD
         return super.get(id);
     }
 
+    public OaSummaryPermission get(String evaluateId,String evaluateById ) {
+        OaSummaryPermission oaSummaryPermission=new OaSummaryPermission();
+        oaSummaryPermission.setEvaluateId(evaluateId);
+        oaSummaryPermission.setEvaluateById(evaluateById);
+        return dao.get(oaSummaryPermission);
+    }
+
     public List<OaSummaryPermission> findList(OaSummaryPermission oaSummaryPermission) {
         return super.findList(oaSummaryPermission);
     }
