@@ -35,5 +35,19 @@
         <example>${fno:getSchedules(flag)}</example>
     </function>
 
+    <function>
+        <description>根据表明获取自定义表</description>
+        <name>findByTableName</name>
+        <function-class>com.thinkgem.jeesite.modules.table.utils.DefineTableUtils</function-class>
+        <function-signature>com.thinkgem.jeesite.modules.table.entity.OaPersonDefineTable findByTableName(java.lang.String)</function-signature>
+        <example>${fno:findByTableName(tableName)}</example>
+    </function>
 
+    <function>
+        <description>获取流程列表</description>
+        <name>processList</name>
+        <function-class>com.thinkgem.jeesite.modules.act.utils.ProcessDefUtils</function-class>
+        <function-signature>java.util.List processList(java.lang.String)</function-signature>
+        <example>${fno:processList(category)}</example>
+    </function>
 </taglib>

@@ -1,12 +1,21 @@
 package com.thinkgem.jeesite.modules.oa.web;
 
+import com.thinkgem.jeesite.common.config.Global;
+import com.thinkgem.jeesite.common.utils.Encodes;
 import com.thinkgem.jeesite.common.web.BaseController;
+import com.thinkgem.jeesite.modules.act.entity.Act;
+import com.thinkgem.jeesite.modules.form.entity.Component;
 import com.thinkgem.jeesite.modules.form.entity.OaFormMaster;
 import com.thinkgem.jeesite.modules.form.service.OaFormMasterService;
+import com.thinkgem.jeesite.modules.form.util.ComponentUtils;
 import com.thinkgem.jeesite.modules.oa.entity.FlowData;
 import com.thinkgem.jeesite.modules.oa.service.FlowService;
 import com.thinkgem.jeesite.modules.oa.units.CommonUtils;
+import com.thinkgem.jeesite.modules.oa.units.FreemarkerUtils;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
+import com.thinkgem.jeesite.modules.table.entity.OaPersonDefineTable;
+import com.thinkgem.jeesite.modules.table.entity.OaPersonDefineTableColumn;
+import com.thinkgem.jeesite.modules.table.service.OaPersonDefineTableService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,6 +24,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,12 +41,15 @@ public class FlowController extends BaseController {
 
 	@Autowired
 	private FlowService flowService;
-
     @Autowired
     private OaFormMasterService oaFormMasterService;
+    @Autowired
+    private OaPersonDefineTableService oaPersonDefineTableService;
 
 	@RequestMapping(value = "form")
-	public String form(FlowData flow, Model model) {
+	public void form(FlowData flow, Model model,HttpServletResponse response) {
+        response.setContentType("text/html;charset=utf-8");
+
 		String view = "flowForm";
 		// 查看审批申请单
 		if (StringUtils.isNotBlank(flow.getId())){
@@ -52,11 +68,18 @@ public class FlowController extends BaseController {
                 view = "flowAudit";
             }
 		}
-        OaFormMaster form = oaFormMasterService.findByNo(flow.getFormNo(), UserUtils.getUser().getOffice().getId());
+        OaFormMaster form = oaFormMasterService.findByNo(flow.getFormNo(), null);
+        flow.setDatas(flowService.getByProcInsId(form.getTableName(), flow.getAct().getProcInsId()));
         flow.setTableName(form.getTableName());
-//        form.getContent();
-		model.addAttribute("flow", flow);
-		return "modules/oa/" + view;
+        Component c = ComponentUtils.getComponent(view);
+        initComponent(form,view);
+        String html = c.getContent().replace("$flowTableInfo$",form.getContent());
+        try {
+            response.getWriter().print(FreemarkerUtils.process(html,toMap(flow)));
+            response.getWriter().flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 	}
 
     @RequestMapping(value = "save")
@@ -69,6 +92,8 @@ public class FlowController extends BaseController {
             String[] filterName = {"tableName", "act.taskId", "act.taskName", "act.taskDefKey",
                     "act.procInsId", "act.procDefId", "act.flag", "id", ""};
             data = CommonUtils.attributeMapFilter(data, filterName);
+            String procDefId = flowData.getAct().getProcDefId();
+            flowData.setFlowFlag(procDefId.substring(0,procDefId.indexOf(":")));
             flowData.setTableName(tableName);
             flowData.setDatas(data);
             try {
@@ -89,13 +114,53 @@ public class FlowController extends BaseController {
     }
 
     @RequestMapping(value = "saveAudit")
-    public String saveAudit(FlowData flowData, Model model) {
+    public String saveAudit(FlowData flowData, Model model,HttpServletResponse response) {
         if (StringUtils.isBlank(flowData.getAct().getFlag())
                 || StringUtils.isBlank(flowData.getAct().getComment())){
             addMessage(model, "请填写审核意见。");
-            return form(flowData, model);
+            form(flowData, model,response);
         }
         flowService.auditSave(flowData);
         return "redirect:" + adminPath + "/act/task/todo/";
+    }
+
+    private void initComponent(OaFormMaster oaFormMaster,String view){
+        OaPersonDefineTable oaPersonDefineTable=this.oaPersonDefineTableService.findByTableName(oaFormMaster.getTableName(), null);
+        List<OaPersonDefineTableColumn> oaPersonDefineTableColumns=this.oaPersonDefineTableService.findColumnListByTableId(oaPersonDefineTable.getId());
+        String tableContent=oaFormMaster.getContent();
+        for(OaPersonDefineTableColumn column : oaPersonDefineTableColumns){
+            if(column != null && !"".equals(column)){
+                String content = "";
+                if("flowForm".equals(view) && !"REMARK".equalsIgnoreCase(column.getColumnType())){
+                    Component component = ComponentUtils.getComponent(column.getControlTypeId());
+                    if(component != null) {
+                        content = component.getContent().replace("name=\"\"", "name=\"" + column.getColumnName() + "\"").replace("value=\"\"", "value=\"${" + column.getColumnName() + "}\"");
+                    }
+                } else {
+                    content = "${" + column.getColumnName() + "}";
+                }
+                tableContent=tableContent.replace("[" + column.getColumnComment() + "]",content);
+            }
+        }
+        oaFormMaster.setContent(tableContent);
+    }
+
+    private Map<String,Object> toMap(FlowData flowData){
+        Map<String,Object> map = flowData.getDatas();
+        if(map == null) {
+            map = new HashMap<>();
+        }
+        map.put("tableName",flowData.getTableName());
+        map.put("id",flowData.getId());
+        map.put("formNo",flowData.getFormNo());
+        map.put("ctx", Global.getAdminPath());
+        Act act = flowData.getAct();
+        if(act != null){
+            if(act.getTaskName() != null) {
+                act.setTaskName(Encodes.urlDecode(Encodes.urlDecode(act.getTaskName())));
+            }
+            map.put("act",act);
+        }
+        return map;
     }
 }

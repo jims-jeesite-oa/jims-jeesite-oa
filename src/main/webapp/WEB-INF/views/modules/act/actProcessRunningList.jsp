@@ -32,11 +32,10 @@
 	</script>
 </head>
 <body>
-	<ul class="nav nav-tabs">
-		<li><a href="${ctx}/act/process/">流程管理</a></li>
-		<li><a href="${ctx}/act/process/deploy/">部署流程</a></li>
-		<li class="active"><a href="${ctx}/act/process/running/">运行中的流程</a></li>
-	</ul>
+    <ul class="breadcrumb">
+        <li id="levelMenu1"><a href="#"></a> <span class="divider">/</span></li>
+        <li id="levelMenu2" class="active"></li>
+    </ul>
 	<form id="searchForm" action="${ctx}/act/process/running/" method="post" class="breadcrumb form-search">
 		<label>流程实例ID：</label><input type="text" id="procInsId" name="procInsId" value="${procInsId}" class="input-medium"/>
 		<label>流程定义Key：</label><input type="text" id="procDefKey" name="procDefKey" value="${procDefKey}" class="input-medium"/>

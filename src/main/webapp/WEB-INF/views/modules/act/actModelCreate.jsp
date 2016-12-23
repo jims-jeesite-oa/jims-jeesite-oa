@@ -30,10 +30,13 @@
 	</script>
 </head>
 <body>
-	<ul class="nav nav-tabs">
-		<li><a href="${ctx}/act/model/">模型管理</a></li>
-		<li class="active"><a href="${ctx}/act/model/create">新建模型</a></li>
-	</ul><br/>
+    <ul class="breadcrumb">
+        <li id="levelMenu1"><a href="#"></a> <span class="divider">/</span></li>
+        <li id="levelMenu2"><a href="#"></a> <span class="divider">/</span></li>
+        <li class="active">
+            新建
+        </li>
+    </ul>
 	<sys:message content="${message}"/>
 	<form id="inputForm" action="${ctx}/act/model/create" target="_blank" method="post" class="form-horizontal">
 		<div class="control-group">

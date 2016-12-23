@@ -4,6 +4,8 @@ import com.thinkgem.jeesite.common.persistence.CrudDao;
 import com.thinkgem.jeesite.common.persistence.annotation.MyBatisDao;
 import com.thinkgem.jeesite.modules.oa.entity.FlowData;
 
+import java.util.Map;
+
 /**
  * 流程dao
  * @author lgx
@@ -11,5 +13,5 @@ import com.thinkgem.jeesite.modules.oa.entity.FlowData;
  */
 @MyBatisDao
 public interface FlowDao extends CrudDao<FlowData> {
-	
+
 }

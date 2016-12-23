@@ -135,10 +135,16 @@
         FROM oa_person_define_table a
         <include refid="oaPersonDefineTableJoins"/>
         WHERE a.table_Name = #{tableName}
-        and a.office_id= #{officeId}
+        <if test="officeId != null and officeId != ''">
+            AND a.office_id = #{officeId}
+        </if>
     </select>
 
     <update id="executeSql">
         ${sql}
     </update>
+
+    <select id="getByProcInsId" resultType="java.util.Map">
+        ${sql}
+    </select>
 </mapper>

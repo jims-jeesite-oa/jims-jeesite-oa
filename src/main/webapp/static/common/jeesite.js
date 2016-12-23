@@ -291,3 +291,7 @@ function initBreadCrumb(){
         $('#levelMenu2').html($.cookie('levelMenu2'))
     }
 }
+
+jQuery.validator.addMethod("startEn",function(value, element) {
+    return this.optional(element) || /^[a-zA-Z]/.test(value);
+},"必须以英文字母开头");

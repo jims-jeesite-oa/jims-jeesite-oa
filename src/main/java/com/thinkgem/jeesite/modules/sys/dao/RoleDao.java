@@ -7,6 +7,8 @@ import com.thinkgem.jeesite.common.persistence.CrudDao;
 import com.thinkgem.jeesite.common.persistence.annotation.MyBatisDao;
 import com.thinkgem.jeesite.modules.sys.entity.Role;
 
+import java.util.List;
+
 /**
  * 角色DAO接口
  * @author ThinkGem
@@ -36,5 +38,12 @@ public interface RoleDao extends CrudDao<Role> {
 	public int deleteRoleOffice(Role role);
 
 	public int insertRoleOffice(Role role);
+
+    /**
+     * 通过OfficeId获取角色列表，仅返回角色id和name（树查询角色时用）
+     * @param role
+     * @return
+     */
+    public List<Role> findRoleByOfficeId(Role role);
 
 }

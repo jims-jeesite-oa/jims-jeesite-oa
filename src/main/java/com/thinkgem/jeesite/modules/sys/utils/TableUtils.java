@@ -23,8 +23,8 @@ public class TableUtils {
      */
     public static List<OaPersonDefineTable> getSelfTable(){
         OaPersonDefineTable table = new OaPersonDefineTable();
-        table.setOffice(new Office());
-        table.getOffice().setId(UserUtils.getUser().getOffice().getId());
+//        table.setOffice(new Office());
+//        table.getOffice().setId(UserUtils.getUser().getOffice().getId());
         List<OaPersonDefineTable> tables = oaPersonDefineTableDao.findList(table);
         if(tables == null){
             tables = Lists.newArrayList();

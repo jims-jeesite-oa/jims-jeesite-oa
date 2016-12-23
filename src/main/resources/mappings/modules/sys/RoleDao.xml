@@ -180,5 +180,13 @@
 			del_flag = #{DEL_FLAG_DELETE}
 		WHERE id = #{id}
 	</update>
-	
+    <!-- 根据OfficeId获取角色（树查询角色时用） -->
+    <select id="findRoleByOfficeId" resultType="Role" useCache="true">
+        SELECT
+        a.id, a.name, a.enname
+        FROM sys_role a
+        WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+        AND a.office_id = #{office.id}
+        ORDER BY a.name
+    </select>
 </mapper>

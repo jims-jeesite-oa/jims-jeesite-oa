@@ -37,7 +37,6 @@ public class OaFormMaster extends DataEntity<OaFormMaster> {
 		super(id);
 	}
 
-	@NotNull(message="医院机构Id不能为空")
 	public Office getOffice() {
 		return office;
 	}

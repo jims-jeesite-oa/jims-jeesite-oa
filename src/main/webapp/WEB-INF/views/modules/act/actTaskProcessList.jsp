@@ -14,11 +14,10 @@
 	</script>
 </head>
 <body>
-	<ul class="nav nav-tabs">
-		<li><a href="${ctx}/act/task/todo/">待办任务</a></li>
-		<li><a href="${ctx}/act/task/historic/">已办任务</a></li>
-		<li class="active"><a href="${ctx}/act/task/process/">新建任务</a></li>
-	</ul>
+    <ul class="breadcrumb">
+        <li id="levelMenu1"><a href="#"></a> <span class="divider">/</span></li>
+        <li id="levelMenu2" class="active"></li>
+    </ul>
 	<form id="searchForm" action="${ctx}/act/task/process/" method="post" class="breadcrumb form-search">
 		<select id="category" name="category" class="input-medium">
 			<option value="">全部分类</option>

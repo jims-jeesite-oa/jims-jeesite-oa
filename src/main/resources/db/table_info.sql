@@ -1370,7 +1370,7 @@ alter table OA_CONTROL_TYPE
 create table OA_FORM_MASTER
 (
   id             VARCHAR2(64) not null,
-  office_id      VARCHAR2(64) not null,
+  office_id      VARCHAR2(64),
   form_no        VARCHAR2(50),
   title          VARCHAR2(100),
   alias          VARCHAR2(100),
@@ -1391,9 +1391,9 @@ create table OA_FORM_MASTER
 ;
 comment on column OA_FORM_MASTER.id
   is '编号';
-comment on column OA_FORM_MASTER.form_no
+comment on column OA_FORM_MASTER.office_id
   is '医院机构Id';
-comment on column OA_FORM_MASTER.title
+comment on column OA_FORM_MASTER.form_no
   is '表单编号';
 comment on column OA_FORM_MASTER.title
   is '表单标题';
@@ -1681,7 +1681,10 @@ create table OA_PERSON_DEFINE_TABLE_COLUMN
   update_date     DATE not null,
   remarks         VARCHAR2(255),
   del_flag        CHAR(1) default '0' not null,
-  control_type_id VARCHAR2(64)
+  control_type_id VARCHAR2(64),
+  is_audit        char(1),
+  show            number,
+  audit_post      varchar2(64)
 )
 ;
 comment on column OA_PERSON_DEFINE_TABLE_COLUMN.id
@@ -1716,6 +1719,12 @@ comment on column OA_PERSON_DEFINE_TABLE_COLUMN.del_flag
   is '删除标记';
 comment on column OA_PERSON_DEFINE_TABLE_COLUMN.control_type_id
   is '控件类型Id';
+comment on column OA_PERSON_DEFINE_TABLE_COLUMN.is_audit
+  is '是否为审批字段';
+comment on column OA_PERSON_DEFINE_TABLE_COLUMN.audit_post
+  is '审批人';
+comment on column OA_PERSON_DEFINE_TABLE_COLUMN.show
+  is '显示顺序';
 alter table OA_PERSON_DEFINE_TABLE_COLUMN
   add constraint PK_OA_PERSON_DEFINE_T_C primary key (ID);
 

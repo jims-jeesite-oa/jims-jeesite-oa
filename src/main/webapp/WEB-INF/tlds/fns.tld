@@ -104,6 +104,14 @@
     <example>${fns:getCache(cacheName, defaultValue)}</example>  
   </function>
 
+  <function>
+    <description>根据id获取用户姓名</description>
+    <name>getUsername</name>
+    <function-class>com.thinkgem.jeesite.modules.sys.utils.UserUtils</function-class>
+    <function-signature>java.lang.String getUsername(java.lang.String)</function-signature>
+    <example>${fns:getUsername(id)}</example>
+  </function>
+
     <function>
         <description>获取当前用户能评阅的人</description>
         <name>getAllPermission</name>
@@ -305,5 +313,13 @@
         <function-class>com.thinkgem.jeesite.modules.sys.utils.TableUtils</function-class>
         <function-signature>java.util.List getSelfTable()</function-signature>
         <example>${fns:getSelfTable()}</example>
+    </function>
+
+    <function>
+        <description>获取控件</description>
+        <name>getControl</name>
+        <function-class>com.thinkgem.jeesite.modules.form.util.ComponentUtils</function-class>
+        <function-signature>java.util.List getControl()</function-signature>
+        <example>${fns:getControl()}</example>
     </function>
 </taglib>
