@@ -1,6 +1,8 @@
 package com.thinkgem.jeesite.modules.oa.service;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.service.CrudService;
 import com.thinkgem.jeesite.common.utils.DateUtils;
 import com.thinkgem.jeesite.common.utils.StringUtils;
@@ -107,29 +109,55 @@ public class FlowService extends CrudService<FlowDao, FlowData> {
                     .append(",update_date=" + handleSqlValue(flowData.getUpdateDate() == null ? null : DateUtils.formatDateTime(flowData.getUpdateDate()), "date"));
             String sql = "UPDATE " + tableName + " SET " + updateValue + " where id='" + flowData.getId() + "'";
             oaPersonDefineTableDao.executeSql(sql);
-            System.out.println(sql);
         }
     }
 
-	public Map<String,Object> getByProcInsId(String tableName,String procInsId) {
+	public List<Map<String,Object>> getFlowInfo(Map<String,String> paramMap) {
+        String tableName = paramMap.get("tableName");
+        String procInsId = paramMap.get("procInsId");
+        String id = paramMap.get("id");
+        String createBy = paramMap.get("createBy");
+
         OaPersonDefineTable defineTable = oaPersonDefineTableDao.findByTableName(tableName,null);
         if(defineTable != null){
             List<OaPersonDefineTableColumn> columns = oaPersonDefineTableColumnDao.findColumnListByTableId(defineTable.getId());
-            String sql = "select ";
-            String split = "";
+            StringBuilder sql = new StringBuilder("select id");
             for(OaPersonDefineTableColumn column : columns) {
                 if("DATE".equals(column.getControlTypeId().toUpperCase())) {
-                    sql += split + "replace(to_char(" + column.getColumnName() + ",'yyyy-MM-dd HH24:mi:ss'),' 00:00:00','') " + column.getColumnName();
+                    sql.append(",replace(to_char(" + column.getColumnName() + ",'yyyy-MM-dd HH24:mi:ss'),' 00:00:00','') " + column.getColumnName());
                 } else {
-                    sql += split + column.getColumnName();
+                    sql.append("," + column.getColumnName());
                 }
-                split = ",";
             }
-            sql += " from " + tableName + " where proc_ins_id='" + procInsId + "'";
-            return oaPersonDefineTableDao.getByProcInsId(sql);
+            sql.append(" from " + tableName + " where del_flag = '0'");
+            if(StringUtils.isNotBlank(id)) {
+                sql.append(" and id='" + id + "' ");
+            }
+            if(StringUtils.isNotBlank(procInsId)) {
+                sql.append(" and proc_ins_id='" + procInsId + "' ");
+            }
+            if(StringUtils.isNotBlank(createBy)) {
+                sql.append(" and create_by='" + createBy + "' ");
+            }
+            return oaPersonDefineTableDao.getFlowInfo(sql.toString());
         }
-		return null;
+		return Lists.newArrayList();
 	}
+
+    public Page<Map<String,Object>> getPageFlowInfo(Page<Map<String,Object>> page,Map<String,String> paramMap){
+        List<Map<String,Object>> list = getFlowInfo(paramMap);
+        page.setCount(list.size());
+        page.setList(list);
+        return page;
+    }
+
+    public Map<String,Object> getOneInfo(Map<String,String> paramMap) {
+        List<Map<String,Object>> infos = getFlowInfo(paramMap);
+        if(infos != null && infos.size() > 0) {
+            return infos.get(0);
+        }
+        return Maps.newHashMap();
+    }
 
 
 //

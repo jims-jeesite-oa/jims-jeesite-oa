@@ -98,4 +98,26 @@ public abstract class ProcessDefUtils {
         }
         return list;
     }
+
+    /**
+     * 获取流程列表
+     * @param category 流程分类
+     */
+    public static List<Object[]> getProcess(String category) {
+        RepositoryService repositoryService = SpringContextHolder.getBean(RepositoryService.class);
+        ProcessDefinitionQuery processDefinitionQuery = repositoryService.createProcessDefinitionQuery()
+                .latestVersion().active().orderByProcessDefinitionKey().asc();
+
+        if (StringUtils.isNotEmpty(category)){
+            processDefinitionQuery.processDefinitionCategory(category);
+        }
+        List<Object[]> list = new ArrayList<>();
+        List<ProcessDefinition> processDefinitionList = processDefinitionQuery.list();
+        for (ProcessDefinition processDefinition : processDefinitionList) {
+            String deploymentId = processDefinition.getDeploymentId();
+            Deployment deployment = repositoryService.createDeploymentQuery().deploymentId(deploymentId).singleResult();
+            list.add(new Object[]{processDefinition, deployment});
+        }
+        return list;
+    }
 }

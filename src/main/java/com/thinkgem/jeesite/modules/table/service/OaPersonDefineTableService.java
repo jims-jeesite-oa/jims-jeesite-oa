@@ -100,6 +100,15 @@ public class OaPersonDefineTableService extends CrudService<OaPersonDefineTableD
       return this.oaPersonDefineTableColumnDao.findColumnListByTableId(tableId);
     }
 
+    public List<OaPersonDefineTableColumn> findColumnList(OaPersonDefineTableColumn column) {
+        return this.oaPersonDefineTableColumnDao.findList(column);
+    }
+
+    public void deleteInfo(String tableName,String infoId){
+        String sql = "delete from " + tableName + " where id='" + infoId + "'";
+        oaPersonDefineTableDao.executeSql(sql);
+    }
+
     private String getDeleteTableSql(String tableName){
         return "BEGIN EXECUTE IMMEDIATE 'DROP TABLE " + tableName + "';EXCEPTION WHEN OTHERS THEN NULL;END;";
     }

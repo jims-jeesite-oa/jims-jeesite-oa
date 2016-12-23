@@ -147,4 +147,8 @@
     <select id="getByProcInsId" resultType="java.util.Map">
         ${sql}
     </select>
+
+    <select id="getFlowInfo" resultType="java.util.Map">
+        ${sql}
+    </select>
 </mapper>

@@ -168,7 +168,7 @@
         <include refid="oaFormMasterColumns"/>
         FROM oa_form_master a
         <include refid="oaFormMasterJoins"/>
-        <where> a.form_no = #{formNo}
+        <where> a.del_flag = '0' and a.form_no = #{formNo}
             <if test="officeId != null and officeId != ''">
                 AND a.office_id = #{officeId}
             </if>

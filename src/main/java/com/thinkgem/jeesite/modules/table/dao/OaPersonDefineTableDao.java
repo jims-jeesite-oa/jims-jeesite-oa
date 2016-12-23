@@ -8,6 +8,7 @@ import com.thinkgem.jeesite.common.persistence.annotation.MyBatisDao;
 import com.thinkgem.jeesite.modules.table.entity.OaPersonDefineTable;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,4 +33,6 @@ public interface OaPersonDefineTableDao extends CrudDao<OaPersonDefineTable> {
     int executeSql(@Param("sql")String sql);
 
     Map<String,Object> getByProcInsId(@Param("sql")String sql);
+
+    List<Map<String,Object>> getFlowInfo(@Param("sql")String sql);
 }

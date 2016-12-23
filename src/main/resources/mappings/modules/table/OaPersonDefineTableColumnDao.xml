@@ -51,6 +51,9 @@
             <if test="isAudit != null and isAudit != ''">
                 AND a.is_audit = #{isAudit}
             </if>
+            <if test="isShow != null and isShow != ''">
+                AND a.is_show = #{isShow}
+            </if>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
