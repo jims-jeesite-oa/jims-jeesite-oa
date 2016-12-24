@@ -58,9 +58,9 @@ public class OaPersonDefineTableService extends CrudService<OaPersonDefineTableD
 			}
 			if (OaPersonDefineTableColumn.DEL_FLAG_NORMAL.equals(oaPersonDefineTableColumn.getDelFlag())){
                 //字段为空时默认 COL+序列
-//                if(StringUtils.isBlank(oaPersonDefineTableColumn.getColumnName())){
+//                if(StringUtils.isBlank(oaPersonDefineTableColumn.getColumnName())) {
                     oaPersonDefineTableColumn.setColumnName("COL" + index++);
-
+//                }
                 if (StringUtils.isBlank(oaPersonDefineTableColumn.getId())){
 					oaPersonDefineTableColumn.setTable(oaPersonDefineTable);
 					oaPersonDefineTableColumn.preInsert();
@@ -73,15 +73,7 @@ public class OaPersonDefineTableService extends CrudService<OaPersonDefineTableD
 				oaPersonDefineTableColumnDao.delete(oaPersonDefineTableColumn);
 			}
 		}
-        dao.executeSql(getDeleteTableSql(oaPersonDefineTable.getTableName()));
-        Map<String,Object> result = JdbcUtils.getSql(oaPersonDefineTable);
-        dao.executeSql((String)result.get("tableSql"));
-        List<String> comments = (List<String>) result.get("comment");
-        if(comments != null && comments.size() > 0){
-            for(String comment : comments){
-                dao.executeSql(comment);
-            }
-        }
+        createTable(oaPersonDefineTable);
  	}
 	
 	@Transactional(readOnly = false)
@@ -111,5 +103,17 @@ public class OaPersonDefineTableService extends CrudService<OaPersonDefineTableD
 
     private String getDeleteTableSql(String tableName){
         return "BEGIN EXECUTE IMMEDIATE 'DROP TABLE " + tableName + "';EXCEPTION WHEN OTHERS THEN NULL;END;";
+    }
+
+    private void createTable(OaPersonDefineTable oaPersonDefineTable){
+        dao.executeSql(getDeleteTableSql(oaPersonDefineTable.getTableName()));
+        Map<String,Object> result = JdbcUtils.getSql(oaPersonDefineTable);
+        dao.executeSql((String)result.get("tableSql"));
+        List<String> comments = (List<String>) result.get("comment");
+        if(comments != null && comments.size() > 0){
+            for(String comment : comments){
+                dao.executeSql(comment);
+            }
+        }
     }
 }

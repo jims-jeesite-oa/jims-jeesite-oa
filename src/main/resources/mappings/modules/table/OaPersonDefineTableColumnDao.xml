@@ -148,7 +148,7 @@
 	</update>
 	
 	<update id="delete">
-		UPDATE oa_person_define_table_column SET 
+		UPDATE oa_person_define_table_column SET
 			del_flag = #{DEL_FLAG_DELETE}
 		<choose>
 			<when test="id !=null and id != ''">

@@ -15,6 +15,7 @@ import com.thinkgem.jeesite.modules.oa.service.FlowService;
 import com.thinkgem.jeesite.modules.oa.units.CommonUtils;
 import com.thinkgem.jeesite.modules.oa.units.FreemarkerUtils;
 import com.thinkgem.jeesite.modules.sys.entity.User;
+import com.thinkgem.jeesite.modules.sys.utils.DictUtils;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import com.thinkgem.jeesite.modules.table.entity.OaPersonDefineTable;
 import com.thinkgem.jeesite.modules.table.entity.OaPersonDefineTableColumn;
@@ -54,9 +55,16 @@ public class FlowController extends BaseController {
 
 	@RequestMapping(value = "form")
 	public void form(FlowData flow, Model model,HttpServletResponse response) {
+        OaFormMaster form = oaFormMasterService.findByNo(flow.getFormNo(), null);
+        Map<String,String> paramMap = new HashMap<>();
+        paramMap.put("tableName",form.getTableName());
+        paramMap.put("procInsId",flow.getAct().getProcInsId());
+        paramMap.put("id",flow.getId());
+        flow.setTableName(form.getTableName());
         String view;
         if(StringUtils.isNotBlank(flow.getShowType())) {
             view = flow.getShowType();
+            flow.setDatas(flowService.getOneInfo(paramMap));
         } else {
             view = "flowForm";
             // 查看审批申请单
@@ -75,19 +83,19 @@ public class FlowController extends BaseController {
                 else if (taskDefKey.startsWith("audit") || "apply_end".equals(taskDefKey)) {
                     view = "flowAudit";
                 }
+                flow.setDatas(flowService.getOneInfo(paramMap));
             }
         }
-        OaFormMaster form = oaFormMasterService.findByNo(flow.getFormNo(), null);
-        Map<String,String> paramMap = new HashMap<>();
-        paramMap.put("tableName",form.getTableName());
-        paramMap.put("procInsId",flow.getAct().getProcInsId());
-        paramMap.put("id",flow.getId());
-        flow.setDatas(flowService.getOneInfo(paramMap));
-        flow.setTableName(form.getTableName());
+
 
         Component c = ComponentUtils.getComponent(view);
-        initComponent(form,view);
-        String html = c.getContent().replace("$flowTableInfo$",form.getContent());
+        initComponent(form,view,StringUtils.isBlank(flow.getId()));
+        String initJs = "";
+        if(StringUtils.isNotBlank(flow.getId()) && "flowForm".equals(view)) {
+            initJs = getInitJs(flow.getDatas(),form.getTableName());
+        }
+        String html = c.getContent().replace("$flowTableInfo$",form.getContent()).replace("$initJs$",initJs);;
+        flow.setShowType(view);
         try {
             response.setContentType("text/html;charset=utf-8");
             response.getWriter().print(FreemarkerUtils.process(html,toMap(flow)));
@@ -143,7 +151,7 @@ public class FlowController extends BaseController {
     public String myFlow(String procDefId,HttpServletRequest request,HttpServletResponse response){
         response.setContentType("text/html;charset=utf-8");
         String html = "";
-        Map<String,Object> map = new HashMap<>();
+        FlowData flowParam = new FlowData();
 
         List<Object[]> processList = ProcessDefUtils.processList(null);
         //默认选择第一个流程
@@ -164,8 +172,8 @@ public class FlowController extends BaseController {
             OaFormMaster form = oaFormMasterService.findByNo(formKey, null);
             if(form != null) {
                 String tableName = form.getTableName();
-                map.put("tableName", tableName);
-                map.put("formNo", form.getFormNo());
+                flowParam.setTableName(tableName);
+                flowParam.setFormNo(form.getFormNo());
                 OaPersonDefineTable table = oaPersonDefineTableService.findByTableName(tableName, null);
                 OaPersonDefineTableColumn param = new OaPersonDefineTableColumn();
                 param.setIsShow("1");
@@ -184,11 +192,12 @@ public class FlowController extends BaseController {
                 if (!user.isAdmin()){
                     paramMap.put("createBy",user.getId());
                 }
-                Page<Map<String,Object>> page = flowService.getPageFlowInfo(new Page<Map<String, Object>>(request,response),paramMap);
+                Page<Map<String,Object>> page = flowService.getPageFlowInfo(new Page<FlowData>(request,response),paramMap);
                 List<Map<String,Object>> flowInfo = page.getList();
 
-                map.put("flowInfo", flowInfo);
-                map.put("page", page);
+                flowParam.setDatas(new HashMap<String, Object>());
+                flowParam.getDatas().put("flowInfo", flowInfo);
+                flowParam.getDatas().put("page", page);
 
                 Component c = ComponentUtils.getComponent("myFlow");
                 html = c.getContent().replace("$selfFlowHTML$", selfFlowHTML.toString())
@@ -197,8 +206,7 @@ public class FlowController extends BaseController {
             }
         }
         try {
-            map.put("ctx", Global.getAdminPath());
-            response.getWriter().print(FreemarkerUtils.process(html,map));
+            response.getWriter().print(FreemarkerUtils.process(html,toMap(flowParam)));
             response.getWriter().flush();
         } catch (IOException e) {
             e.printStackTrace();
@@ -225,7 +233,7 @@ public class FlowController extends BaseController {
      * @param oaFormMaster
      * @param view
      */
-    private void initComponent(OaFormMaster oaFormMaster,String view){
+    private void initComponent(OaFormMaster oaFormMaster,String view,boolean init){
         OaPersonDefineTable oaPersonDefineTable=this.oaPersonDefineTableService.findByTableName(oaFormMaster.getTableName(), null);
         List<OaPersonDefineTableColumn> oaPersonDefineTableColumns=this.oaPersonDefineTableService.findColumnListByTableId(oaPersonDefineTable.getId());
         String tableContent=oaFormMaster.getContent();
@@ -233,10 +241,13 @@ public class FlowController extends BaseController {
             if(column != null && !"".equals(column)){
                 String content = "";
                 if("flowForm".equals(view) && !"REMARK".equalsIgnoreCase(column.getColumnType())){
-                    Component component = ComponentUtils.getComponent(column.getControlTypeId());
-                    if(component != null) {
-                        content = component.getContent().replace("name=\"\"", "name=\"" + column.getColumnName() + "\"").replace("value=\"\"", "value=\"${" + column.getColumnName() + "}\"");
+                    Map<String,Object> columnMap = new HashMap<>();
+                    columnMap.put("value",column.getControlTypeId());
+                    columnMap.put("columnName",column.getColumnName());
+                    if(ComponentUtils.chargeMoreData(column.getControlTypeId())) {
+                        columnMap.put("optData", DictUtils.getDictList(column.getRemarks()));
                     }
+                    content = ComponentUtils.initComponent(columnMap,init);
                 } else {
                     content = "${" + column.getColumnName() + "}";
                 }
@@ -253,8 +264,22 @@ public class FlowController extends BaseController {
      */
     private Map<String,Object> toMap(FlowData flowData){
         Map<String,Object> map = flowData.getDatas();
+
         if(map == null) {
             map = new HashMap<>();
+        } else if(!"flowForm".equals(flowData.getShowType())){
+            OaPersonDefineTable oaPersonDefineTable=this.oaPersonDefineTableService.findByTableName(flowData.getTableName(), null);
+            List<OaPersonDefineTableColumn> columns=this.oaPersonDefineTableService.findColumnListByTableId(oaPersonDefineTable.getId());
+            if(columns.size() > 0) {
+                if(map.get("flowInfo") != null) {
+                    List<Map<String,Object>> list = (List<Map<String,Object>>) map.get("flowInfo");
+                    for(Map<String,Object> m : list) {
+                        format(m,columns);
+                    }
+                } else {
+                    format(map,columns);
+                }
+            }
         }
         map.put("tableName",flowData.getTableName());
         map.put("id",flowData.getId());
@@ -268,5 +293,30 @@ public class FlowController extends BaseController {
             map.put("act",act);
         }
         return map;
+    }
+
+    private String getInitJs(Map<String,Object> map,String tableName) {
+        OaPersonDefineTable oaPersonDefineTable=this.oaPersonDefineTableService.findByTableName(tableName, null);
+        List<OaPersonDefineTableColumn> columns=this.oaPersonDefineTableService.findColumnListByTableId(oaPersonDefineTable.getId());
+        StringBuilder sb = new StringBuilder();
+        if(columns != null && map != null && columns.size() > 0 && map.keySet().size() > 0) {
+            for (OaPersonDefineTableColumn column : columns) {
+                if (ComponentUtils.chargeMoreData(column.getControlTypeId()) && map.get(column.getColumnName()) != null) {
+                    Component c = ComponentUtils.getComponent(column.getControlTypeId() + "Init");
+                    sb.append(c.getContent().replace("${colName}",column.getColumnName()).replace("${colValue}","${" + column.getColumnName() + "}"));
+                }
+            }
+        }
+        return sb.toString();
+    }
+
+    private void format(Map<String,Object> map,List<OaPersonDefineTableColumn> columns){
+        if(columns != null && map != null && columns.size() > 0 && map.keySet().size() > 0) {
+            for (OaPersonDefineTableColumn column : columns) {
+                if (ComponentUtils.chargeMoreData(column.getControlTypeId()) && map.get(column.getColumnName()) != null) {
+                    map.put(column.getColumnName(), DictUtils.getDictLabels((String) map.get(column.getColumnName()), column.getRemarks(), ""));
+                }
+            }
+        }
     }
 }

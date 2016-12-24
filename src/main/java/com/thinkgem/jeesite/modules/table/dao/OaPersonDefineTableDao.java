@@ -1,10 +1,8 @@
-/**
- * Copyright &copy; 2012-2016 <a href="https://github.com/thinkgem/jeesite">JeeSite</a> All rights reserved.
- */
 package com.thinkgem.jeesite.modules.table.dao;
 
 import com.thinkgem.jeesite.common.persistence.CrudDao;
 import com.thinkgem.jeesite.common.persistence.annotation.MyBatisDao;
+import com.thinkgem.jeesite.modules.oa.entity.FlowData;
 import com.thinkgem.jeesite.modules.table.entity.OaPersonDefineTable;
 import org.apache.ibatis.annotations.Param;
 
@@ -35,4 +33,6 @@ public interface OaPersonDefineTableDao extends CrudDao<OaPersonDefineTable> {
     Map<String,Object> getByProcInsId(@Param("sql")String sql);
 
     List<Map<String,Object>> getFlowInfo(@Param("sql")String sql);
+
+    List<Map<String,Object>> getFlowInfo(FlowData flow);
 }

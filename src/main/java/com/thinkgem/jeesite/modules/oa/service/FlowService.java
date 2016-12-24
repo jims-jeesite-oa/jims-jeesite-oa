@@ -113,42 +113,21 @@ public class FlowService extends CrudService<FlowDao, FlowData> {
     }
 
 	public List<Map<String,Object>> getFlowInfo(Map<String,String> paramMap) {
-        String tableName = paramMap.get("tableName");
-        String procInsId = paramMap.get("procInsId");
-        String id = paramMap.get("id");
-        String createBy = paramMap.get("createBy");
-
-        OaPersonDefineTable defineTable = oaPersonDefineTableDao.findByTableName(tableName,null);
-        if(defineTable != null){
-            List<OaPersonDefineTableColumn> columns = oaPersonDefineTableColumnDao.findColumnListByTableId(defineTable.getId());
-            StringBuilder sql = new StringBuilder("select id");
-            for(OaPersonDefineTableColumn column : columns) {
-                if("DATE".equals(column.getControlTypeId().toUpperCase())) {
-                    sql.append(",replace(to_char(" + column.getColumnName() + ",'yyyy-MM-dd HH24:mi:ss'),' 00:00:00','') " + column.getColumnName());
-                } else {
-                    sql.append("," + column.getColumnName());
-                }
-            }
-            sql.append(" from " + tableName + " where del_flag = '0'");
-            if(StringUtils.isNotBlank(id)) {
-                sql.append(" and id='" + id + "' ");
-            }
-            if(StringUtils.isNotBlank(procInsId)) {
-                sql.append(" and proc_ins_id='" + procInsId + "' ");
-            }
-            if(StringUtils.isNotBlank(createBy)) {
-                sql.append(" and create_by='" + createBy + "' ");
-            }
-            return oaPersonDefineTableDao.getFlowInfo(sql.toString());
+        String sql = getSelectSql(paramMap);
+        if(StringUtils.isNotBlank(sql)) {
+            return oaPersonDefineTableDao.getFlowInfo(sql);
         }
 		return Lists.newArrayList();
 	}
 
-    public Page<Map<String,Object>> getPageFlowInfo(Page<Map<String,Object>> page,Map<String,String> paramMap){
-        List<Map<String,Object>> list = getFlowInfo(paramMap);
-        page.setCount(list.size());
-        page.setList(list);
-        return page;
+    public Page<Map<String,Object>> getPageFlowInfo(Page<FlowData> page,Map<String,String> paramMap){
+        FlowData flow = new FlowData();
+        flow.setPage(page);
+        flow.setSql(getSelectSql(paramMap));
+        List<Map<String,Object>> list = oaPersonDefineTableDao.getFlowInfo(flow);
+        Page<Map<String,Object>> result = new Page<>(page.getPageNo(),page.getPageSize(),page.getCount());
+        result.setList(list);
+        return result;
     }
 
     public Map<String,Object> getOneInfo(Map<String,String> paramMap) {
@@ -195,6 +174,20 @@ public class FlowService extends CrudService<FlowDao, FlowData> {
 			Map<String, Object> vars = Maps.newHashMap();
 			vars.put("pass", "yes".equals(flowData.getAct().getFlag())? "1" : "0");
 			actTaskService.complete(flowData.getAct().getTaskId(), flowData.getAct().getProcInsId(), flowData.getAct().getComment(), "自定义流程", vars);
+            if("yes".equals(flowData.getAct().getFlag())) {
+                OaPersonDefineTable table = oaPersonDefineTableDao.findByTableName(flowData.getTableName(), null);
+                OaPersonDefineTableColumn param = new OaPersonDefineTableColumn(table);
+                param.setIsAudit("1");
+                List<OaPersonDefineTableColumn> columns = oaPersonDefineTableColumnDao.findList(param);
+                StringBuilder sb = new StringBuilder("update " + flowData.getTableName() + " set ");
+                String split = "";
+                for(OaPersonDefineTableColumn column : columns) {
+                    sb.append(split + column.getColumnName() + "=''");
+                    split = ",";
+                }
+                sb.append(" where id='" + flowData.getId() + "'");
+                oaPersonDefineTableDao.executeSql(sb.toString());
+            }
 		}
 	}
 
@@ -212,22 +205,20 @@ public class FlowService extends CrudService<FlowDao, FlowData> {
 
 		// 审核环节
 		if (taskDefKey.startsWith("audit")){
-            List<Role> roles = UserUtils.getCurrentUserRole();
             OaPersonDefineTable table = oaPersonDefineTableDao.findByTableName(flowData.getTableName(), null);
             OaPersonDefineTableColumn param = new OaPersonDefineTableColumn(table);
             param.setIsAudit("1");
             List<OaPersonDefineTableColumn> columns = oaPersonDefineTableColumnDao.findList(param);
-            outer : for(Role role : roles) {
-                for(OaPersonDefineTableColumn column : columns) {
-                    if(role.getId().equals(column.getAuditPost())) {
-                        String sql = "update " + flowData.getTableName() + " set "
-                                + column.getColumnName() + "='" + flowData.getAct().getComment()
-                                + "' where id='" + flowData.getId() + "'";
-                        oaPersonDefineTableDao.executeSql(sql);
-                        break outer;
-                    }
+            for(OaPersonDefineTableColumn column : columns) {
+                if(taskDefKey.equals(column.getAuditPost())) {
+                    String sql = "update " + flowData.getTableName() + " set "
+                            + column.getColumnName() + "='" + flowData.getAct().getComment()
+                            + "' where id='" + flowData.getId() + "'";
+                    oaPersonDefineTableDao.executeSql(sql);
+                    break;
                 }
             }
+
         }
 		else if ("apply_end".equals(taskDefKey)){}
 		// 未知环节，直接返回
@@ -290,5 +281,39 @@ public class FlowService extends CrudService<FlowDao, FlowData> {
             }
         }
         return false;
+    }
+
+    private String getSelectSql(Map<String,String> paramMap) {
+        String tableName = paramMap.get("tableName");
+        String procInsId = paramMap.get("procInsId");
+        String id = paramMap.get("id");
+        String createBy = paramMap.get("createBy");
+        StringBuilder sql = null;
+        OaPersonDefineTable defineTable = oaPersonDefineTableDao.findByTableName(tableName,null);
+        if(defineTable != null) {
+            List<OaPersonDefineTableColumn> columns = oaPersonDefineTableColumnDao.findColumnListByTableId(defineTable.getId());
+            if(columns != null && columns.size() >0) {
+                sql = new StringBuilder("select id,proc_ins_id procInsId");
+                for (OaPersonDefineTableColumn column : columns) {
+                    if ("DATE".equals(column.getControlTypeId().toUpperCase())) {
+                        sql.append(",replace(to_char(" + column.getColumnName() + ",'yyyy-MM-dd HH24:mi:ss'),' 00:00:00','') " + column.getColumnName());
+                    } else {
+                        sql.append("," + column.getColumnName());
+                    }
+                }
+                sql.append(" from " + tableName + " where del_flag = '0'");
+                if (StringUtils.isNotBlank(id)) {
+                    sql.append(" and id='" + id + "' ");
+                }
+                if (StringUtils.isNotBlank(procInsId)) {
+                    sql.append(" and proc_ins_id='" + procInsId + "' ");
+                }
+                if (StringUtils.isNotBlank(createBy)) {
+                    sql.append(" and create_by='" + createBy + "' ");
+                }
+            }
+        }
+        if(sql != null) return sql.toString();
+        return null;
     }
 }

@@ -1,40 +1,135 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <components>
+    <!--标准输入-->
     <component>
         <value>text</value>
         <type>controlType</type>
         <name>标准输入</name>
         <content><![CDATA[
-            <input name="" type="text" value=""/>
+            <input name="${colName}" type="text" value="${colValue}"/>
         ]]></content>
     </component>
+    <!--数字输入-->
     <component>
         <value>number</value>
         <type>controlType</type>
         <name>数字输入</name>
         <content><![CDATA[
-            <input name="" type="text" value="" class="number"/>
+            <input name="${colName}" type="text" value="${colValue}" class="number"/>
         ]]></content>
     </component>
+    <!--日期输入-->
     <component>
         <value>date</value>
         <type>controlType</type>
         <name>日期输入</name>
         <content><![CDATA[
-            <input name="" type="text" readonly="readonly" maxlength="20" class="input-medium Wdate "
-					value="" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
+            <input name="${colName}" type="text" readonly="readonly" maxlength="20" class="input-medium Wdate "
+					value="${colValue}" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
         ]]></content>
+        <initMethod>com.thinkgem.jeesite.common.utils.DateUtils.getDate</initMethod>
     </component>
+    <!--时间输入-->
     <component>
         <value>datetime</value>
         <type>controlType</type>
         <name>时间输入</name>
         <content><![CDATA[
-            <input name="" type="text" readonly="readonly" maxlength="20" class="input-medium Wdate "
-					value="" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',isShowClear:false});"/>
+            <input name="${colName}" type="text" readonly="readonly" maxlength="20" class="input-medium Wdate "
+					value="${colValue}" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',isShowClear:false});"/>
+        ]]></content>
+    </component>
+    <!--人员选择-->
+    <component>
+        <value>selectUser</value>
+        <type>controlType</type>
+        <name>人员选择</name>
+        <content><![CDATA[
+            <div class="input-append">
+                <input id="${colName}" name="${colName}" readonly="readonly" type="text" value="${colValue}"/>
+                <a id="${colName}Button" href="javascript:" class="btn">&nbsp;<i class="icon-search"></i>&nbsp;</a>&nbsp;&nbsp;
+            <div>
+            <script type="text/javascript">
+                $("#${colName}Button, #${colName}").click(function(){
+                    // 是否限制选择，如果限制，设置为disabled
+                    if ($("#${colName}Button").hasClass("disabled")){
+                        return true;
+                    }
+                    // 正常打开
+                    top.$.jBox.open("iframe:${ctx}/tag/treeselect?url="+encodeURIComponent("/sys/office/treeData?type=3"), "选择人员", 300, 420, {
+                        ajaxData:{selectIds: $("#${colName}").val()},buttons:{"确定":"ok", "清除":"clear","关闭":true}, submit:function(v, h, f){
+                            if (v=="ok"){
+                                var tree = h.find("iframe")[0].contentWindow.tree;
+                                var names = [], nodes = [];
+                                nodes = tree.getSelectedNodes(true);
+                                for(var i=0; i<nodes.length; i++) {
+                                    if (nodes[i].level == 0){
+                                        top.$.jBox.tip("不能选择根节点（"+nodes[i].name+"）请重新选择。");
+                                        return false;
+                                    }
+                                    if (nodes[i].isParent){
+                                        top.$.jBox.tip("不能选择父节点（"+nodes[i].name+"）请重新选择。");
+                                        return false;
+                                    }
+                                    $("#${colName}").val(nodes[i].name);
+                                    break;
+                                }
+
+                            }
+                            else if (v=="clear"){
+                                $("#${colName}").val("");
+                            }
+                            if(typeof ${colName}TreeselectCallBack == 'function'){
+                                ${colName}TreeselectCallBack(v, h, f);
+                            }
+                        }, loaded:function(h){
+                            $(".jbox-content", top.document).css("overflow-y","hidden");
+                        }
+                    });
+                });
+            </script>
+        ]]></content>
+    </component>
+    <!--当前用户名-->
+    <component>
+        <value>currentUser</value>
+        <type>controlType</type>
+        <name>当前用户名</name>
+        <content><![CDATA[
+            <input name="${colName}" type="hidden" value="${colValue}"/>
+            ${colValue}
+        ]]></content>
+        <initMethod>com.thinkgem.jeesite.modules.form.util.InitUtils.getUsername</initMethod>
+    </component>
+    <!--单选-->
+    <component>
+        <value>radio</value>
+        <type>controlType</type>
+        <name>单选</name>
+        <content><![CDATA[
+            <input name="${colName}" type="radio" value="${value}" ${checked}/>${label}
+        ]]></content>
+    </component>
+    <!--多选-->
+    <component>
+        <value>checkbox</value>
+        <type>controlType</type>
+        <name>多选</name>
+        <content><![CDATA[
+            <input name="${colName}" type="checkbox" value="${value}" ${checked}/>${label}
+        ]]></content>
+    </component>
+    <!--下拉选项-->
+    <component>
+        <value>select</value>
+        <type>controlType</type>
+        <name>下拉选项</name>
+        <content><![CDATA[
+            <option value="${value}" ${selected}>${label}</option>
         ]]></content>
     </component>
 
+    <!--填写模板-->
     <component>
         <value>flowForm</value>
         <type>template</type>
@@ -52,6 +147,7 @@
                 $.get("${ctx}/act/task/histoicFlow?procInsId=${act.procInsId}&t="+new Date().getTime(), function(data){
                     $("#histoicFlowList").html(data);
                 });
+                $initJs$
             </#if>
 			$("#inputForm").validate({
 				submitHandler: function(form){
@@ -106,6 +202,7 @@
 </html>
         ]]></content>
     </component>
+    <!--审批模板-->
     <component>
         <value>flowAudit</value>
         <type>template</type>
@@ -183,6 +280,7 @@
 </html>
         ]]></content>
     </component>
+    <!--查看模板-->
     <component>
         <value>flowView</value>
         <type>template</type>
@@ -223,6 +321,8 @@
 </html>
         ]]></content>
     </component>
+
+    <!--我发起的流程-->
     <component>
         <value>myFlow</value>
         <type>template</type>
@@ -250,6 +350,8 @@
         <li id="levelMenu2" class="active"></li>
     </ul>
 	<form id="searchForm" action="${ctx}/oa/flow/myFlow" method="get" class="breadcrumb form-search">
+	    <input id="pageNo" name="pageNo" type="hidden" value="${page.pageNo}"/>
+		<input id="pageSize" name="pageSize" type="hidden" value="${page.pageSize}"/>
 		<ul class="ul-form">
 			<li><label>流程：</label>
                 <select id="selfFlowSel" name="procDefId">
@@ -273,7 +375,7 @@
 		    <tr>
 				$tbodyHTML$
 				<td>
-    				<a href="${ctx}/oa/flow/form?id=${item.ID}&formNo=${formNo}&showType=flowView">详情</a>
+    				<a href="${ctx}/oa/flow/form?id=${item.ID}&formNo=${formNo}&showType=flowView&act.procInsId=${item.PROCINSID}">详情</a>
 					<a href="${ctx}/oa/flow/deleteInfo?tableName=${tableName}&id=${item.ID}" onclick="return confirmx('确认要删除该流程数据吗？', this.href)">删除</a>
 				</td>
 			</tr>
@@ -283,6 +385,39 @@
 	<div class="pagination">${page}</div>
 </body>
 </html>
+        ]]></content>
+    </component>
+
+
+    <component>
+        <value>radioInit</value>
+        <type>initJs</type>
+        <name>初始化单选</name>
+        <content><![CDATA[
+            $("input[name='${colName}'][value='${colValue}']").attr('checked',true);
+        ]]></content>
+    </component>
+    <component>
+        <value>checkboxInit</value>
+        <type>initJs</type>
+        <name>初始化多选</name>
+        <content><![CDATA[
+            var sel = '${colValue}'.split(',')
+            for(var i=0;i<sel.length;i++){
+                $("input[name='${colName}']").each(function(){
+                    if ($(this).val() == sel[i]) {
+                        this.checked=true;
+                    }
+                });
+            }
+        ]]></content>
+    </component>
+    <component>
+        <value>selectInit</value>
+        <type>initJs</type>
+        <name>初始化下拉框</name>
+        <content><![CDATA[
+            $('#${colName}').val('${colValue}');
         ]]></content>
     </component>
 </components>

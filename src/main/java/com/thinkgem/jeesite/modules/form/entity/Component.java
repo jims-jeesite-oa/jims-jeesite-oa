@@ -21,9 +21,13 @@ public class Component implements Serializable{
     @XmlElement(name = "type")
     private String type;
     @XmlElement(name = "name")
-    private String name;
+    private String name;   // 组件名称
     @XmlElement(name = "content")
-    private String content;
+    private String content;   // 组件内容
+    @XmlElement(name = "initMethod")
+    private String initMethod;    //初始方法
+    @XmlElement(name = "initValue")
+    private String initValue;     //初始值
 
     public String getValue() {
         return value;
@@ -55,5 +59,21 @@ public class Component implements Serializable{
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getInitMethod() {
+        return initMethod;
+    }
+
+    public void setInitMethod(String initMethod) {
+        this.initMethod = initMethod;
+    }
+
+    public String getInitValue() {
+        return initValue;
+    }
+
+    public void setInitValue(String initValue) {
+        this.initValue = initValue;
     }
 }
