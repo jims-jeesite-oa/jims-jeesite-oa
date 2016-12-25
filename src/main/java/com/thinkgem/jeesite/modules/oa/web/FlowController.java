@@ -111,13 +111,11 @@ public class FlowController extends BaseController {
         Map data = request.getParameterMap();
         if (data != null) {
             data = CommonUtils.mapConvert(data);
-            String tableName = (String) data.get("tableName");
             String[] filterName = {"tableName", "act.taskId", "act.taskName", "act.taskDefKey",
-                    "act.procInsId", "act.procDefId", "act.flag", "id", ""};
+                    "act.procInsId", "act.flag", "id", ""};
             data = CommonUtils.attributeMapFilter(data, filterName);
             String procDefId = flowData.getAct().getProcDefId();
-            flowData.setFlowFlag(procDefId.substring(0,procDefId.indexOf(":")));
-            flowData.setTableName(tableName);
+            flowData.setFlowFlag(procDefId.substring(0, procDefId.indexOf(":")));
             flowData.setDatas(data);
             try {
                 try {
@@ -156,7 +154,7 @@ public class FlowController extends BaseController {
         List<Object[]> processList = ProcessDefUtils.processList(null);
         //默认选择第一个流程
         if(StringUtils.isBlank(procDefId)) {
-            ProcessDefinition process = (ProcessDefinition)processList.get(1)[0];
+            ProcessDefinition process = (ProcessDefinition)processList.get(0)[0];
             procDefId = process.getId();
         }
         //自定义流程HTML
@@ -188,6 +186,7 @@ public class FlowController extends BaseController {
 
                 Map<String,String> paramMap = new HashMap<>();
                 paramMap.put("tableName",form.getTableName());
+                paramMap.put("procDefId",procDefId);
                 User user = UserUtils.getUser();
                 if (!user.isAdmin()){
                     paramMap.put("createBy",user.getId());

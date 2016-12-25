@@ -48,7 +48,7 @@ public class FlowService extends CrudService<FlowDao, FlowData> {
     public void insertTable(FlowData flowData){
         String tableName = flowData.getTableName();
         Map<String, Object> data = flowData.getDatas();
-        OaPersonDefineTable defineTable = oaPersonDefineTableDao.findByTableName(tableName, UserUtils.getUser().getOffice().getId());
+        OaPersonDefineTable defineTable = oaPersonDefineTableDao.findByTableName(tableName, null);
         if (defineTable != null && data != null && StringUtils.isNotBlank(tableName)) {
             List<OaPersonDefineTableColumn> columns = oaPersonDefineTableColumnDao.findColumnListByTableId(defineTable.getId());
             dataAdapter(columns, data);
@@ -67,14 +67,15 @@ public class FlowService extends CrudService<FlowDao, FlowData> {
                     comma = ", ";
                 }
             }
-            insertKey.append(",id,create_by,create_date,update_by,update_date,remarks,del_flag");
+            insertKey.append(",id,create_by,create_date,update_by,update_date,remarks,del_flag,proc_def_id");
             insertValue.append(comma + handleSqlValue(flowData.getId(),"varchar2"))
                     .append(comma + handleSqlValue(flowData.getCreateBy(), "varchar2"))
                     .append(comma + handleSqlValue(DateUtils.formatDateTime(flowData.getCreateDate()), "date"))
                     .append(comma + handleSqlValue(flowData.getUpdateBy(), "varchar2"))
                     .append(comma + handleSqlValue(DateUtils.formatDateTime(flowData.getUpdateDate()), "date"))
                     .append(comma + handleSqlValue(flowData.getRemarks(), "varchar2"))
-                    .append(comma + handleSqlValue(flowData.getDelFlag(), "varchar2"));
+                    .append(comma + handleSqlValue(flowData.getDelFlag(), "varchar2"))
+                    .append(comma + handleSqlValue(flowData.getAct().getProcDefId(), "varchar2"));
             String sql = "INSERT INTO " + tableName + " (" + insertKey + ") VALUES (" + insertValue + ")";
             oaPersonDefineTableDao.executeSql(sql);
         }
@@ -288,6 +289,7 @@ public class FlowService extends CrudService<FlowDao, FlowData> {
         String procInsId = paramMap.get("procInsId");
         String id = paramMap.get("id");
         String createBy = paramMap.get("createBy");
+        String procDefId = paramMap.get("procDefId");
         StringBuilder sql = null;
         OaPersonDefineTable defineTable = oaPersonDefineTableDao.findByTableName(tableName,null);
         if(defineTable != null) {
@@ -310,6 +312,9 @@ public class FlowService extends CrudService<FlowDao, FlowData> {
                 }
                 if (StringUtils.isNotBlank(createBy)) {
                     sql.append(" and create_by='" + createBy + "' ");
+                }
+                if (StringUtils.isNotBlank(procDefId)) {
+                    sql.append(" and proc_def_id='" + procDefId + "' ");
                 }
             }
         }

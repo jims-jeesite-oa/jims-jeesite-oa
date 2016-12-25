@@ -44,8 +44,14 @@
 					}
 				}
 			});
+            if(row.id) {
+                $(list+idx+'_columnComment').attr('disabled',true)
+                $(list+idx+'_columnType').attr('disabled',true)
+                $(list+idx+'_tableStatus').attr('disabled',true)
+            } else {
+                changeColumnType('oaPersonDefineTableColumnList' + idx + '_columnType','oaPersonDefineTableColumnList' + idx + '_tableStatus')
+            }
             changeAudit('oaPersonDefineTableColumnList' + idx + '_auditPost',row.isAudit)
-            changeColumnType('oaPersonDefineTableColumnList' + idx + '_columnType','oaPersonDefineTableColumnList' + idx + '_tableStatus')
             changeControl(row.controlTypeId,'oaPersonDefineTableColumnList' + idx + '_remarks')
 		}
 		function delRow(obj, prefix){
@@ -121,15 +127,6 @@
                     <form:input path="tableComment" htmlEscape="false" maxlength="200" class="input-xlarge required"/>
                 </div>
             </div>
-            <%--<div class="control-group">--%>
-                <%--<label class="control-label">状态：</label>--%>
-                <%--<div class="controls">--%>
-                    <%--<form:select path="tableStatus" class="input-xlarge ">--%>
-                        <%--<form:option value="" label=""/>--%>
-                        <%--<form:options items="${fns:getDictList('table_status')}" itemLabel="label" itemValue="value" htmlEscape="false"/>--%>
-                    <%--</form:select>--%>
-                <%--</div>--%>
-            <%--</div>--%>
             <div class="control-group">
                 <label class="control-label">备注信息：</label>
                 <div class="controls">
@@ -145,7 +142,7 @@
                         <th class="hide"></th>
                         <th>数据列名</th>
                         <th>数据类型</th>
-                        <th>列的长度</th>
+                        <th>数据长度</th>
                         <th>列表显示</th>
                         <th>显示顺序</th>
                         <th>审核字段</th>
