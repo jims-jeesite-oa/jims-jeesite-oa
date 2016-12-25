@@ -9,6 +9,15 @@
             <input name="${colName}" type="text" value="${colValue}"/>
         ]]></content>
     </component>
+    <!--文本输入-->
+    <component>
+        <value>textarea</value>
+        <type>controlType</type>
+        <name>文本输入</name>
+        <content><![CDATA[
+                <textarea name="${colName}" rows="3"/>${colValue}</textarea>
+            ]]></content>
+    </component>
     <!--数字输入-->
     <component>
         <value>number</value>
@@ -90,31 +99,20 @@
             </script>
         ]]></content>
     </component>
-    <!--当前用户名-->
-    <component>
-        <value>currentUser</value>
-        <type>controlType</type>
-        <name>当前用户名</name>
-        <content><![CDATA[
-            <input name="${colName}" type="hidden" value="${colValue}"/>
-            ${colValue}
-        ]]></content>
-        <initMethod>com.thinkgem.jeesite.modules.form.util.InitUtils.getUsername</initMethod>
-    </component>
-    <!--单选-->
+    <!--单选选择-->
     <component>
         <value>radio</value>
         <type>controlType</type>
-        <name>单选</name>
+        <name>单选选择</name>
         <content><![CDATA[
             <input name="${colName}" type="radio" value="${value}" ${checked}/>${label}
         ]]></content>
     </component>
-    <!--多选-->
+    <!--多选选择-->
     <component>
         <value>checkbox</value>
         <type>controlType</type>
-        <name>多选</name>
+        <name>多选选择</name>
         <content><![CDATA[
             <input name="${colName}" type="checkbox" value="${value}" ${checked}/>${label}
         ]]></content>
@@ -127,6 +125,50 @@
         <content><![CDATA[
             <option value="${value}" ${selected}>${label}</option>
         ]]></content>
+    </component>
+    <!--当前用户-->
+    <component>
+        <value>currentUser</value>
+        <type>controlType</type>
+        <name>当前用户名</name>
+        <content><![CDATA[
+            <input name="${colName}" type="hidden" value="${colValue}"/>
+            ${colValue}
+        ]]></content>
+        <initMethod>com.thinkgem.jeesite.modules.form.util.InitUtils.getUsername</initMethod>
+    </component>
+    <!--当前用户部门-->
+    <component>
+        <value>currentUserOffice</value>
+        <type>controlType</type>
+        <name>当前用户部门</name>
+        <content><![CDATA[
+            <input name="${colName}" type="hidden" value="${colValue}"/>
+            ${colValue}
+        ]]></content>
+        <initMethod>com.thinkgem.jeesite.modules.form.util.InitUtils.getUserOffice</initMethod>
+    </component>
+    <!--当前日期-->
+    <component>
+        <value>currentDate</value>
+        <type>controlType</type>
+        <name>当前日期</name>
+        <content><![CDATA[
+            <input name="${colName}" type="hidden" value="${colValue}"/>
+            ${colValue}
+        ]]></content>
+        <initMethod>com.thinkgem.jeesite.common.utils.DateUtils.getDate</initMethod>
+    </component>
+    <!--当前日期时间-->
+    <component>
+        <value>currentDateTime</value>
+        <type>controlType</type>
+        <name>当前日期时间</name>
+        <content><![CDATA[
+            <input name="${colName}" type="hidden" value="${colValue}"/>
+            ${colValue}
+        ]]></content>
+        <initMethod>com.thinkgem.jeesite.common.utils.DateUtils.getDateTime</initMethod>
     </component>
 
     <!--填写模板-->
@@ -147,6 +189,7 @@
                 $.get("${ctx}/act/task/histoicFlow?procInsId=${act.procInsId}&t="+new Date().getTime(), function(data){
                     $("#histoicFlowList").html(data);
                 });
+                $('.table-form td').attr('nowrap','nowrap')
                 $initJs$
             </#if>
 			$("#inputForm").validate({

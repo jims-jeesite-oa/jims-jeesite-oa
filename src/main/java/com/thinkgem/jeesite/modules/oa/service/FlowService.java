@@ -297,7 +297,7 @@ public class FlowService extends CrudService<FlowDao, FlowData> {
             if(columns != null && columns.size() >0) {
                 sql = new StringBuilder("select id,proc_ins_id procInsId");
                 for (OaPersonDefineTableColumn column : columns) {
-                    if ("DATE".equals(column.getControlTypeId().toUpperCase())) {
+                    if ("DATE".equals(column.getColumnType().toUpperCase())) {
                         sql.append(",replace(to_char(" + column.getColumnName() + ",'yyyy-MM-dd HH24:mi:ss'),' 00:00:00','') " + column.getColumnName());
                     } else {
                         sql.append("," + column.getColumnName());
