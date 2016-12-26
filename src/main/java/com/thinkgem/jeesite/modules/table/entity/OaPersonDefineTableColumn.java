@@ -7,6 +7,9 @@ import org.hibernate.validator.constraints.Length;
 
 import com.thinkgem.jeesite.common.persistence.DataEntity;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * 自定义数据源Entity
  * @author chenxy
@@ -29,6 +32,7 @@ public class OaPersonDefineTableColumn extends DataEntity<OaPersonDefineTableCol
     private Integer sort;   // 显示顺序
 
     private String auditPostName ;
+    private List<Map<String,String>> comps;   //当组件为下拉、单选、多选时的值
 	
 	public OaPersonDefineTableColumn() {
 		super();
@@ -152,5 +156,13 @@ public class OaPersonDefineTableColumn extends DataEntity<OaPersonDefineTableCol
 
     public void setSort(Integer sort) {
         this.sort = sort;
+    }
+
+    public List<Map<String, String>> getComps() {
+        return comps;
+    }
+
+    public void setComps(List<Map<String, String>> comps) {
+        this.comps = comps;
     }
 }

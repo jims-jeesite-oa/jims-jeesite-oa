@@ -1379,7 +1379,7 @@ create table OA_FORM_MASTER
   publish_status VARCHAR2(100),
   data_templete  VARCHAR2(100),
   design_type    VARCHAR2(10),
-  content        VARCHAR2(2000),
+  content        CLOB,
   form_desc      VARCHAR2(100),
   create_by      VARCHAR2(64) not null,
   create_date    DATE not null,

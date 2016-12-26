@@ -1,9 +1,11 @@
 package com.thinkgem.jeesite.modules.oa.web;
 
 import com.thinkgem.jeesite.common.config.Global;
-import com.thinkgem.jeesite.common.utils.Encodes;
+import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.modules.act.entity.Act;
+import com.thinkgem.jeesite.modules.act.service.ActTaskService;
+import com.thinkgem.jeesite.modules.act.utils.ProcessDefUtils;
 import com.thinkgem.jeesite.modules.form.entity.Component;
 import com.thinkgem.jeesite.modules.form.entity.OaFormMaster;
 import com.thinkgem.jeesite.modules.form.service.OaFormMasterService;
@@ -12,10 +14,13 @@ import com.thinkgem.jeesite.modules.oa.entity.FlowData;
 import com.thinkgem.jeesite.modules.oa.service.FlowService;
 import com.thinkgem.jeesite.modules.oa.units.CommonUtils;
 import com.thinkgem.jeesite.modules.oa.units.FreemarkerUtils;
+import com.thinkgem.jeesite.modules.sys.entity.User;
+import com.thinkgem.jeesite.modules.sys.utils.DictUtils;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import com.thinkgem.jeesite.modules.table.entity.OaPersonDefineTable;
 import com.thinkgem.jeesite.modules.table.entity.OaPersonDefineTableColumn;
 import com.thinkgem.jeesite.modules.table.service.OaPersonDefineTableService;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -39,6 +44,8 @@ import java.util.Map;
 @RequestMapping(value = "${adminPath}/oa/flow")
 public class FlowController extends BaseController {
 
+    @Autowired
+    private ActTaskService actTaskService;
 	@Autowired
 	private FlowService flowService;
     @Autowired
@@ -48,33 +55,49 @@ public class FlowController extends BaseController {
 
 	@RequestMapping(value = "form")
 	public void form(FlowData flow, Model model,HttpServletResponse response) {
-        response.setContentType("text/html;charset=utf-8");
-
-		String view = "flowForm";
-		// 查看审批申请单
-		if (StringUtils.isNotBlank(flow.getId())){
-			// 环节编号
-			String taskDefKey = flow.getAct().getTaskDefKey();
-			// 查看
-			if(flow.getAct().isFinishTask()){
-				view = "flowView";
-			}
-			// 修改环节
-			else if ("modify".equals(taskDefKey)){
-				view = "flowForm";
-			}
-            // 审核
-            else if (taskDefKey.startsWith("audit") || "apply_end".equals(taskDefKey)){
-                view = "flowAudit";
-            }
-		}
         OaFormMaster form = oaFormMasterService.findByNo(flow.getFormNo(), null);
-        flow.setDatas(flowService.getByProcInsId(form.getTableName(), flow.getAct().getProcInsId()));
+        Map<String,String> paramMap = new HashMap<>();
+        paramMap.put("tableName",form.getTableName());
+        paramMap.put("procInsId",flow.getAct().getProcInsId());
+        paramMap.put("id",flow.getId());
         flow.setTableName(form.getTableName());
+        String view;
+        if(StringUtils.isNotBlank(flow.getShowType())) {
+            view = flow.getShowType();
+            flow.setDatas(flowService.getOneInfo(paramMap));
+        } else {
+            view = "flowForm";
+            // 查看审批申请单
+            if (StringUtils.isNotBlank(flow.getId())) {
+                // 环节编号
+                String taskDefKey = flow.getAct().getTaskDefKey();
+                // 查看
+                if (flow.getAct().isFinishTask()) {
+                    view = "flowView";
+                }
+                // 修改环节
+                else if ("modify".equals(taskDefKey)) {
+                    view = "flowForm";
+                }
+                // 审核
+                else if (taskDefKey.startsWith("audit") || "apply_end".equals(taskDefKey)) {
+                    view = "flowAudit";
+                }
+                flow.setDatas(flowService.getOneInfo(paramMap));
+            }
+        }
+
+
         Component c = ComponentUtils.getComponent(view);
-        initComponent(form,view);
-        String html = c.getContent().replace("$flowTableInfo$",form.getContent());
+        initComponent(form,view,StringUtils.isBlank(flow.getId()));
+        String initJs = "";
+        if(StringUtils.isNotBlank(flow.getId()) && "flowForm".equals(view)) {
+            initJs = getInitJs(flow.getDatas(),form.getTableName());
+        }
+        String html = c.getContent().replace("$flowTableInfo$",form.getContent()).replace("$initJs$",initJs);;
+        flow.setShowType(view);
         try {
+            response.setContentType("text/html;charset=utf-8");
             response.getWriter().print(FreemarkerUtils.process(html,toMap(flow)));
             response.getWriter().flush();
         } catch (IOException e) {
@@ -88,13 +111,11 @@ public class FlowController extends BaseController {
         Map data = request.getParameterMap();
         if (data != null) {
             data = CommonUtils.mapConvert(data);
-            String tableName = (String) data.get("tableName");
             String[] filterName = {"tableName", "act.taskId", "act.taskName", "act.taskDefKey",
-                    "act.procInsId", "act.procDefId", "act.flag", "id", ""};
+                    "act.procInsId", "act.flag", "id", ""};
             data = CommonUtils.attributeMapFilter(data, filterName);
             String procDefId = flowData.getAct().getProcDefId();
-            flowData.setFlowFlag(procDefId.substring(0,procDefId.indexOf(":")));
-            flowData.setTableName(tableName);
+            flowData.setFlowFlag(procDefId.substring(0, procDefId.indexOf(":")));
             flowData.setDatas(data);
             try {
                 try {
@@ -124,7 +145,94 @@ public class FlowController extends BaseController {
         return "redirect:" + adminPath + "/act/task/todo/";
     }
 
-    private void initComponent(OaFormMaster oaFormMaster,String view){
+    @RequestMapping(value = "myFlow")
+    public String myFlow(String procDefId,HttpServletRequest request,HttpServletResponse response){
+        response.setContentType("text/html;charset=utf-8");
+        String html = "";
+        FlowData flowParam = new FlowData();
+
+        List<Object[]> processList = ProcessDefUtils.processList(null);
+        //默认选择第一个流程
+        if(StringUtils.isBlank(procDefId)) {
+            ProcessDefinition process = (ProcessDefinition)processList.get(0)[0];
+            procDefId = process.getId();
+        }
+        //自定义流程HTML
+        StringBuilder selfFlowHTML = new StringBuilder();
+        for(Object[] objs : processList) {
+            ProcessDefinition process = (ProcessDefinition)objs[0];
+            selfFlowHTML.append("<option " + (procDefId.equals(process.getId()) ? "selected=\"selected\"" : "")
+                    +" value=\"" + process.getId() + "\">" + process.getName() +"</option>");
+        }
+
+        String formKey = actTaskService.getFormKey(procDefId, null);
+        if(StringUtils.isNotBlank(formKey) && !"/404".equals(formKey)) {
+            OaFormMaster form = oaFormMasterService.findByNo(formKey, null);
+            if(form != null) {
+                String tableName = form.getTableName();
+                flowParam.setTableName(tableName);
+                flowParam.setFormNo(form.getFormNo());
+                OaPersonDefineTable table = oaPersonDefineTableService.findByTableName(tableName, null);
+                OaPersonDefineTableColumn param = new OaPersonDefineTableColumn();
+                param.setIsShow("1");
+                param.setTable(table);
+                List<OaPersonDefineTableColumn> columns = oaPersonDefineTableService.findColumnList(param);
+                StringBuilder theadHTML = new StringBuilder();
+                StringBuilder tbodyHTML = new StringBuilder();
+                for(OaPersonDefineTableColumn column : columns) {
+                    theadHTML.append("<th>" + column.getColumnComment() + "</th>");
+                    tbodyHTML.append("<td>${item." + column.getColumnName() + "}</td>");
+                }
+
+                Map<String,String> paramMap = new HashMap<>();
+                paramMap.put("tableName",form.getTableName());
+                paramMap.put("procDefId",procDefId);
+                User user = UserUtils.getUser();
+                if (!user.isAdmin()){
+                    paramMap.put("createBy",user.getId());
+                }
+                Page<Map<String,Object>> page = flowService.getPageFlowInfo(new Page<FlowData>(request,response),paramMap);
+                List<Map<String,Object>> flowInfo = page.getList();
+
+                flowParam.setDatas(new HashMap<String, Object>());
+                flowParam.getDatas().put("flowInfo", flowInfo);
+                flowParam.getDatas().put("page", page);
+
+                Component c = ComponentUtils.getComponent("myFlow");
+                html = c.getContent().replace("$selfFlowHTML$", selfFlowHTML.toString())
+                        .replace("$tbodyHTML$", tbodyHTML.toString())
+                        .replace("$theadHTML$", theadHTML.toString());
+            }
+        }
+        try {
+            response.getWriter().print(FreemarkerUtils.process(html,toMap(flowParam)));
+            response.getWriter().flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 删除流程信息
+     * @param tableName
+     * @param id
+     * @param redirectAttributes
+     * @return
+     */
+    @RequestMapping(value = "deleteInfo")
+    public String deleteInfo(String tableName,String id,RedirectAttributes redirectAttributes) {
+        oaPersonDefineTableService.deleteInfo(tableName,id);
+        addMessage(redirectAttributes, "删除已发起流程成功");
+        return "redirect:"+Global.getAdminPath()+"/oa/flow/myFlow?repage";
+    }
+
+    /**
+     * 表单内存处理掉[...]
+     * @param oaFormMaster
+     * @param view
+     */
+    private void initComponent(OaFormMaster oaFormMaster,String view,boolean init){
         OaPersonDefineTable oaPersonDefineTable=this.oaPersonDefineTableService.findByTableName(oaFormMaster.getTableName(), null);
         List<OaPersonDefineTableColumn> oaPersonDefineTableColumns=this.oaPersonDefineTableService.findColumnListByTableId(oaPersonDefineTable.getId());
         String tableContent=oaFormMaster.getContent();
@@ -132,10 +240,13 @@ public class FlowController extends BaseController {
             if(column != null && !"".equals(column)){
                 String content = "";
                 if("flowForm".equals(view) && !"REMARK".equalsIgnoreCase(column.getColumnType())){
-                    Component component = ComponentUtils.getComponent(column.getControlTypeId());
-                    if(component != null) {
-                        content = component.getContent().replace("name=\"\"", "name=\"" + column.getColumnName() + "\"").replace("value=\"\"", "value=\"${" + column.getColumnName() + "}\"");
+                    Map<String,Object> columnMap = new HashMap<>();
+                    columnMap.put("value",column.getControlTypeId());
+                    columnMap.put("columnName",column.getColumnName());
+                    if(ComponentUtils.chargeMoreData(column.getControlTypeId())) {
+                        columnMap.put("optData", DictUtils.getDictList(column.getRemarks()));
                     }
+                    content = ComponentUtils.initComponent(columnMap,init);
                 } else {
                     content = "${" + column.getColumnName() + "}";
                 }
@@ -145,10 +256,29 @@ public class FlowController extends BaseController {
         oaFormMaster.setContent(tableContent);
     }
 
+    /**
+     * flowData中数据放入到Map
+     * @param flowData
+     * @return
+     */
     private Map<String,Object> toMap(FlowData flowData){
         Map<String,Object> map = flowData.getDatas();
+
         if(map == null) {
             map = new HashMap<>();
+        } else if(!"flowForm".equals(flowData.getShowType())){
+            OaPersonDefineTable oaPersonDefineTable=this.oaPersonDefineTableService.findByTableName(flowData.getTableName(), null);
+            List<OaPersonDefineTableColumn> columns=this.oaPersonDefineTableService.findColumnListByTableId(oaPersonDefineTable.getId());
+            if(columns.size() > 0) {
+                if(map.get("flowInfo") != null) {
+                    List<Map<String,Object>> list = (List<Map<String,Object>>) map.get("flowInfo");
+                    for(Map<String,Object> m : list) {
+                        format(m,columns);
+                    }
+                } else {
+                    format(map,columns);
+                }
+            }
         }
         map.put("tableName",flowData.getTableName());
         map.put("id",flowData.getId());
@@ -157,10 +287,35 @@ public class FlowController extends BaseController {
         Act act = flowData.getAct();
         if(act != null){
             if(act.getTaskName() != null) {
-                act.setTaskName(Encodes.urlDecode(Encodes.urlDecode(act.getTaskName())));
+                act.setTaskName(act.getTaskName());
             }
             map.put("act",act);
         }
         return map;
+    }
+
+    private String getInitJs(Map<String,Object> map,String tableName) {
+        OaPersonDefineTable oaPersonDefineTable=this.oaPersonDefineTableService.findByTableName(tableName, null);
+        List<OaPersonDefineTableColumn> columns=this.oaPersonDefineTableService.findColumnListByTableId(oaPersonDefineTable.getId());
+        StringBuilder sb = new StringBuilder();
+        if(columns != null && map != null && columns.size() > 0 && map.keySet().size() > 0) {
+            for (OaPersonDefineTableColumn column : columns) {
+                if (ComponentUtils.chargeMoreData(column.getControlTypeId()) && map.get(column.getColumnName()) != null) {
+                    Component c = ComponentUtils.getComponent(column.getControlTypeId() + "Init");
+                    sb.append(c.getContent().replace("${colName}",column.getColumnName()).replace("${colValue}","${" + column.getColumnName() + "}"));
+                }
+            }
+        }
+        return sb.toString();
+    }
+
+    private void format(Map<String,Object> map,List<OaPersonDefineTableColumn> columns){
+        if(columns != null && map != null && columns.size() > 0 && map.keySet().size() > 0) {
+            for (OaPersonDefineTableColumn column : columns) {
+                if (ComponentUtils.chargeMoreData(column.getControlTypeId()) && map.get(column.getColumnName()) != null) {
+                    map.put(column.getColumnName(), DictUtils.getDictLabels((String) map.get(column.getColumnName()), column.getRemarks(), ""));
+                }
+            }
+        }
     }
 }

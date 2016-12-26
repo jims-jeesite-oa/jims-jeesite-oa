@@ -44,8 +44,15 @@
 					}
 				}
 			});
+            if(row.id) {
+                $(list+idx+'_columnComment').attr('disabled',true)
+                $(list+idx+'_columnType').attr('disabled',true)
+                $(list+idx+'_tableStatus').attr('disabled',true)
+            } else {
+                changeColumnType('oaPersonDefineTableColumnList' + idx + '_columnType','oaPersonDefineTableColumnList' + idx + '_tableStatus')
+            }
             changeAudit('oaPersonDefineTableColumnList' + idx + '_auditPost',row.isAudit)
-            changeColumnType('oaPersonDefineTableColumnList' + idx + '_columnType','oaPersonDefineTableColumnList' + idx + '_tableStatus')
+            changeControl(row.controlTypeId,'oaPersonDefineTableColumnList' + idx + '_remarks')
 		}
 		function delRow(obj, prefix){
 			var id = $(prefix+"_id");
@@ -62,15 +69,14 @@
 				$(obj).parent().parent().removeClass("error");
 			}
 		}
-        function changeAudit(auditMan,val){
+        function changeAudit(id,val){
             if(val == '1') {
-                $('#' + auditMan + 'Name').removeClass('disabled')
-                $('#' + auditMan + 'Button').removeClass('disabled')
+                $('#' + id).removeAttr('disabled')
+                $('#' + id).addClass('required')
             } else {
-                $('#' + auditMan + 'Id').val('')
-                $('#' + auditMan + 'Name').val('')
-                $('#' + auditMan + 'Name').addClass('disabled')
-                $('#' + auditMan + 'Button').addClass('disabled')
+                $('#' + id).val('')
+                $('#' + id).attr('disabled',true)
+                $('#' + id).removeClass('required')
             }
         }
         function changeColumnType(id, s){
@@ -78,9 +84,19 @@
             if(v != 'VARCHAR2' && v != 'REMARK') {
                 $('#' + s).val('')
                 $('#' + s).attr('disabled',true)
+                $('#' + s).removeClass('required number')
             } else {
                 if($('#' + s).val() == '') $('#' + s).val(100)
                 $('#' + s).removeAttr('disabled')
+                $('#' + s).addClass('required number')
+            }
+        }
+
+        function changeControl(value,id){
+            if(value == 'radio' || value == 'checkbox' || value == 'select') {
+                $('#' + id).addClass('required')
+            } else {
+                $('#' + id).removeClass('required')
             }
         }
 
@@ -99,13 +115,6 @@
 		<sys:message content="${message}"/>
         <fieldset>
             <legend>基本信息</legend>
-            <%--<div class="control-group">--%>
-                <%--<label class="control-label">所属机构：</label>--%>
-                <%--<div class="controls">--%>
-                    <%--<sys:treeselect id="office" name="office.id" value="${oaPersonDefineTable.office.id}" labelName="office.name" labelValue="${oaPersonDefineTable.office.name}"--%>
-                        <%--title="部门" url="/sys/office/treeData?type=1" cssClass="" allowClear="true" notAllowSelectParent="true"/>--%>
-                <%--</div>--%>
-            <%--</div>--%>
             <div class="control-group">
                 <label class="control-label">表名(以英文开头)：</label>
                 <div class="controls">
@@ -118,15 +127,6 @@
                     <form:input path="tableComment" htmlEscape="false" maxlength="200" class="input-xlarge required"/>
                 </div>
             </div>
-            <%--<div class="control-group">--%>
-                <%--<label class="control-label">状态：</label>--%>
-                <%--<div class="controls">--%>
-                    <%--<form:select path="tableStatus" class="input-xlarge ">--%>
-                        <%--<form:option value="" label=""/>--%>
-                        <%--<form:options items="${fns:getDictList('table_status')}" itemLabel="label" itemValue="value" htmlEscape="false"/>--%>
-                    <%--</form:select>--%>
-                <%--</div>--%>
-            <%--</div>--%>
             <div class="control-group">
                 <label class="control-label">备注信息：</label>
                 <div class="controls">
@@ -134,7 +134,7 @@
                 </div>
             </div>
             <legend>字段列表</legend>
-            <span class="help-inline">提示：数据类型为‘文本’、‘备注’时输入‘列的长度’，审核字段为‘是’时选择‘审核人’。</span>
+            <span class="help-inline">提示：数据类型为‘文本’、‘备注’时输入‘列的长度’，审核字段为‘是’时输入‘审核节点ID’。</span>
             <div class="control-group">
             <table id="contentTable" class="table table-striped table-bordered table-condensed"  >
                 <thead>
@@ -142,13 +142,13 @@
                         <th class="hide"></th>
                         <th>数据列名</th>
                         <th>数据类型</th>
-                        <th>列的长度</th>
-                        <th>控件显示方式</th>
-                        <th>审核字段</th>
-                        <th>审核人</th>
+                        <th>数据长度</th>
                         <th>列表显示</th>
                         <th>显示顺序</th>
-                        <th>备注信息</th>
+                        <th>审核字段</th>
+                        <th>审核节点ID</th>
+                        <th>控件显示方式</th>
+                        <th>控件参数</th>
                         <shiro:hasPermission name="table:oaPersonDefineTable:edit"><th width="10">&nbsp;</th></shiro:hasPermission>
                     </tr>
                 </thead>
@@ -178,22 +178,6 @@
                     <td nowrap="nowrap">
                         <input id="oaPersonDefineTableColumnList{{idx}}_tableStatus" name="oaPersonDefineTableColumnList[{{idx}}].tableStatus" type="text" value="{{row.tableStatus}}" maxlength="11" class="input-small number"/>
                     </td>
-                    <td>
-                         <select id="oaPersonDefineTableColumnList{{idx}}_controlTypeId" name="oaPersonDefineTableColumnList[{{idx}}].controlTypeId" data-value="{{row.controlTypeId}}" class="input-small ">
-                            <c:forEach items="${fns:getControl()}" var="dict">
-                                <option value="${dict.value}">${dict.name}</option>
-                            </c:forEach>
-                        </select>
-                    </td>
-                    <td nowrap="nowrap">
-                        <c:forEach items="${fns:getDictList('yes_no')}" var="dict" varStatus="dictStatus">
-                            <span onclick="changeAudit('oaPersonDefineTableColumnList{{idx}}_auditPost',${dict.value})"><input id="oaPersonDefineTableColumnList{{idx}}_isAudit${dictStatus.index}" name="oaPersonDefineTableColumnList[{{idx}}].isAudit" type="radio" value="${dict.value}" data-value="{{row.isAudit}}"><label for="oaPersonDefineTableColumnList{{idx}}_isAudit${dictStatus.index}">${dict.label}</label></span>
-                        </c:forEach>
-                    </td>
-                    <td>
-                        <sys:treeselect id="oaPersonDefineTableColumnList{{idx}}_auditPost" name="oaPersonDefineTableColumnList[{{idx}}].auditPost" value="{{row.auditPost}}" labelName="${row.auditPost}" labelValue="{{row.auditPostName}}"
-                            title="角色" url="/sys/office/treeData?type=3&child=role" cssStyle="width:100px" allowClear="true" notAllowSelectParent="true"/>
-                    </td>
                     <td nowrap="nowrap">
                         <c:forEach items="${fns:getDictList('yes_no')}" var="dict" varStatus="dictStatus">
                             <span><input id="oaPersonDefineTableColumnList{{idx}}_isShow${dictStatus.index}" name="oaPersonDefineTableColumnList[{{idx}}].isShow" type="radio" value="${dict.value}" data-value="{{row.isShow}}"><label for="oaPersonDefineTableColumnList{{idx}}_isShow${dictStatus.index}">${dict.label}</label></span>
@@ -201,6 +185,21 @@
                     </td>
                     <td nowrap="nowrap">
                         <input id="oaPersonDefineTableColumnList{{idx}}_sort" name="oaPersonDefineTableColumnList[{{idx}}].sort" type="text" value="{{row.sort}}" maxlength="11" class="input-small required number"/>
+                    </td>
+                    <td nowrap="nowrap">
+                        <c:forEach items="${fns:getDictList('yes_no')}" var="dict" varStatus="dictStatus">
+                            <span onclick="changeAudit('oaPersonDefineTableColumnList{{idx}}_auditPost',${dict.value})"><input id="oaPersonDefineTableColumnList{{idx}}_isAudit${dictStatus.index}" name="oaPersonDefineTableColumnList[{{idx}}].isAudit" type="radio" value="${dict.value}" data-value="{{row.isAudit}}"><label for="oaPersonDefineTableColumnList{{idx}}_isAudit${dictStatus.index}">${dict.label}</label></span>
+                        </c:forEach>
+                    </td>
+                    <td nowrap="nowrap">
+                        <input id="oaPersonDefineTableColumnList{{idx}}_auditPost" name="oaPersonDefineTableColumnList[{{idx}}].auditPost" type="text" value="{{row.auditPost}}" maxlength="255" class="input-small"/>
+                    </td>
+                    <td>
+                         <select onchange="changeControl(this.value,'oaPersonDefineTableColumnList{{idx}}_remarks')" id="oaPersonDefineTableColumnList{{idx}}_controlTypeId" name="oaPersonDefineTableColumnList[{{idx}}].controlTypeId" data-value="{{row.controlTypeId}}" class="input-small ">
+                            <c:forEach items="${fns:getControl()}" var="dict">
+                                <option value="${dict.value}">${dict.name}</option>
+                            </c:forEach>
+                        </select>
                     </td>
                     <td nowrap="nowrap">
                         <input id="oaPersonDefineTableColumnList{{idx}}_remarks" name="oaPersonDefineTableColumnList[{{idx}}].remarks" type="text" value="{{row.remarks}}" maxlength="255" class="input-small"/>

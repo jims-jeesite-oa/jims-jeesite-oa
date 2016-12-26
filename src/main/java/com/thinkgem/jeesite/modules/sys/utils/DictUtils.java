@@ -61,8 +61,6 @@ public class DictUtils {
 	}
 	
 	public static List<Dict> getDictList(String type){
-
-        CacheUtils.remove(CACHE_DICT_MAP);
 		Map<String, List<Dict>> dictMap = (Map<String, List<Dict>>)CacheUtils.get(CACHE_DICT_MAP);
 		if (dictMap==null){
 			dictMap = Maps.newHashMap();

@@ -51,6 +51,9 @@
             <if test="isAudit != null and isAudit != ''">
                 AND a.is_audit = #{isAudit}
             </if>
+            <if test="isShow != null and isShow != ''">
+                AND a.is_show = #{isShow}
+            </if>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
@@ -145,7 +148,7 @@
 	</update>
 	
 	<update id="delete">
-		UPDATE oa_person_define_table_column SET 
+		UPDATE oa_person_define_table_column SET
 			del_flag = #{DEL_FLAG_DELETE}
 		<choose>
 			<when test="id !=null and id != ''">
@@ -168,8 +171,15 @@
     </select>
 
     <select id="getMaxColumnIndex" resultType="String">
-        select nvl(substr(max(column_name),4),0)
-        from oa_person_define_table_column
-        where upper(column_name) like 'COL%'
+        select max(column_name) from
+        (select to_number(substr(column_name,4)) column_name from oa_person_define_table_column where upper(column_name) like 'COL%' )
+    </select>
+
+    <select id="getColumns" resultType="OaPersonDefineTableColumn">
+        SELECT
+          column_name as columnName,
+          data_type as columnType
+        FROM all_tab_cols
+        where table_name = upper(#{tableName})
     </select>
 </mapper>

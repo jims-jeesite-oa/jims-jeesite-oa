@@ -19,8 +19,10 @@ public class FlowData extends ActEntity<FlowData> {
 	private static final long serialVersionUID = 1L;
     private String tableName;
     private Map<String,Object> datas;
-    private String formNo;
+    private String formNo;  // 表单编号
     private String flowFlag;
+    private String showType; //显示类型  flowForm填写，flowView查看，flowAudit审核
+    private String sql;
 
     public String getTableName() {
         return tableName;
@@ -52,5 +54,21 @@ public class FlowData extends ActEntity<FlowData> {
 
     public void setFlowFlag(String flowFlag) {
         this.flowFlag = flowFlag;
+    }
+
+    public String getShowType() {
+        return showType;
+    }
+
+    public void setShowType(String showType) {
+        this.showType = showType;
+    }
+
+    public String getSql() {
+        return sql;
+    }
+
+    public void setSql(String sql) {
+        this.sql = sql;
     }
 }

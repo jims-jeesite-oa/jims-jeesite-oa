@@ -319,7 +319,7 @@
         <description>获取控件</description>
         <name>getControl</name>
         <function-class>com.thinkgem.jeesite.modules.form.util.ComponentUtils</function-class>
-        <function-signature>java.util.List getControl()</function-signature>
+        <function-signature>java.util.List getControls()</function-signature>
         <example>${fns:getControl()}</example>
     </function>
 </taglib>

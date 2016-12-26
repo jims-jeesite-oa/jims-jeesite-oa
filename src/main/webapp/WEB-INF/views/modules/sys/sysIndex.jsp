@@ -12,6 +12,12 @@
             margin: 0;
             padding: 0;
         }
+        .item a:hover{
+            text-decoration:none;
+            color: #000000;
+        }
+
+
 
         .mask {
             position: absolute;
@@ -109,6 +115,9 @@
             cursor: pointer;
             padding: 10px 10px;
         }
+        .item li{
+            text-align: center;
+        }
 
         #topMenus li a, #left li a {
             font-family: Helvetica, Georgia, Arial, sans-serif, 黑体;
@@ -124,16 +133,19 @@
 
         #moreMenu {
             width: 100%;
-            height: 200px;
             display: none;
-        }
-
-        #moreMenu {
             background-color: #FFFFFF;
             z-index: 1002;
             filter: alpha(opacity=100);
             opacity: 1;
             height: 400px;
+        }
+        #moreMenu ul{
+            display: inline-block;
+        }
+        #moreMenu li{
+            display: inline-block;
+            padding: 25px;
         }
 
         #left, #right {
@@ -216,7 +228,18 @@
             </ul>
         </div>
     </div>
+    <div id="moreMenu" class="mask">
+        <div id="myCarousel" class="carousel slide" style="width: 550px;margin:0 auto;">
+            <!-- 轮播（Carousel）项目 -->
+            <div class="carousel-inner">
+            </div>
+        </div>
+        <a class="carousel-control left" href="#myCarousel"
+           data-slide="prev" style="float: right">&lsaquo;</a>
+        <a class="carousel-control right" href="#myCarousel"
+           data-slide="next">&rsaquo;</a>
 
+    </div>
     <div id="menu">
         <div id="userLogo">
             <c:set var="user" value="${fns:getUser()}"/>
@@ -250,33 +273,23 @@
                                     <span class="icon-${menu.icon}"></span>
                                     <span class="topMenuText">${menu.name}</span></a>
                             </li>
+
                         </c:if>
                         <c:set var="showMenu" value="${showMenu + 1}"/>
+                    </c:if>
+                    <c:if test="${menu.parent.id eq '1'&&menu.isShow eq '1' && showMenu gt 10}">
+                        <script>
+                            if($('#myCarousel .item').length == 0 ) {
+                                $('#myCarousel .carousel-inner').append('<div class="item active"><ul style="list-style: none"></ul></div>')
+                            } else if($('#myCarousel .item:last-child ul li').length == 15){
+                                $('#myCarousel .carousel-inner').append('<div class="item"><ul style="list-style: none"></ul></div>')
+                            }
+                            $('#myCarousel .item:last-child ul').append('<li>  <a class="icon-${menu.icon} menu"  href="javascript:"  data-href="${ctx}/sys/menu/tree?parentId=${menu.id}" data-id="${menu.id}"></a><a class="topMenuText menu" href="javascript:" style="color: #000000;"data-href="${ctx}/sys/menu/tree?parentId=${menu.id}">${menu.name}</a></li>')
+                        </script>
                     </c:if>
                 </c:forEach>
             </ul>
         </div>
-    </div>
-
-    <div id="moreMenu" class="mask">
-        <div id="myCarousel" class="carousel slide" style="width: 500px;margin:0 auto;">
-            <!-- 轮播（Carousel）项目 -->
-            <div class="carousel-inner">
-                <div class="item active">
-                    <img src="/static/images/icons/5.png" alt="First slide">
-                </div>
-                <div class="item">
-                    <img src="/static/images/icons/5.png" alt="Second slide">
-                </div>
-                <div class="item">
-                    <img src="/static/images/icons/5.png" alt="Third slide">
-                </div>
-            </div>
-        </div>
-        <a class="carousel-control left" href="#myCarousel"
-           data-slide="prev" style="float: right">&lsaquo;</a>
-        <a class="carousel-control right" href="#myCarousel"
-           data-slide="next">&rsaquo;</a>
     </div>
 
     <div>
@@ -345,7 +358,7 @@
     }
 
 
-    $("#menu #topMenus a.menu").click(function () {
+    $("#menu #topMenus a.menu, #myCarousel .item a").click(function () {
         $.cookie('levelMenu1', $('.topMenuText', this).html())
         if ($(this).hasClass('moreMenu')) {
             if ($('#mask').css('display') == 'none') {

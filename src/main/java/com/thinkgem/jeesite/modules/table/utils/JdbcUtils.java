@@ -105,11 +105,7 @@ public class JdbcUtils {
         List<OaPersonDefineTableColumn> columns = table.getOaPersonDefineTableColumnList();
         if(columns != null && columns.size() > 0) {
             for(OaPersonDefineTableColumn column : columns) {
-                if("REMARK".equalsIgnoreCase(column.getColumnType())) {
-                    column.setColumnType("VARCHAR2");
-                }
-                sql.append(column.getColumnName() + " " + column.getColumnType() +
-                        ("VARCHAR2".equalsIgnoreCase(column.getColumnType()) ? "(" + column.getTableStatus() + ")" : ""));
+                sql.append(getColumnInfo(column));
                 sql.append("1".equals(column.getIsRequired()) ? " not null," : ",");
                 if(StringUtils.isNotBlank(column.getColumnComment())){
                     comments.add("comment on column " + table.getTableName() + "." + column.getColumnName()
@@ -120,7 +116,7 @@ public class JdbcUtils {
         sql.append("create_by VARCHAR2(64) not null,create_date DATE not null,")
                 .append("update_by VARCHAR2(64) not null,update_date DATE not null,")
                 .append("remarks VARCHAR2(255),del_flag CHAR(1) default '0' not null,")
-                .append("proc_ins_id VARCHAR2(64))");
+                .append("proc_ins_id VARCHAR2(64),proc_def_id VARCHAR2(150) not null)");
         if(StringUtils.isNotBlank(table.getTableComment())){
             comments.add("comment on table " + table.getTableName()
                     + " is '" + table.getTableComment() + "'");
@@ -129,6 +125,14 @@ public class JdbcUtils {
         result.put("tableSql",sql.toString());
         result.put("comment",comments);
         return result;
+    }
+
+    public static String getColumnInfo(OaPersonDefineTableColumn column) {
+        if("REMARK".equalsIgnoreCase(column.getColumnType())) {
+            column.setColumnType("VARCHAR2");
+        }
+        return column.getColumnName() + " " + column.getColumnType() +
+                ("VARCHAR2".equalsIgnoreCase(column.getColumnType()) ? "(" + column.getTableStatus() + ")" : "");
     }
 }
 
