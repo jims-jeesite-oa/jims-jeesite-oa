@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.thinkgem.jeesite.modules.oa.entity.MailAccount;
 import com.thinkgem.jeesite.modules.oa.service.MailAccountService;
+import com.thinkgem.jeesite.modules.sys.entity.Office;
 import com.thinkgem.jeesite.modules.sys.entity.User;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -84,35 +85,36 @@ public class MailInfoController extends BaseController {
         mailInfo.setOwnId(UserUtils.getUser().getId());
         if (mailInfo.getState() == null) {
             mailInfo.setState("SENT");
+            mailInfo.setFlag("0");
         } else {
+            mailInfo.setFlag("0");
             mailInfo.setState(state);
         }
         Page<MailInfo> page = mailInfoService.findPage(new Page<MailInfo>(request, response), mailInfo);
-        List<MailInfo> list = mailInfoService.findList(mailInfo);
-        mailInfo.setReadMark("0");
-        List<MailInfo> delete = mailInfoService.findList(mailInfo);
-        page.setCount(list.size());
-        page.setDelete(delete.size());
+        MailInfo mailInfo1=new MailInfo();
+        mailInfo1.setReadMark("0");
+        mailInfo1.setOwnId(mailInfo.getOwnId());
+
         model.addAttribute("page", page);
         if (StringUtils.equals(mailInfo.getState(), "DELETED")) {
+            mailInfo1.setState("DELETED");
+            List<MailInfo> delete = mailInfoService.findList(mailInfo1);
+            page.setDelete(delete.size());
             return "modules/oa/delete";
         } else if (StringUtils.equals(mailInfo.getState(), "DRAFTS")) {
+            mailInfo1.setState("DRAFTS");
+            List<MailInfo> delete = mailInfoService.findList(mailInfo1);
+            page.setDelete(delete.size());
             return "modules/oa/drafts";
         } else if (StringUtils.equals(mailInfo.getState(), "INBOX")) {
-            List<MailInfo> mailInfos = page.getList();
-            List<MailInfo> infos = new ArrayList<>();
-            for (int i = 0; i < mailInfos.size(); i++) {
-                MailInfo mailInfo1 = mailInfoService.getMail(mailInfos.get(i).getId());
-                mailInfo1.setFlag("0");
-                infos.add(mailInfo1);
-            }
-            page.setList(infos);
-            mailInfo.setReadMark("0");
-            page.setCount(list.size());
+            mailInfo1.setState("INBOX");
+            List<MailInfo> delete = mailInfoService.findList(mailInfo1);
             page.setDelete(delete.size());
-            model.addAttribute("page", page);
             return "modules/oa/receiving";
         } else {
+            mailInfo1.setState("SENT");
+            List<MailInfo> delete = mailInfoService.findList(mailInfo1);
+            page.setDelete(delete.size());
             return "modules/oa/sent";
         }
     }
@@ -157,6 +159,7 @@ public class MailInfoController extends BaseController {
         if (!beanValidator(model, mailInfo)) {
             return info(mailInfo, model);
         }
+        mailInfo.setFlag("0");
         mailInfoService.send(mailInfo);
         addMessage(redirectAttributes, "邮件发送成功");
         return "modules/oa/success";
@@ -214,6 +217,7 @@ public class MailInfoController extends BaseController {
         if (!beanValidator(model, mailInfo)) {
             return info(mailInfo, model);
         }
+        mailInfo.setFlag("0");
         mailInfoService.saveDrafts(mailInfo);
         mailInfo = mailInfoService.getDrafts(mailInfo.getId());
         addMessage(redirectAttributes, "邮件成功保存到草稿箱");
@@ -454,6 +458,8 @@ public class MailInfoController extends BaseController {
      */
     @RequestMapping(value = "phone")
     public String phone(User user, Model model, HttpServletRequest request, HttpServletResponse response) {
+        Office office=UserUtils.getUser().getCompany();
+        user.setCompanyId(office.getId());
         Page<User> page = mailInfoService.findPage1(new Page<User>(request, response), user);
         model.addAttribute("page", page);
         return "modules/oa/phone";

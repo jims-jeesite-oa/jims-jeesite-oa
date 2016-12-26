@@ -11,26 +11,6 @@
         }
 
         $(document).ready(function () {
-            //$("#name").focus();
-            $("#inputForm").validate({
-                submitHandler: function (form) {
-                    if (CKEDITOR.instances.content.getData() == "") {
-                        top.$.jBox.tip('请填写邮件内容', 'warning');
-                    } else {
-//                        loading('正在提交，请稍等...');
-                        form.submit();
-                    }
-                },
-                errorContainer: "#messageBox",
-                errorPlacement: function (error, element) {
-                    $("#messageBox").text("输入有误，请先更正。");
-                    if (element.is(":checkbox") || element.is(":radio") || element.parent().is(".input-append")) {
-                        error.appendTo(element.parent().parent());
-                    } else {
-                        error.insertAfter(element);
-                    }
-                }
-            });
         });
 
 
@@ -41,19 +21,29 @@
         }
         //发送
         function send() {
-
-            var rr=document.getElementById("rr").value
-            if(rr!=null && rr !=""){
-                form1.action = '${ctx}/oa/mailInfo/sendOut';
-                form1.submit();
+            var theme=document.getElementById("theme").value
+            if(theme.length>240){
+                document.getElementById("ss").innerHTML = "<div style='color: #ffffff;background-color: #EF8F00;width: 190px;height: 20px;text-align: center;'>主题长度不能超过120个中文字符</div>";
+                return;
             } else{
-                form1.action = '${ctx}/oa/mailInfo/send';
-                form1.submit();
+                var rr=document.getElementById("rr").value
+                if(rr!=null && rr !=""){
+                    form1.action = '${ctx}/oa/mailInfo/sendOut';
+                    form1.submit();
+                } else{
+                    form1.action = '${ctx}/oa/mailInfo/send';
+                    form1.submit();
+                }
             }
+
 
         }
 
-
+        //循环定时删除
+        window.setInterval(show, 5000);
+        function show() {
+            document.getElementById("ss").innerHTML = "";
+        }
 
 
     </script>
@@ -62,13 +52,21 @@
 <div style="background-color: #ffffff">
     <table class="table">
         <tr class="tr1">
-            <td colspan="2" style="padding-left: 15px">写信</td>
+            <td colspan="2" style="padding-left: 15px;">写信</td>
+        </tr>
+        <tr>
+            <td  style="padding-left: 69px ; padding-top: 7px">
+                <input type="submit" class="btn btn-success" value="发送" onclick="send()">　
+                <input type="submit" class="btn btn-success" value="存草稿" onclick="deleteBy()">
+            </td>
+            <td>
+                <div id="ss"></div>
+            </td>
         </tr>
     </table>
     <table style="width: 98.5%;" id="mytable" id="tb01">
         <form:form modelAttribute="mailInfo" action="" method="post" id="form1"
                    class="form-horizontal">
-
             <form:hidden path="id"></form:hidden>
             <tr>
                 <td class="td1">外部收件人</td>
@@ -98,8 +96,8 @@
             </tr>
             <tr>
                 <td class="td1">主题</td>
-                <td class="td"><form:input path="theme" htmlEscape="true" type="text"
-                                           style="width:800px" value="${mailInfo.theme}"></form:input></td>
+                <td class="td"><form:input path="theme" htmlEscape="false" type="text"
+                                           style="width:800px" value="${mailInfo.theme}" id="theme"></form:input></td>
             </tr>
             <tr>
                 <td class="td1">附件</td>
@@ -124,8 +122,8 @@
             </tr>
             <tr>
                 <td colspan="2" style="padding-left: 69px ; padding-top: 7px">
-                    <input type="submit" class="btn btn-primary" value="发送" onclick="send()">　
-                    <input type="submit" class="btn btn-primary" value="存草稿" onclick="deleteBy()">
+                    <input type="submit" class="btn btn-success" value="发送" onclick="send()">　
+                    <input type="submit" class="btn btn-success" value="存草稿" onclick="deleteBy()">
                 </td>
             </tr>
         </form:form>
