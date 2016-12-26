@@ -51,15 +51,28 @@
 		<thead>
 			<tr>
 				<th>标题</th>
-				<th>当前环节</th><%--
-				<th>任务内容</th> --%>
+				<th>当前环节</th>
 				<th>流程名称</th>
-				<th>流程版本</th>
 				<th>创建时间</th>
 				<th>操作</th>
 			</tr>
 		</thead>
 		<tbody>
+        <c:forEach items="${fns:getAuditNews()}" var="news">
+            <tr>
+                <td>
+                    <a href="${ctx}/oa/oaNews/getAuditNews?id=${news.id}">${fns:abbr(news.title,40)}</a>
+                </td>
+                <td>
+                    审核官审核
+                </td>
+                <td>新闻审核</td>
+                <td><fmt:formatDate value="${news.createDate}" type="both"/></td>
+                <td>
+                    <a href="${ctx}/oa/oaNews/getAuditNews?id=${news.id}">任务办理</a>
+                </td>
+            </tr>
+        </c:forEach>
 			<c:forEach items="${list}" var="act">
 				<c:set var="task" value="${act.task}" />
 				<c:set var="vars" value="${act.vars}" />
@@ -76,11 +89,10 @@
 						</c:if>
 					</td>
 					<td>
-						<a target="_blank" href="${pageContext.request.contextPath}/act/diagram-viewer?processDefinitionId=${task.processDefinitionId}&processInstanceId=${task.processInstanceId}">${task.name}</a>
+                            ${task.name}
 					</td><%--
 					<td>${task.description}</td> --%>
 					<td>${procDef.name}</td>
-					<td><b title='流程版本号'>V: ${procDef.version}</b></td>
 					<td><fmt:formatDate value="${task.createTime}" type="both"/></td>
 					<td>
 						<c:if test="${empty task.assignee}">
@@ -95,9 +107,6 @@
 								<a href="${ctx}/act/task/deleteTask?taskId=${task.id}&reason=" onclick="return promptx('删除任务','删除原因',this.href);">删除任务</a>
 							</c:if>
 						</shiro:hasPermission>
-						<a target="_blank" href="${pageContext.request.contextPath}/act/diagram-viewer?processDefinitionId=${task.processDefinitionId}&processInstanceId=${task.processInstanceId}">跟踪</a><%-- 
-						<a target="_blank" href="${ctx}/act/task/trace/photo/${task.processDefinitionId}/${task.executionId}">跟踪2</a> 
-						<a target="_blank" href="${ctx}/act/task/trace/info/${task.processInstanceId}">跟踪信息</a> --%>
 					</td>
 				</tr>
 			</c:forEach>

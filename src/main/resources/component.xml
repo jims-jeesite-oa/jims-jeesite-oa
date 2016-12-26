@@ -99,6 +99,108 @@
             </script>
         ]]></content>
     </component>
+    <!--科室选择-->
+    <component>
+        <value>selectOffice</value>
+        <type>controlType</type>
+        <name>科室选择</name>
+        <content><![CDATA[
+            <div class="input-append">
+                <input id="${colName}" name="${colName}" readonly="readonly" type="text" value="${colValue}"/>
+                <a id="${colName}Button" href="javascript:" class="btn">&nbsp;<i class="icon-search"></i>&nbsp;</a>&nbsp;&nbsp;
+            <div>
+            <script type="text/javascript">
+                $("#${colName}Button, #${colName}").click(function(){
+                    // 是否限制选择，如果限制，设置为disabled
+                    if ($("#${colName}Button").hasClass("disabled")){
+                        return true;
+                    }
+                    // 正常打开
+                    top.$.jBox.open("iframe:${ctx}/tag/treeselect?url="+encodeURIComponent("/sys/office/treeData?type=2"), "选择科室", 300, 420, {
+                        ajaxData:{selectIds: $("#${colName}").val()},buttons:{"确定":"ok", "清除":"clear","关闭":true}, submit:function(v, h, f){
+                            if (v=="ok"){
+                                var tree = h.find("iframe")[0].contentWindow.tree;
+                                var names = [], nodes = [];
+                                nodes = tree.getSelectedNodes(true);
+                                for(var i=0; i<nodes.length; i++) {
+                                    if (nodes[i].level == 0){
+                                        top.$.jBox.tip("不能选择根节点（"+nodes[i].name+"）请重新选择。");
+                                        return false;
+                                    }
+                                    if (nodes[i].isParent){
+                                        top.$.jBox.tip("不能选择父节点（"+nodes[i].name+"）请重新选择。");
+                                        return false;
+                                    }
+                                    $("#${colName}").val(nodes[i].name);
+                                    break;
+                                }
+
+                            }
+                            else if (v=="clear"){
+                                $("#${colName}").val("");
+                            }
+                            if(typeof ${colName}TreeselectCallBack == 'function'){
+                                ${colName}TreeselectCallBack(v, h, f);
+                            }
+                        }, loaded:function(h){
+                            $(".jbox-content", top.document).css("overflow-y","hidden");
+                        }
+                    });
+                });
+            </script>
+        ]]></content>
+    </component>
+    <!--角色选择-->
+    <component>
+        <value>selectRole</value>
+        <type>controlType</type>
+        <name>角色选择</name>
+        <content><![CDATA[
+            <div class="input-append">
+                <input id="${colName}" name="${colName}" readonly="readonly" type="text" value="${colValue}"/>
+                <a id="${colName}Button" href="javascript:" class="btn">&nbsp;<i class="icon-search"></i>&nbsp;</a>&nbsp;&nbsp;
+            <div>
+            <script type="text/javascript">
+                $("#${colName}Button, #${colName}").click(function(){
+                    // 是否限制选择，如果限制，设置为disabled
+                    if ($("#${colName}Button").hasClass("disabled")){
+                        return true;
+                    }
+                    // 正常打开
+                    top.$.jBox.open("iframe:${ctx}/tag/treeselect?url="+encodeURIComponent("/sys/office/treeData?type=3&child=role"), "选择角色", 300, 420, {
+                        ajaxData:{selectIds: $("#${colName}").val()},buttons:{"确定":"ok", "清除":"clear","关闭":true}, submit:function(v, h, f){
+                            if (v=="ok"){
+                                var tree = h.find("iframe")[0].contentWindow.tree;
+                                var names = [], nodes = [];
+                                nodes = tree.getSelectedNodes(true);
+                                for(var i=0; i<nodes.length; i++) {
+                                    if (nodes[i].level == 0){
+                                        top.$.jBox.tip("不能选择根节点（"+nodes[i].name+"）请重新选择。");
+                                        return false;
+                                    }
+                                    if (nodes[i].isParent){
+                                        top.$.jBox.tip("不能选择父节点（"+nodes[i].name+"）请重新选择。");
+                                        return false;
+                                    }
+                                    $("#${colName}").val(nodes[i].name);
+                                    break;
+                                }
+
+                            }
+                            else if (v=="clear"){
+                                $("#${colName}").val("");
+                            }
+                            if(typeof ${colName}TreeselectCallBack == 'function'){
+                                ${colName}TreeselectCallBack(v, h, f);
+                            }
+                        }, loaded:function(h){
+                            $(".jbox-content", top.document).css("overflow-y","hidden");
+                        }
+                    });
+                });
+            </script>
+        ]]></content>
+    </component>
     <!--单选选择-->
     <component>
         <value>radio</value>

@@ -3,6 +3,7 @@
  */
 package com.thinkgem.jeesite.modules.table.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -131,6 +132,7 @@ public class OaPersonDefineTableService extends CrudService<OaPersonDefineTableD
     private void alterColumn(String tableName, List<OaPersonDefineTableColumn> columns) {
         if(StringUtils.isNotBlank(tableName) && columns != null && columns.size() > 0) {
             StringBuilder addColumn = new StringBuilder();
+            List<String> addComments = new ArrayList<>();
             StringBuilder deleteColumn = new StringBuilder();
             String split1 = "";
             String split2 = "";
@@ -140,20 +142,25 @@ public class OaPersonDefineTableService extends CrudService<OaPersonDefineTableD
                     if(dbColumns.get(column.getColumnName()) == null) {
                         addColumn.append(split1 + JdbcUtils.getColumnInfo(column));
                         split1 = ",";
+                        addComments.add("comment on column " + tableName + "." + column.getColumnName()
+                                + " is '" + column.getColumnComment() + "'");
                     }
                 } else if(dbColumns.get(column.getColumnName()) != null){
                     deleteColumn.append(split2 + column.getColumnName());
                     split2 = ",";
                 }
             }
-            addColumn(tableName,addColumn.toString());
+            addColumn(tableName,addColumn.toString(),addComments);
             deleteColumn(tableName, deleteColumn.toString());
         }
     }
 
-    private void addColumn(String tableName, String columns) {
+    private void addColumn(String tableName, String columns,List<String> comments) {
         if(StringUtils.isNotBlank(tableName) && StringUtils.isNotBlank(columns)) {
             oaPersonDefineTableDao.executeSql("alter table " + tableName + " add (" + columns + ")");
+            for(String comment : comments) {
+                oaPersonDefineTableDao.executeSql(comment);
+            }
         }
     }
 
