@@ -22,6 +22,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.thinkgem.jeesite.common.config.Global;
@@ -98,5 +99,21 @@ public class OaFormMasterController extends BaseController {
 		addMessage(redirectAttributes, "删除编辑器设计表单成功");
 		return "redirect:"+Global.getAdminPath()+"/form/oaFormMaster/?repage";
 	}
-
+    /**
+     * 验证表单编号是否有效
+     * @param oldFormNo
+     * @param formNo
+     * @return
+     */
+    @ResponseBody
+    @RequiresPermissions("form:oaFormMaster:edit")
+    @RequestMapping(value = "checkFormNo")
+    public String checkFormNo(String oldFormNo, String formNo) {
+        if (formNo !=null && formNo.equals(oldFormNo)) {
+            return "true";
+        } else if (formNo !=null && oaFormMasterService.findByNo(formNo, null) == null) {
+            return "true";
+        }
+        return "false";
+    }
 }

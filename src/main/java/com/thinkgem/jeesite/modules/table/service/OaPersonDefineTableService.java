@@ -1,6 +1,3 @@
-/**
- * Copyright &copy; 2012-2016 <a href="https://github.com/thinkgem/jeesite">JeeSite</a> All rights reserved.
- */
 package com.thinkgem.jeesite.modules.table.service;
 
 import java.util.ArrayList;
@@ -111,6 +108,10 @@ public class OaPersonDefineTableService extends CrudService<OaPersonDefineTableD
     public void deleteInfo(String tableName,String infoId){
         String sql = "delete from " + tableName + " where id='" + infoId + "'";
         oaPersonDefineTableDao.executeSql(sql);
+    }
+
+    public void destroyTable (String tableName) {
+
     }
 
     private String getDeleteTableSql(String tableName){

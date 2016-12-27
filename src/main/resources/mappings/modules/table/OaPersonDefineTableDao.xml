@@ -22,6 +22,7 @@
 	
 	<sql id="oaPersonDefineTableJoins">
 		LEFT JOIN sys_office o2 ON o2.id = a.office_id
+		JOIN user_tables t ON t.table_name = upper(a.table_name)
 	</sql>
     
 	<select id="get" resultType="OaPersonDefineTable">
