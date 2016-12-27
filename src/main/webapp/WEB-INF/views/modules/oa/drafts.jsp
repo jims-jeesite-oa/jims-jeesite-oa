@@ -32,7 +32,7 @@
             })
 
             $(".reTr").on('click', function () {
-                var id= $(this).attr("data-id")
+                var id = $(this).attr("data-id")
                 window.location.href = '${ctx}/oa/mailInfo/draftsById?id=' + id
             })
         });
@@ -42,11 +42,11 @@
         function deleteBy() {
             var checked = false;
             var ids = document.getElementsByName("checkbox");
-            var chestr="";
+            var chestr = "";
             for (var i = 0; i < ids.length; i++) {
                 if (ids[i].checked) {
                     checked = true;
-                    chestr+=ids[i].value+",";
+                    chestr += ids[i].value + ",";
                 }
             }
             if (!checked) {
@@ -54,7 +54,7 @@
                 return;
             }
             if (confirm('彻底删除后邮件将无法恢复，您确定要删除吗？')) {
-                form1.action = '${ctx}/oa/mailInfo/thoroughDelete?ids='+chestr+'&state=DRAFTS';
+                form1.action = '${ctx}/oa/mailInfo/thoroughDelete?ids=' + chestr + '&state=DRAFTS';
                 form1.submit();
             }
         }
@@ -62,11 +62,11 @@
         function send() {
             var checked = false;
             var ids = document.getElementsByName("checkbox");
-            var chestr=""
+            var chestr = ""
             for (var i = 0; i < ids.length; i++) {
                 if (ids[i].checked) {
                     checked = true;
-                    chestr+=ids[i].value+",";
+                    chestr += ids[i].value + ",";
                 }
             }
             if (!checked) {
@@ -74,18 +74,18 @@
                 return;
             }
 
-            form1.action = '${ctx}/oa/mailInfo/remove?ids='+chestr+'&state=DRAFTS&state1=SENT';
+            form1.action = '${ctx}/oa/mailInfo/remove?ids=' + chestr + '&state=DRAFTS&state1=SENT';
             form1.submit();
         }
         //移动到收件箱
         function inbox() {
             var checked = false;
-            var chestr=""
+            var chestr = ""
             var ids = document.getElementsByName("checkbox");
             for (var i = 0; i < ids.length; i++) {
                 if (ids[i].checked) {
                     checked = true;
-                    chestr+=ids[i].value+",";
+                    chestr += ids[i].value + ",";
                 }
             }
 
@@ -93,7 +93,7 @@
                 document.getElementById("ss").innerHTML = "<div style='color: #ffffff;background-color: #EF8F00;width: 135px;height: 20px;text-align: center;'>未选中任何邮件</div>";
                 return;
             }
-            form1.action = '${ctx}/oa/mailInfo/remove?ids='+chestr+'&state=DRAFTS&state1=INBOX';
+            form1.action = '${ctx}/oa/mailInfo/remove?ids=' + chestr + '&state=DRAFTS&state1=INBOX';
             form1.submit();
         }
 
@@ -104,12 +104,22 @@
             document.getElementById("ss").innerHTML = "";
         }
 
+        function page(n, s) {
+            $("#pageNo").val(n);
+            $("#pageSize").val(s);
+            form1.action = '${ctx}/oa/mailInfo/listBySend?state=DRAFTS';
+            $("#form1").submit();
+            return false;
+        }
+
     </script>
 </head>
 <body>
 <div style="background-color: #ffffff">
-    <form:form  modelAttribute="mailInfo" action="" method="post"  id="form1"
+    <form:form modelAttribute="mailInfo" action="" method="post" id="form1"
                class="form-horizontal">
+        <input id="pageNo" name="pageNo" type="hidden" value="${page.pageNo}"/>
+        <input id="pageSize" name="pageSize" type="hidden" value="${page.pageSize}"/>
         <table class="table">
             <tr class="tr1">
                 <td colspan="2" style="padding-left: 15px">草稿箱 (<font>共 </font>&nbsp;${page.count} &nbsp;封 )</td>
@@ -117,6 +127,7 @@
             <tr>
                 <td class="reTd">
                     <input type="button" value="删除草稿" class="btn btn-warning" onclick="deleteBy()">
+
                     <div class="btn-group">
                         <a class="btn dropdown-toggle btn-success" data-toggle="dropdown" href="#">
                             标记为
@@ -138,10 +149,12 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li><a href="#" onclick="inbox()">&nbsp; &nbsp;<img style="width:26px;height: 19px;"
-                                                                                src="${ctxStatic}/tree/css/mailCss/img/mail020.png">收件箱   </a>
+                                                                                src="${ctxStatic}/tree/css/mailCss/img/mail020.png">收件箱
+                            </a>
                             </li>
                             <li><a href="#" onclick="send()">&nbsp; &nbsp;<img style="width:26px;height: 19px;"
-                                                                               src="${ctxStatic}/tree/css/mailCss/img/mail020.png">已发送  </a>
+                                                                               src="${ctxStatic}/tree/css/mailCss/img/mail020.png">已发送
+                            </a>
                             </li>
                         </ul>
                     </div>
@@ -156,37 +169,47 @@
             <tr>
                 <th></th>
                 <th></th>
+                <th align="left">收件人</th>
                 <th align="left">主题</th>
-                <th align="left">正文</th>
                 <th align="left">时间</th>
                 <th></th>
             </tr>
             </thead>
             <tbody>
-            <c:forEach items="${page.list}" var="mailInfo">
-
-                <tr class="reTr" data-id="${mailInfo.id}">
-                    <td class="reCheckbox">
-                        <input type="checkbox" name="checkbox" value="${mailInfo.id}" class="check">
-                    </td>
-                    <td style=" width: 40px ;" align="left">
-                         <img src="${ctxStatic}/tree/css/mailCss/img/mail040.png"/>
-                    </td>
-                    <td style="width:25%;">
-                        ${mailInfo.theme}
-                    </td>
-                    <td style="width:40%;">
-                            ${fns:abbr(mailInfo.content,50)}
-                    </td>
-                    <td style="width:15%;">
-                        <fmt:formatDate value="${mailInfo.time}" type="both" pattern="yyyy年MM月dd日 " />
-
-                    </td>
-                    <td style="width:10%;" align="center">
-                       <%-- <img src="${ctxStatic}/tree/css/mailCss/img/mail030.png"/>--%>
+            <c:if test="${page.list.size() eq '0'}">
+                <tr>
+                    <td colspan="6" valign="center" rowspan="2">
+                        <div align="center"
+                             style="text-align: center;height: 50px;font-size: 20px;padding-top: 20px">没有邮件
+                        </div>
                     </td>
                 </tr>
-            </c:forEach>
+            </c:if>
+            <c:if test="${not empty page.list}">
+                <c:forEach items="${page.list}" var="mailInfo">
+
+                    <tr class="reTr" data-id="${mailInfo.id}">
+                        <td class="reCheckbox">
+                            <input type="checkbox" name="checkbox" value="${mailInfo.id}" class="check">
+                        </td>
+                        <td style=" width: 40px ;" align="left">
+                            <img src="${ctxStatic}/tree/css/mailCss/img/mail040.png"/>
+                        </td>
+                        <td style="width:25%;">
+                                ${mailInfo.name}
+                        </td>
+                        <td style="width:40%;">
+                                ${fns:abbr(mailInfo.theme,50)}
+                        </td>
+                        <td style="width:15%;">
+                            <fmt:formatDate value="${mailInfo.time}" type="both" pattern="yyyy年MM月dd日 "/>
+
+                        </td>
+                        <td style="width:10%;" align="center">
+                        </td>
+                    </tr>
+                </c:forEach>
+            </c:if>
             </tbody>
         </table>
 

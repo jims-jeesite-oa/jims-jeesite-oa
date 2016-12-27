@@ -41,7 +41,6 @@
             })
 
 
-
             $(".reOut").on('click', function () {
 
                 var uid = $(this).attr("data-id")
@@ -51,36 +50,44 @@
 //                var d = new Date(time)
 //                var date1 = d.pattern("yyyy-MM-dd HH:mm:ss");
 //                var content=$(this).attr("data-content");
-                 window.location.href = '${ctx}/oa/mailInfo/findMail?id=' + uid+"&name="+name;
+                window.location.href = '${ctx}/oa/mailInfo/findMail?id=' + uid + "&name=" + name;
             })
 
             //格式化日期
-            Date.prototype.pattern=function(fmt) {
+            Date.prototype.pattern = function (fmt) {
                 var o = {
-                    "M+" : this.getMonth()+1, //月份
-                    "d+" : this.getDate(), //日
-                    "h+" : this.getHours() == 0 ? 12 : this.getHours(), //小时
-                    "H+" : this.getHours(), //小时
-                    "m+" : this.getMinutes(), //分
-                    "s+" : this.getSeconds(), //秒
-                    "q+" : Math.floor((this.getMonth()+3)/3), //季度
-                    "S" : this.getMilliseconds() //毫秒
+                    "M+": this.getMonth() + 1, //月份
+                    "d+": this.getDate(), //日
+                    "h+": this.getHours() == 0 ? 12 : this.getHours(), //小时
+                    "H+": this.getHours(), //小时
+                    "m+": this.getMinutes(), //分
+                    "s+": this.getSeconds(), //秒
+                    "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+                    "S": this.getMilliseconds() //毫秒
                 };
-                var week = {"0":"\u65e5","1":"\u4e00","2":"\u4e8c","3":"\u4e09","4":"\u56db","5":"\u4e94","6":"\u516d"};
-                if(/(y+)/.test(fmt)){
-                    fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
+                var week = {
+                    "0": "\u65e5",
+                    "1": "\u4e00",
+                    "2": "\u4e8c",
+                    "3": "\u4e09",
+                    "4": "\u56db",
+                    "5": "\u4e94",
+                    "6": "\u516d"
+                };
+                if (/(y+)/.test(fmt)) {
+                    fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
                 }
-                if(/(E+)/.test(fmt)){
-                    fmt=fmt.replace(RegExp.$1, ((RegExp.$1.length>1) ? (RegExp.$1.length>2 ? "\u661f\u671f" : "\u5468") : "")+week[this.getDay()+""]);
+                if (/(E+)/.test(fmt)) {
+                    fmt = fmt.replace(RegExp.$1, ((RegExp.$1.length > 1) ? (RegExp.$1.length > 2 ? "\u661f\u671f" : "\u5468") : "") + week[this.getDay() + ""]);
                 }
-                for(var k in o){
-                    if(new RegExp("("+ k +")").test(fmt)){
-                        fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
+                for (var k in o) {
+                    if (new RegExp("(" + k + ")").test(fmt)) {
+                        fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
                     }
                 }
                 var m = {
-                    "s":"m",
-                    "d":"h"
+                    "s": "m",
+                    "d": "h"
                 };
                 return fmt;
             }
@@ -227,12 +234,22 @@
             document.getElementById("ss").innerHTML = "";
         }
 
+        function page(n, s) {
+            $("#pageNo").val(n);
+            $("#pageSize").val(s);
+            form1.action = '${ctx}/oa/mailInfo/listBySend?state=INBOX';
+            $("#form1").submit();
+            return false;
+        }
+
     </script>
 </head>
 <body>
 <div style="background-color: #ffffff">
     <form:form id="form1" modelAttribute="mailInfo" action="" method="post"
                class="form-horizontal">
+        <input id="pageNo" name="pageNo" type="hidden" value="${page.pageNo}"/>
+        <input id="pageSize" name="pageSize" type="hidden" value="${page.pageSize}"/>
         <table class="table">
             <tr class="tr1">
                 <td colspan="2" style="padding-left: 15px">收件箱 (<font>共 </font>&nbsp;${page.count} &nbsp;封,其中 <font
@@ -308,63 +325,77 @@
             <tbody>
             <form:form id="inputForm" modelAttribute="mailInfo" action="${ctx}/oa/mailInfo/move" method="post"
                        class="form-horizontal">
-                <c:forEach items="${page.list}" var="mailInfo">
 
-                    <c:if test="${mailInfo.flag eq 1}">
-                        <tr class="reOut"  data-id="${mailInfo.UID}"  data-drop="${mailInfo.name}">
-                            <td class="reCheckbox">
-                                <input type="checkbox" name="checkbox" value="${mailInfo.id}" class="checkOut">
-                            </td>
-                            <td style=" width: 25px ;" align="left">
-                                <c:if test="${mailInfo.readMark eq 'true'}">
-                                    <img src="${ctxStatic}/tree/css/mailCss/img/mail020.png"/>
-                                </c:if>
-                                <c:if test="${mailInfo.readMark eq 'false'}">
-                                    <img src="${ctxStatic}/tree/css/mailCss/img/mail010.png"/>
-                                </c:if>
-                            </td>
-                            <td style="width:25%;">
-                                    ${mailInfo.name}
-                            </td>
-                            <td style="width:40%;">
-                                    ${fns:abbr(mailInfo.theme,50)}
-                            </td>
-                            <td style="width:15%;">
-                                <fmt:formatDate value="${mailInfo.time}" type="both" pattern="yyyy年MM月dd日 "/>
-                            </td>
-                            <td style="width:10%;" align="center">
+                <c:if test="${page.list.size() eq '0'}">
+                    <tr>
+                        <td colspan="6" valign="center" rowspan="2">
+                            <div align="center"
+                                 style="text-align: center;height: 50px;font-size: 20px;padding-top: 20px">没有邮件
+                            </div>
+                        </td>
+                    </tr>
+                </c:if>
 
-                            </td>
-                        </tr>
-                    </c:if>
-                    <c:if test="${mailInfo.flag eq 0}">
-                        <tr class="reTr" data-id="${mailInfo.id}">
-                            <td class="reCheckbox">
-                                <input type="checkbox" name="checkbox" value="${mailInfo.id}" class="check">
-                            </td>
-                            <td style=" width: 25px ;" align="left">
-                                <c:if test="${mailInfo.readMark eq 1}">
-                                    <img src="${ctxStatic}/tree/css/mailCss/img/mail020.png"/>
-                                </c:if>
-                                <c:if test="${mailInfo.readMark eq 0}">
-                                    <img src="${ctxStatic}/tree/css/mailCss/img/mail010.png"/>
-                                </c:if>
-                            </td>
-                            <td style="width:25%;">
-                                    ${mailInfo.name}
-                            </td>
-                            <td style="width:40%;">
-                                    ${fns:abbr(mailInfo.theme,50)}
-                            </td>
-                            <td style="width:15%;">
-                                <fmt:formatDate value="${mailInfo.time}" type="both" pattern="yyyy年MM月dd日 "/>
-                            </td>
-                            <td style="width:10%;" align="center">
-                                    <%-- <img src="${ctxStatic}/tree/css/mailCss/img/mail030.png"/>--%>
-                            </td>
-                        </tr>
-                    </c:if>
-                </c:forEach>
+
+                <c:if test="${not empty page.list}">
+                    <c:forEach items="${page.list}" var="mailInfo">
+
+                        <c:if test="${mailInfo.flag eq 1}">
+                            <tr class="reOut" data-id="${mailInfo.UID}" data-drop="${mailInfo.name}">
+                                <td class="reCheckbox">
+                                    <input type="checkbox" name="checkbox" value="${mailInfo.id}" class="checkOut">
+                                </td>
+                                <td style=" width: 25px ;" align="left">
+                                    <c:if test="${mailInfo.readMark eq 'true'}">
+                                        <img src="${ctxStatic}/tree/css/mailCss/img/mail020.png"/>
+                                    </c:if>
+                                    <c:if test="${mailInfo.readMark eq 'false'}">
+                                        <img src="${ctxStatic}/tree/css/mailCss/img/mail010.png"/>
+                                    </c:if>
+                                </td>
+                                <td style="width:25%;">
+                                        ${mailInfo.name}
+                                </td>
+                                <td style="width:40%;">
+                                        ${fns:abbr(mailInfo.theme,50)}
+                                </td>
+                                <td style="width:15%;">
+                                    <fmt:formatDate value="${mailInfo.time}" type="both" pattern="yyyy年MM月dd日 "/>
+                                </td>
+                                <td style="width:10%;" align="center">
+
+                                </td>
+                            </tr>
+                        </c:if>
+                        <c:if test="${mailInfo.flag eq 0}">
+                            <tr class="reTr" data-id="${mailInfo.id}">
+                                <td class="reCheckbox">
+                                    <input type="checkbox" name="checkbox" value="${mailInfo.id}" class="check">
+                                </td>
+                                <td style=" width: 25px ;" align="left">
+                                    <c:if test="${mailInfo.readMark eq 1}">
+                                        <img src="${ctxStatic}/tree/css/mailCss/img/mail020.png"/>
+                                    </c:if>
+                                    <c:if test="${mailInfo.readMark eq 0}">
+                                        <img src="${ctxStatic}/tree/css/mailCss/img/mail010.png"/>
+                                    </c:if>
+                                </td>
+                                <td style="width:25%;">
+                                        ${mailInfo.name}
+                                </td>
+                                <td style="width:40%;">
+                                        ${fns:abbr(mailInfo.theme,50)}
+                                </td>
+                                <td style="width:15%;">
+                                    <fmt:formatDate value="${mailInfo.time}" type="both" pattern="yyyy年MM月dd日 "/>
+                                </td>
+                                <td style="width:10%;" align="center">
+                                        <%-- <img src="${ctxStatic}/tree/css/mailCss/img/mail030.png"/>--%>
+                                </td>
+                            </tr>
+                        </c:if>
+                    </c:forEach>
+                </c:if>
             </form:form>
             </tbody>
         </table>

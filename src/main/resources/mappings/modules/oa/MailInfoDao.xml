@@ -19,7 +19,8 @@
 		a.update_by AS "updateBy.id",
 		a.update_date AS "updateDate",
 		a.remarks AS "remarks",
-		a.del_flag AS "delFlag"
+		a.del_flag AS "delFlag",
+		a.flag AS "flag"
 	</sql>
 	
 	<sql id="mailInfoJoins">
@@ -45,6 +46,11 @@
         SELECT
         *
         FROM sys_user s
+        where
+        <if test="companyId !=null and companyId !=''">
+              s.company_id=#{companyId}
+        </if>
+        and  s.del_flag='0'
     </select>
 
     <select id="getById" resultType="User">
@@ -56,19 +62,23 @@
 	
 	<select id="findList" resultType="MailInfo">
 		SELECT 
-			<include refid="mailInfoColumns"/>
-		FROM mail_info a
+			<include refid="mailInfoColumns"/> ,s.name
+		FROM mail_info a,sys_user  s
 		<include refid="mailInfoJoins"/>
 		<where>
 			a.del_flag = #{DEL_FLAG_NORMAL}
+            and a.sender_id=s.id
             <if test="ownId!=null and ownId!=''">
-                and own_id = #{ownId}
+                and a.own_id = #{ownId}
             </if>
             <if test="state!=null and state!=''">
-                and state = #{state}
+                and a.state = #{state}
             </if>
             <if test="readMark!=null and readMark!=''">
-                and read_mark = #{readMark}
+                and a.read_mark = #{readMark}
+            </if>
+            <if test="flag!=null and flag!=''">
+                and a.flag=#{flag}
             </if>
 
 		</where>
@@ -118,7 +128,8 @@
 			update_by,
 			update_date,
 			remarks,
-			del_flag
+			del_flag,
+			flag
 		) VALUES (
 			#{id},
 			#{theme},
@@ -136,7 +147,8 @@
 			#{updateBy.id},
 			#{updateDate},
 			#{remarks},
-			#{delFlag}
+			#{delFlag},
+			#{flag}
 		)
 	</insert>
 	
@@ -154,7 +166,8 @@
 			state = #{state},
 			update_by = #{updateBy.id},
 			update_date = #{updateDate},
-			remarks = #{remarks}
+			remarks = #{remarks},
+			flag=#{flag}
 		WHERE id = #{id}
 	</update>
 	
