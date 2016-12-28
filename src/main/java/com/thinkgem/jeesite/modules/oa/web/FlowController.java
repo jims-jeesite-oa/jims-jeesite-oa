@@ -95,6 +95,7 @@ public class FlowController extends BaseController {
             initJs = getInitJs(flow.getDatas(),form.getTableName());
         }
         String html = c.getContent().replace("$flowTableInfo$",form.getContent()).replace("$initJs$",initJs);;
+        html = html.replace("<td","<td nowrap='nowrap'");
         flow.setShowType(view);
         try {
             response.setContentType("text/html;charset=utf-8");
