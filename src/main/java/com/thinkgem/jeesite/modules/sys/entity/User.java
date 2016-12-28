@@ -44,6 +44,8 @@ public class User extends DataEntity<User> {
 	private String loginFlag;	// 是否允许登陆
 	private String photo;	// 头像
 
+    private String companyId;
+
 	private String oldLoginName;// 原登录名
 	private String newPassword;	// 新密码
 	
@@ -72,8 +74,16 @@ public class User extends DataEntity<User> {
 		super();
 		this.role = role;
 	}
-	
-	public String getPhoto() {
+
+    public String getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(String companyId) {
+        this.companyId = companyId;
+    }
+
+    public String getPhoto() {
 		return photo;
 	}
 

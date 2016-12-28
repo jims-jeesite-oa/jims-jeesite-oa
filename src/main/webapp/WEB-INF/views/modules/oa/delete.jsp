@@ -144,12 +144,22 @@
             document.getElementById("ss").innerHTML = "";
         }
 
+        function page(n,s){
+            $("#pageNo").val(n);
+            $("#pageSize").val(s);
+            form1.action = '${ctx}/oa/mailInfo/listBySend?state=DELETED';
+            $("#form1").submit();
+            return false;
+        }
+
     </script>
 </head>
 <body>
 <div style="background-color: #ffffff">
     <form:form  modelAttribute="mailInfo" action="" method="post"   id="form1"
                class="form-horizontal">
+        <input id="pageNo" name="pageNo" type="hidden" value="${page.pageNo}"/>
+        <input id="pageSize" name="pageSize" type="hidden" value="${page.pageSize}"/>
         <table class="table">
             <tr class="tr1">
                 <td colspan="2" style="padding-left: 15px">已删除 (<font>共 </font>&nbsp;${page.count} &nbsp;封,其中 <font color="#30A5FF">未读邮件</font>&nbsp;${page.delete} &nbsp;封 )</td>
@@ -198,13 +208,23 @@
             <tr>
                 <th></th>
                 <th></th>
+                <th align="left">收件人</th>
                 <th align="left">主题</th>
-                <th align="left">正文</th>
                 <th align="left">时间</th>
                 <th></th>
             </tr>
             </thead>
             <tbody>
+            <c:if test="${page.list.size() eq '0'}">
+                <tr>
+                    <td colspan="6" valign="center" rowspan="2">
+                        <div align="center"
+                             style="text-align: center;height: 50px;font-size: 20px;padding-top: 20px">没有邮件
+                        </div>
+                    </td>
+                </tr>
+            </c:if>
+            <c:if test="${not empty page.list}">
             <c:forEach items="${page.list}" var="mailInfo">
 
                 <tr class="reTr" data-id="${mailInfo.id}">
@@ -220,20 +240,20 @@
                         </c:if>
                     </td>
                     <td style="width:25%;">
-                        ${mailInfo.theme}
+                        ${mailInfo.name}
                     </td>
                     <td style="width:40%;">
-                            ${fns:abbr(mailInfo.content,50)}
+                            ${fns:abbr(mailInfo.theme,50)}
                     </td>
                     <td style="width:15%;">
                         <fmt:formatDate value="${mailInfo.time}" type="both" pattern="yyyy年MM月dd日 " />
 
                     </td>
                     <td style="width:10%;" align="center">
-                       <%-- <img src="${ctxStatic}/tree/css/mailCss/img/mail030.png"/>--%>
                     </td>
                 </tr>
             </c:forEach>
+            </c:if>
             </tbody>
         </table>
     </form:form>
