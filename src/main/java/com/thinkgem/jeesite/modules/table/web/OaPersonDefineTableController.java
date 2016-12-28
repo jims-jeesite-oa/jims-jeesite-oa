@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.thinkgem.jeesite.common.config.Global;
@@ -79,5 +80,23 @@ public class OaPersonDefineTableController extends BaseController {
 		addMessage(redirectAttributes, "删除自定义数据源成功");
 		return "redirect:"+Global.getAdminPath()+"/table/oaPersonDefineTable/?repage";
 	}
+
+    /**
+     * 验证表名是否有效
+     * @param oldTableName
+     * @param tableName
+     * @return
+     */
+    @ResponseBody
+    @RequiresPermissions("table:oaPersonDefineTable:edit")
+    @RequestMapping(value = "checkTableName")
+    public String checkTableName(String oldTableName, String tableName) {
+        if (tableName !=null && tableName.equals(oldTableName)) {
+            return "true";
+        } else if (tableName !=null && oaPersonDefineTableService.findByTableName(tableName, null) == null) {
+            return "true";
+        }
+        return "false";
+    }
 
 }

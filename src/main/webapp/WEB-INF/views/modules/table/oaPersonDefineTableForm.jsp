@@ -9,6 +9,12 @@
 		$(document).ready(function() {
 			//$("#name").focus();
 			$("#inputForm").validate({
+                rules: {
+                    tableName: {remote: "${ctx}/table/oaPersonDefineTable/checkTableName?oldTableName=" + encodeURIComponent('${oaPersonDefineTable.tableName}')}
+                },
+                messages: {
+                    tableName: {remote: "表名已存在"}
+                },
 				submitHandler: function(form){
 					loading('正在提交，请稍等...');
 					form.submit();
@@ -118,7 +124,7 @@
             <div class="control-group">
                 <label class="control-label">表名(以英文开头)：</label>
                 <div class="controls">
-                    <form:input path="tableName" htmlEscape="false" cssClass="required abc startEn" maxlength="200" class="input-xlarge" readonly="${oaPersonDefineTable.id == null ? '': 'true'}"/>
+                    <form:input id="tableName" path="tableName" htmlEscape="false" cssClass="required abc startEn" maxlength="200" class="input-xlarge" readonly="${oaPersonDefineTable.id == null ? '': 'true'}" cssStyle="text-transform:uppercase" onkeyup="this.value=this.value.toUpperCase()"/>
                 </div>
             </div>
             <div class="control-group">

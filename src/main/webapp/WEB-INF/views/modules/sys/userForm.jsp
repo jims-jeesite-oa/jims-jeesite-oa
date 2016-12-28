@@ -17,7 +17,6 @@
 				},
 				submitHandler: function(form){
 					loading('正在提交，请稍等...');
-                    $('#company').val($('#officePid').val())
 					form.submit();
 				},
 				errorContainer: "#messageBox",
@@ -43,7 +42,6 @@
     </ul>
 	<form:form id="inputForm" modelAttribute="user" action="${ctx}/sys/user/save" method="post" class="form-horizontal">
 		<form:hidden path="id"/>
-		<form:hidden id="company" path="company.id"/>
 		<sys:message content="${message}"/>
 		<div class="control-group">
 			<label class="control-label">头像:</label>
@@ -52,6 +50,13 @@
 				<sys:ckfinder input="nameImage" type="images" uploadPath="/photo" selectMultiple="false" maxWidth="100" maxHeight="100"/>
 			</div>
 		</div>
+        <div class="control-group">
+            <label class="control-label">归属公司:</label>
+            <div class="controls">
+                <sys:treeselect id="company" name="company.id" value="${user.company.id}" labelName="company.name" labelValue="${user.company.name}"
+                                title="公司" url="/sys/office/treeData?type=1" cssClass="required"/>
+            </div>
+        </div>
 		<div class="control-group">
 			<label class="control-label">归属部门:</label>
 			<div class="controls">

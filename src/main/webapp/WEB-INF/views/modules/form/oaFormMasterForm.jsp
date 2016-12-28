@@ -6,8 +6,13 @@
 	<meta name="decorator" content="default"/>
 	<script type="text/javascript">
 		$(document).ready(function() {
-			//$("#name").focus();
 			$("#inputForm").validate({
+                rules: {
+                    formNo: {remote: "${ctx}/form/oaFormMaster/checkFormNo?oldFormNo=" + encodeURIComponent('${oaFormMaster.formNo}')}
+                },
+                messages: {
+                    formNo: {remote: "表单编号已存在"}
+                },
 				submitHandler: function(form){
 					loading('正在提交，请稍等...');
 					form.submit();
@@ -35,19 +40,11 @@
     </ul>
 	<form:form id="inputForm" modelAttribute="oaFormMaster" action="${ctx}/form/oaFormMaster/save" method="post" class="form-horizontal">
 		<form:hidden path="id"/>
-		<sys:message content="${message}"/>		
-		<%--<div class="control-group">--%>
-			<%--<label class="control-label">医院机构：</label>--%>
-			<%--<div class="controls">--%>
-				<%--<sys:treeselect id="office" name="office.id" value="${oaFormMaster.office.id}" labelName="office.name" labelValue="${oaFormMaster.office.name}"--%>
-					<%--title="部门" url="/sys/office/treeData?type=2" cssClass="required" allowClear="true" notAllowSelectParent=""/>--%>
-				<%--<span class="help-inline"><font color="red">*</font> </span>--%>
-			<%--</div>--%>
-		<%--</div>--%>
+		<sys:message content="${message}"/>
         <div class="control-group">
             <label class="control-label">表单编号：</label>
             <div class="controls">
-                <form:input path="formNo" htmlEscape="false" maxlength="50" class="input-xlarge required abc"/>
+                <form:input id="formNo" path="formNo" htmlEscape="false" maxlength="50" class="input-xlarge required abc" cssStyle="text-transform:uppercase" onkeyup="this.value=this.value.toUpperCase()"/>
             </div>
         </div>
 		<div class="control-group">

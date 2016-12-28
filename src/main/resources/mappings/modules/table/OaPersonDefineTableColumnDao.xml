@@ -28,6 +28,7 @@
 	<sql id="oaPersonDefineTableColumnJoins">
 		LEFT JOIN oa_person_define_table b ON b.id = a.table_id
 		LEFT JOIN sys_role r ON r.id = a.audit_post
+		JOIN all_tab_cols t ON t.column_name = upper(a.column_name) and t.table_name = upper(b.table_name)
 	</sql>
     
 	<select id="get" resultType="OaPersonDefineTableColumn">

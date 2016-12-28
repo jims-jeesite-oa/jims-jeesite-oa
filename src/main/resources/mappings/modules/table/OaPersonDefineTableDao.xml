@@ -22,6 +22,7 @@
 	
 	<sql id="oaPersonDefineTableJoins">
 		LEFT JOIN sys_office o2 ON o2.id = a.office_id
+		JOIN user_tables t ON t.table_name = upper(a.table_name)
 	</sql>
     
 	<select id="get" resultType="OaPersonDefineTable">
@@ -134,7 +135,7 @@
         <include refid="oaPersonDefineTableColumns"/>
         FROM oa_person_define_table a
         <include refid="oaPersonDefineTableJoins"/>
-        WHERE a.table_Name = #{tableName}
+        WHERE a.del_flag = '0' and a.table_Name = #{tableName}
         <if test="officeId != null and officeId != ''">
             AND a.office_id = #{officeId}
         </if>

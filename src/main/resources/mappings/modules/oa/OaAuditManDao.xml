@@ -27,10 +27,10 @@
 		<include refid="oaAuditManJoins"/>
 		<where>
 			<if test="auditMan != null and auditMan != ''">
-                and a.audit_man LIKE CONCAT('%',#{auditMan},'%')
+                and a.audit_man LIKE '%'||#{auditMan}||'%'
             </if>
             <if test="auditJob != null and auditJob != ''">
-                and a.audit_job like CONCAT('%',#{auditJob},'%')
+                and a.audit_job like '%'||#{auditJob}||'%'
             </if>
 		</where>
 		<choose>
