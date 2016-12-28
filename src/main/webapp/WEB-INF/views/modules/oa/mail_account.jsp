@@ -59,12 +59,7 @@
                                                          style="width:800px;"></form:input>
                     <span class="help-inline"><font color="red">*</font> </span></td>
             </tr>
-            <tr>
-                <td style="padding-left: 70px;width:100px;text-align: right">邮件地址：</td>
-                <td><form:input path="mailAddress" htmlEscape="true" type="text"
-                                                         style="width:800px;" placeholder=""></form:input>
-                    <span class="help-inline"><font color="red">*</font> </span></td>
-            </tr>
+
             <tr>
                 <td style="padding-left: 70px;width:100px;text-align: right">端口号：</td>
                 <td><form:input path="port" htmlEscape="true" type="text"

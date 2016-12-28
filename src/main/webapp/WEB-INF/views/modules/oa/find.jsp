@@ -77,6 +77,16 @@
         }
 
 
+        //返回
+        function hostory(state) {
+            if(state!=null && state!=''){
+                window.location.href = '${ctx}/oa/mailInfo/listBySend?state=' + state;
+            } else{
+                window.location.href = '${ctx}/oa/mailInfo/findOut?state=' + state;
+            }
+
+        }
+
         //循环定时删除
         window.setInterval(show, 5000);
         function show() {
@@ -121,7 +131,7 @@
 
             <tr style="height: 160px;">
                 <td colspan="2" style="padding-left: 25px" valign="top">　　
-                    <div>${mailInfo.content}</div>
+                   <div>${mailInfo.content}</div>
                 </td>
             </tr>
             <tr class="findAd">
@@ -141,7 +151,7 @@
             </tr>
             <tr style="background-color: #C1D9F3;height: 35px">
                 <td colspan="2" style="padding-left: 5px">
-                    <input type="button" value="返回" class="btn" onclick="self.location=document.referrer;">
+                    <input type="button" value="返回" class="btn" onclick="hostory('${mailInfo.state}')">
                     <input type="button" value="彻底删除" class="btn" onclick="deleteBy('${mailInfo.state}')">
 
                     <div class="btn-group">

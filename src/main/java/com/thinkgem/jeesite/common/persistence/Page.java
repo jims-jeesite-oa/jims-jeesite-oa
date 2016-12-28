@@ -52,6 +52,9 @@ private int first;// 首页索引
 	
 	private String message = ""; // 设置提示消息，显示在“共n条”之后
 
+
+    private   String mail;
+
 	public Page() {
 		this.pageSize = -1;
 	}
@@ -62,6 +65,15 @@ private int first;// 首页索引
 
     public void setDelete(long delete) {
         this.delete = delete;
+    }
+
+
+    public String getMail() {
+        return mail;
+    }
+
+    public void setMail(String mail) {
+        this.mail = mail;
     }
 
     /**

@@ -339,35 +339,42 @@ public class MailInfoController extends BaseController {
         if (StringUtils.isNotBlank(ids) && StringUtils.isNotBlank(readMark)) {
             mailInfoService.readMark(ids, readMark);
         }
+        if (mailInfo.getState() == null) {
+            mailInfo.setState("SENT");
+            mailInfo.setFlag("0");
+        } else {
+            mailInfo.setFlag("0");
+            mailInfo.setState(mailInfo.getState());
+        }
 
-        MailInfo mailInfo1 = new MailInfo();
-        mailInfo1.setState(state);
-        mailInfo1.setOwnId(UserUtils.getUser().getId());
-        Page<MailInfo> page = mailInfoService.findPage(new Page<MailInfo>(request, response), mailInfo1);
-        List<MailInfo> list = mailInfoService.findList(mailInfo1);
+        MailInfo m=new MailInfo();
+        m.setOwnId(UserUtils.getUser().getId());
+        m.setState(state);
+        m.setFlag("0");
+        Page<MailInfo> page = mailInfoService.findPage(new Page<MailInfo>(request, response), m);
+        MailInfo mailInfo1=new MailInfo();
         mailInfo1.setReadMark("0");
-        List<MailInfo> delete = mailInfoService.findList(mailInfo1);
-        page.setCount(list.size());
-        page.setDelete(delete.size());
+        mailInfo1.setOwnId(mailInfo.getOwnId());
         model.addAttribute("page", page);
         if (StringUtils.equals(mailInfo.getState(), "DELETED")) {
+            mailInfo1.setState("DELETED");
+            List<MailInfo> delete = mailInfoService.findList(mailInfo1);
+            page.setDelete(delete.size());
             return "modules/oa/delete";
         } else if (StringUtils.equals(mailInfo.getState(), "DRAFTS")) {
+            mailInfo1.setState("DRAFTS");
+            List<MailInfo> delete = mailInfoService.findList(mailInfo1);
+            page.setDelete(delete.size());
             return "modules/oa/drafts";
         } else if (StringUtils.equals(mailInfo.getState(), "INBOX")) {
-            List<MailInfo> mailInfos = page.getList();
-            List<MailInfo> infos = new ArrayList<>();
-            for (int i = 0; i < mailInfos.size(); i++) {
-                MailInfo mailInfo2 = mailInfoService.getMail(mailInfos.get(i).getId());
-                mailInfo2.setFlag("0");
-                infos.add(mailInfo2);
-            }
-            page.setList(infos);
-            page.setCount(list.size());
+            mailInfo1.setState("INBOX");
+            List<MailInfo> delete = mailInfoService.findList(mailInfo1);
             page.setDelete(delete.size());
-            model.addAttribute("page", page);
             return "modules/oa/receiving";
         } else {
+            mailInfo1.setState("SENT");
+            List<MailInfo> delete = mailInfoService.findList(mailInfo1);
+            page.setDelete(delete.size());
             return "modules/oa/sent";
         }
     }
@@ -524,6 +531,7 @@ public class MailInfoController extends BaseController {
     }
 
     private static Session getSession(String mailSend, final String username, final String password, String port) {
+        port="25";
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
@@ -566,18 +574,44 @@ public class MailInfoController extends BaseController {
      * @return
      */
     @RequestMapping(value = {"findOut", ""})
-    public String findOut(MailInfo mailInfo, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public String findOut(MailInfo mailInfo, Model model, HttpServletRequest request, HttpServletResponse response,String state) throws Exception {
         MailAccount mailAccount = new MailAccount();
         mailAccount.setLoginId(UserUtils.getUser().getId());
         List<MailAccount> mailAccounts = mailAccountService.findList(mailAccount);
         PraseMimeMessage praseMimeMessage = new PraseMimeMessage();
-        List<MailInfo> list = praseMimeMessage.test(mailAccounts.get(0).getUsername(), mailAccounts.get(0).getPassword(),
-                mailAccounts.get(0).getPort(), mailAccounts.get(0).getMailAccept());
-        Page<MailInfo> page = mailInfoService.findPage(new Page<MailInfo>(request, response), mailInfo);
-        page.setCount(list.size());
-        page.setList(list);
-        model.addAttribute("page", page);
-        return "modules/oa/receiving";
+
+        if(StringUtils.equals(state,"SENT")){
+            if(mailAccounts.size()>0){
+                List<MailInfo> list = praseMimeMessage.test(mailAccounts.get(0).getUsername(), mailAccounts.get(0).getPassword(),
+                        mailAccounts.get(0).getPort(), mailAccounts.get(0).getMailAccept(),state);
+                Page<MailInfo> page = mailInfoService.findPage(new Page<MailInfo>(request, response), mailInfo);
+                page.setCount(list.size());
+                page.setList(list);
+                model.addAttribute("page", page);
+            } else{
+                Page<MailInfo> page = new Page<>();
+                page.setCount(0);
+                page.setMail("或者没有绑定邮箱账户");
+                model.addAttribute("page", page);
+            }
+            return "modules/oa/sent";
+        }else if(StringUtils.equals(state,"INBOX")){
+            if(mailAccounts.size()>0){
+                List<MailInfo> list = praseMimeMessage.test(mailAccounts.get(0).getUsername(), mailAccounts.get(0).getPassword(),
+                        mailAccounts.get(0).getPort(), mailAccounts.get(0).getMailAccept(),state);
+                Page<MailInfo> page = mailInfoService.findPage(new Page<MailInfo>(request, response), mailInfo);
+                page.setCount(list.size());
+                page.setList(list);
+                model.addAttribute("page", page);
+            } else{
+                Page<MailInfo> page = new Page<>();
+                page.setCount(0);
+                page.setMail("或者没有绑定邮箱账户");
+                model.addAttribute("page", page);
+            }
+            return "modules/oa/receiving";
+        }
+        return null;
     }
 
 
@@ -592,13 +626,13 @@ public class MailInfoController extends BaseController {
      * @throws Exception
      */
     @RequestMapping(value = {"findMail", ""})
-    public String findMail(MailInfo mailInfo, Model model, String id, String name) throws Exception {
+    public String findMail(MailInfo mailInfo, Model model, String id, String name,String state) throws Exception {
         MailAccount mailAccount = new MailAccount();
         mailAccount.setLoginId(UserUtils.getUser().getId());
         List<MailAccount> mailAccounts = mailAccountService.findList(mailAccount);
         PraseMimeMessage praseMimeMessage = new PraseMimeMessage();
         List<MailInfo> list = praseMimeMessage.test(mailAccounts.get(0).getUsername(), mailAccounts.get(0).getPassword(),
-                mailAccounts.get(0).getPort(), mailAccounts.get(0).getMailAccept());
+                mailAccounts.get(0).getPort(), mailAccounts.get(0).getMailAccept(),state);
 
       if (id != null && id !="") {
             id= StringEscapeUtils.unescapeHtml4(id).replace("\"", "");

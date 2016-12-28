@@ -62,12 +62,12 @@
 	
 	<select id="findList" resultType="MailInfo">
 		SELECT 
-			<include refid="mailInfoColumns"/> ,s.name
-		FROM mail_info a,sys_user  s
+			<include refid="mailInfoColumns"/> ,s.name ,  s1.name as receiverNames
+		FROM mail_info a,sys_user  s,sys_user s1
 		<include refid="mailInfoJoins"/>
 		<where>
 			a.del_flag = #{DEL_FLAG_NORMAL}
-            and a.sender_id=s.id
+            and a.sender_id=s.id  and a.receiver_id=s1.id
             <if test="ownId!=null and ownId!=''">
                 and a.own_id = #{ownId}
             </if>

@@ -45,12 +45,13 @@
 
                 var uid = $(this).attr("data-id")
                 var name = $(this).attr("data-drop")
+                var state=document.getElementById("state").value
 //                var receiveNames = $(this).attr("data-count")
 //                var time = $(this).attr("data-items")
 //                var d = new Date(time)
 //                var date1 = d.pattern("yyyy-MM-dd HH:mm:ss");
 //                var content=$(this).attr("data-content");
-                window.location.href = '${ctx}/oa/mailInfo/findMail?id=' + uid + "&name=" + name;
+                window.location.href = '${ctx}/oa/mailInfo/findMail?id=' + uid + "&name=" + name+'&state='+state;
             })
 
             //格式化日期
@@ -216,10 +217,10 @@
         /**
          *查询内部邮件或者外部邮件
          */
-        function find() {
+        function find(state) {
             var flag = document.getElementById("type").value
             if (flag == "1") {
-                form1.action = '${ctx}/oa/mailInfo/findOut';
+                form1.action = '${ctx}/oa/mailInfo/findOut?state='+state;
                 form1.submit();
             } else {
                 form1.action = '${ctx}/oa/mailInfo/listBySend?state=INBOX';
@@ -303,7 +304,8 @@
                             <form:options items="${fns:getDictList('mail_info')}" itemLabel="label" itemValue="value"
                                           htmlEscape="true"/>
                         </form:select>
-                        <input id="btnSubmit" class="btn btn-primary" type="button" value="查询" onclick="find()"/>
+                        <input type="hidden" id="state" value="${mailInfo.state}">
+                        <input id="btnSubmit" class="btn btn-primary" type="button" value="查询" onclick="find('${mailInfo.state}')"/>
                     </form:form>
                 </td>
                 <td>
@@ -330,7 +332,7 @@
                     <tr>
                         <td colspan="6" valign="center" rowspan="2">
                             <div align="center"
-                                 style="text-align: center;height: 50px;font-size: 20px;padding-top: 20px">没有邮件
+                                 style="text-align: center;height: 50px;font-size: 20px;padding-top: 20px">没有邮件${page.mail}
                             </div>
                         </td>
                     </tr>
