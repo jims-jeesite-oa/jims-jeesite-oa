@@ -107,7 +107,14 @@
                 </td>
             </tr>
             <tr class="findTr">
-                <td colspan="2" style="">　　${mailInfo.theme}</td>
+                <td colspan="2" style="">　　
+                <c:if test="${not empty mailInfo.theme}">
+                    ${mailInfo.theme}
+                </c:if>
+                    <c:if test="${empty mailInfo.theme}">
+                       <font style="font-weight: bold" color="black" >(无主题)</font>
+                    </c:if>
+                </td>
             </tr>
             <tr class="findTr">
                 <td width="80px">　　发件人：</td>

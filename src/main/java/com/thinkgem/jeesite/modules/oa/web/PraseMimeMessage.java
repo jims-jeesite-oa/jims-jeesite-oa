@@ -133,7 +133,7 @@ public class PraseMimeMessage{
     }
     /**
      *解析邮件，把得到的邮件内容保存到一个StringBuffer对象中，解析邮件
-     *主要是根据MimeType类型的不同执行不同的操作，一步一步的解析
+     主要是根据MimeType类型的不同执行不同的操作，一步一步的解析             同时去除内容重复的问题
      */
     public void getMailContent(Part part,boolean flag)throws Exception{
         String contentType=part.getContentType();
@@ -158,6 +158,21 @@ public class PraseMimeMessage{
         }else {
         }
     }
+
+    public boolean checkHasHtml(Multipart part) throws MessagingException, IOException{
+        boolean hasHtml = false;
+        int count = part.getCount();
+        for(int i = 0 ; i < count ; i++ ){
+            Part bodyPart = part.getBodyPart(i);
+            if (bodyPart.isMimeType("text/html")) {
+                hasHtml = true;
+                break;
+            }
+        }
+        return hasHtml;
+    }
+
+
     /**
      *获得邮件正文内容
      */
@@ -393,10 +408,10 @@ public class PraseMimeMessage{
 
             String contentType=message[i].getContentType();
             if(contentType.startsWith("text/plain")){
-                this.getMailContent(message[i],true);
+                pmm.getMailContent((Part)message[i],true);
             }
             else {
-                this.getMailContent(message[i], false);
+                pmm.getMailContent((Part) message[i], false);
             }
 
             pmm.setAttachPath("c:/tmp/mail");  //设置邮件附件的保存路径

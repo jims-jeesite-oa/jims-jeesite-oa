@@ -25,6 +25,7 @@ import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.modules.oa.entity.MailInfo;
 import com.thinkgem.jeesite.modules.oa.service.MailInfoService;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -91,7 +92,7 @@ public class MailInfoController extends BaseController {
             mailInfo.setState(state);
         }
         Page<MailInfo> page = mailInfoService.findPage(new Page<MailInfo>(request, response), mailInfo);
-        MailInfo mailInfo1=new MailInfo();
+        MailInfo mailInfo1 = new MailInfo();
         mailInfo1.setReadMark("0");
         mailInfo1.setOwnId(mailInfo.getOwnId());
 
@@ -347,12 +348,12 @@ public class MailInfoController extends BaseController {
             mailInfo.setState(mailInfo.getState());
         }
 
-        MailInfo m=new MailInfo();
+        MailInfo m = new MailInfo();
         m.setOwnId(UserUtils.getUser().getId());
         m.setState(state);
         m.setFlag("0");
         Page<MailInfo> page = mailInfoService.findPage(new Page<MailInfo>(request, response), m);
-        MailInfo mailInfo1=new MailInfo();
+        MailInfo mailInfo1 = new MailInfo();
         mailInfo1.setReadMark("0");
         mailInfo1.setOwnId(mailInfo.getOwnId());
         model.addAttribute("page", page);
@@ -465,7 +466,7 @@ public class MailInfoController extends BaseController {
      */
     @RequestMapping(value = "phone")
     public String phone(User user, Model model, HttpServletRequest request, HttpServletResponse response) {
-        Office office=UserUtils.getUser().getCompany();
+        Office office = UserUtils.getUser().getCompany();
         user.setCompanyId(office.getId());
         Page<User> page = mailInfoService.findPage1(new Page<User>(request, response), user);
         model.addAttribute("page", page);
@@ -520,9 +521,13 @@ public class MailInfoController extends BaseController {
             Session session = getSession(mailAccounts.get(0).getMailSend(), mailAccounts.get(0).getUsername(), mailAccounts.get(0).getPassword(), mailAccounts.get(0).getPort());
             if (mailInfo.getContent() != null) {
                 mailInfo.setContent(StringEscapeUtils.unescapeHtml4(
-                        mailInfo.getContent().replace("\"","")));
+                        mailInfo.getContent().replace("\"", "")));
             }
-            send(getMessage3(session, mailInfo, mailAccounts.get(0).getUsername()));
+            if (mailInfo.getFiles() != null) {
+                send(getMessage2(session, mailInfo, mailAccounts.get(0).getUsername()));
+            } else {
+                send(getMessage3(session, mailInfo, mailAccounts.get(0).getUsername()));
+            }
             return "modules/oa/success";
         } else {
             return "modules/oa/wrong";
@@ -531,7 +536,7 @@ public class MailInfoController extends BaseController {
     }
 
     private static Session getSession(String mailSend, final String username, final String password, String port) {
-        port="25";
+        port = "25";
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
@@ -546,8 +551,9 @@ public class MailInfoController extends BaseController {
                 });
         return session;
     }
-   //发送html格式的正文
-    private static Message getMessage3(Session session, MailInfo mailInfo, String username) throws MessagingException{
+
+    //发送html格式的正文
+    private static Message getMessage3(Session session, MailInfo mailInfo, String username) throws MessagingException {
         Message message = new MimeMessage(session);
         message.setFrom(new InternetAddress(username));
         message.setRecipients(Message.RecipientType.TO,
@@ -556,6 +562,31 @@ public class MailInfoController extends BaseController {
         message.setContent(mailInfo.getContent(), "text/html");
         return message;
     }
+
+
+    //含附件信息
+    private static Message getMessage2(Session session, MailInfo mailInfo, String username) throws MessagingException{
+        Message message = new MimeMessage(session);
+        message.setFrom(new InternetAddress(username));
+        message.setRecipients(Message.RecipientType.TO,
+                InternetAddress.parse(mailInfo.getOutSide()));
+        message.setSubject(mailInfo.getTheme());
+        BodyPart messageBodyPart = new MimeBodyPart();
+
+        messageBodyPart.setContent(mailInfo.getContent(),"text/html");
+
+        Multipart multipart = new MimeMultipart();
+        multipart.addBodyPart(messageBodyPart);
+        messageBodyPart = new MimeBodyPart();
+        String filename = "f:/1.txt";
+        DataSource source = new FileDataSource(filename);
+        messageBodyPart.setDataHandler(new DataHandler(source));
+        messageBodyPart.setFileName(filename);
+        multipart.addBodyPart(messageBodyPart);
+        message.setContent(multipart);
+        return message;
+    }
+
 
     //发送
     private static void send(Message message) {
@@ -574,36 +605,36 @@ public class MailInfoController extends BaseController {
      * @return
      */
     @RequestMapping(value = {"findOut", ""})
-    public String findOut(MailInfo mailInfo, Model model, HttpServletRequest request, HttpServletResponse response,String state) throws Exception {
+    public String findOut(MailInfo mailInfo, Model model, HttpServletRequest request, HttpServletResponse response, String state) throws Exception {
         MailAccount mailAccount = new MailAccount();
         mailAccount.setLoginId(UserUtils.getUser().getId());
         List<MailAccount> mailAccounts = mailAccountService.findList(mailAccount);
         PraseMimeMessage praseMimeMessage = new PraseMimeMessage();
 
-        if(StringUtils.equals(state,"SENT")){
-            if(mailAccounts.size()>0){
+        if (StringUtils.equals(state, "SENT")) {
+            if (mailAccounts.size() > 0) {
                 List<MailInfo> list = praseMimeMessage.test(mailAccounts.get(0).getUsername(), mailAccounts.get(0).getPassword(),
-                        mailAccounts.get(0).getPort(), mailAccounts.get(0).getMailAccept(),state);
+                        mailAccounts.get(0).getPort(), mailAccounts.get(0).getMailAccept(), state);
                 Page<MailInfo> page = mailInfoService.findPage(new Page<MailInfo>(request, response), mailInfo);
                 page.setCount(list.size());
                 page.setList(list);
                 model.addAttribute("page", page);
-            } else{
+            } else {
                 Page<MailInfo> page = new Page<>();
                 page.setCount(0);
                 page.setMail("或者没有绑定邮箱账户");
                 model.addAttribute("page", page);
             }
             return "modules/oa/sent";
-        }else if(StringUtils.equals(state,"INBOX")){
-            if(mailAccounts.size()>0){
+        } else if (StringUtils.equals(state, "INBOX")) {
+            if (mailAccounts.size() > 0) {
                 List<MailInfo> list = praseMimeMessage.test(mailAccounts.get(0).getUsername(), mailAccounts.get(0).getPassword(),
-                        mailAccounts.get(0).getPort(), mailAccounts.get(0).getMailAccept(),state);
+                        mailAccounts.get(0).getPort(), mailAccounts.get(0).getMailAccept(), state);
                 Page<MailInfo> page = mailInfoService.findPage(new Page<MailInfo>(request, response), mailInfo);
                 page.setCount(list.size());
                 page.setList(list);
                 model.addAttribute("page", page);
-            } else{
+            } else {
                 Page<MailInfo> page = new Page<>();
                 page.setCount(0);
                 page.setMail("或者没有绑定邮箱账户");
@@ -626,20 +657,20 @@ public class MailInfoController extends BaseController {
      * @throws Exception
      */
     @RequestMapping(value = {"findMail", ""})
-    public String findMail(MailInfo mailInfo, Model model, String id, String name,String state) throws Exception {
+    public String findMail(MailInfo mailInfo, Model model, String id, String name, String state) throws Exception {
         MailAccount mailAccount = new MailAccount();
         mailAccount.setLoginId(UserUtils.getUser().getId());
         List<MailAccount> mailAccounts = mailAccountService.findList(mailAccount);
         PraseMimeMessage praseMimeMessage = new PraseMimeMessage();
         List<MailInfo> list = praseMimeMessage.test(mailAccounts.get(0).getUsername(), mailAccounts.get(0).getPassword(),
-                mailAccounts.get(0).getPort(), mailAccounts.get(0).getMailAccept(),state);
+                mailAccounts.get(0).getPort(), mailAccounts.get(0).getMailAccept(), state);
 
-      if (id != null && id !="") {
-            id= StringEscapeUtils.unescapeHtml4(id).replace("\"", "");
-            if(StringUtils.isEmpty(id)){
-                name=StringEscapeUtils.unescapeHtml4(name).replace("\"", "");
+        if (id != null && id != "") {
+            id = StringEscapeUtils.unescapeHtml4(id).replace("\"", "");
+            if (StringUtils.isEmpty(id)) {
+                name = StringEscapeUtils.unescapeHtml4(name).replace("\"", "");
                 for (int i = 0; i < list.size(); i++) {
-                    if (StringUtils.equals(name,list.get(i).getName())) {
+                    if (StringUtils.equals(name, list.get(i).getName())) {
 
                         mailInfo.setContent(list.get(i).getContent());
                         mailInfo.setTheme(list.get(i).getTheme());
@@ -651,8 +682,8 @@ public class MailInfoController extends BaseController {
                 }
             }
             for (int i = 0; i < list.size(); i++) {
-                if (StringUtils.equals(id,list.get(i).getUID())) {
-                    System.out.println(list.get(i).getUID()) ;
+                if (StringUtils.equals(id, list.get(i).getUID())) {
+                    System.out.println(list.get(i).getUID());
                     mailInfo.setContent(list.get(i).getContent());
                     mailInfo.setTheme(list.get(i).getTheme());
                     mailInfo.setName(list.get(i).getName());
