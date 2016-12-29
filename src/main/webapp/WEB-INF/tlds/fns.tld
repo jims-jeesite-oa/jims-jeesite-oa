@@ -322,4 +322,12 @@
         <function-signature>java.util.List getControls()</function-signature>
         <example>${fns:getControl()}</example>
     </function>
+
+    <function>
+        <description>获取拼音首字母</description>
+        <name>getShortPinyin</name>
+        <function-class>com.github.stuxuhai.jpinyin.PinyinHelper</function-class>
+        <function-signature>java.lang.String getShortPinyin(java.lang.String)</function-signature>
+        <example>${fns:getShortPinyin(str)}</example>
+    </function>
 </taglib>
