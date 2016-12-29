@@ -35,6 +35,19 @@
                 var id = $(this).attr("data-id")
                 window.location.href = '${ctx}/oa/mailInfo/find?id=' + id
             })
+
+            $(".checkOut").click(function (e) {
+                e.stopPropagation()
+            })
+
+
+            $(".reOut").on('click', function () {
+
+                var uid = $(this).attr("data-id")
+                var name = $(this).attr("data-drop")
+                var state=document.getElementById("state").value
+                window.location.href = '${ctx}/oa/mailInfo/findMail?id=' + uid + "&name=" + name+'&state='+state;
+            })
         });
 
 
@@ -160,6 +173,19 @@
             document.getElementById("ss").innerHTML = "";
         }
 
+        /**
+         *查询内部邮件或者外部邮件
+         */
+        function find(state) {
+            var flag = document.getElementById("type").value
+            if (flag == "1") {
+                form1.action = '${ctx}/oa/mailInfo/findOut?state='+state;
+                form1.submit();
+            } else {
+                form1.action = '${ctx}/oa/mailInfo/listBySend?state=INBOX';
+                form1.submit();
+            }
+        }
 
         function page(n, s) {
             $("#pageNo").val(n);
@@ -220,7 +246,19 @@
                             </li>
                         </ul>
                     </div>
+                    <form:form id="inputForm" modelAttribute="mailInfo" action="" method="post"
+                               class="breadcrumb form-search">
+                        邮件类型
+                        <form:select path="flag" class="input-medium" cssStyle="width: 100px" id="type">
+                            <form:option value="" label=""/>    <%--htmlEscape="false"--%>
+                            <form:options items="${fns:getDictList('mail_info')}" itemLabel="label" itemValue="value"
+                                          htmlEscape="true"/>
+                        </form:select>
+                        <input type="hidden" id="state" value="${mailInfo.state}">
+                        <input id="btnSubmit" class="btn btn-primary" type="button" value="查询" onclick="find('${mailInfo.state}')"/>
+                    </form:form>
                 </td>
+
                 <td>
                     <div id="ss"></div>
                 </td>
@@ -248,9 +286,39 @@
                     </td>
                 </tr>
             </c:if>
+
+
             <c:if test="${not empty page.list}">
                 <c:forEach items="${page.list}" var="mailInfo">
 
+                    <c:if test="${mailInfo.flag eq 1}">
+                        <tr class="reOut" data-id="${mailInfo.UID}" data-drop="${mailInfo.name}">
+                            <td class="reCheckbox">
+                                <input type="checkbox" name="checkbox" value="${mailInfo.id}" class="checkOut">
+                            </td>
+                            <td style=" width: 25px ;" align="left">
+                                <c:if test="${mailInfo.readMark eq 'true'}">
+                                    <img src="${ctxStatic}/tree/css/mailCss/img/mail020.png"/>
+                                </c:if>
+                                <c:if test="${mailInfo.readMark eq 'false'}">
+                                    <img src="${ctxStatic}/tree/css/mailCss/img/mail010.png"/>
+                                </c:if>
+                            </td>
+                            <td style="width:25%;">
+                                    ${mailInfo.receiverNames}
+                            </td>
+                            <td style="width:40%;">
+                                    ${fns:abbr(mailInfo.theme,50)}
+                            </td>
+                            <td style="width:15%;">
+                                <fmt:formatDate value="${mailInfo.time}" type="both" pattern="yyyy年MM月dd日 "/>
+                            </td>
+                            <td style="width:10%;" align="center">
+
+                            </td>
+                        </tr>
+                    </c:if>
+                    <c:if test="${mailInfo.flag eq 0}">
                     <tr class="reTr" data-id="${mailInfo.id}">
                         <td class="reCheckbox">
                             <input type="checkbox" name="checkbox" value="${mailInfo.id}" class="check">
@@ -264,7 +332,7 @@
                             </c:if>
                         </td>
                         <td style="width:25%;">
-                                ${mailInfo.name}
+                                ${mailInfo.receiverNames}
                         </td>
                         <td style="width:40%;">
                                 ${fns:abbr(mailInfo.theme,50)}
@@ -276,6 +344,7 @@
                         <td style="width:10%;" align="center">
                         </td>
                     </tr>
+                    </c:if>
                 </c:forEach>
             </c:if>
             </tbody>

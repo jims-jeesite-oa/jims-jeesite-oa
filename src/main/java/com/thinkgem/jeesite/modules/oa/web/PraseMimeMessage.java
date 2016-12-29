@@ -1,6 +1,7 @@
 package com.thinkgem.jeesite.modules.oa.web;
 
 import com.sun.mail.imap.IMAPFolder;
+import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.modules.oa.entity.MailInfo;
 
 import java.io.BufferedInputStream;
@@ -132,29 +133,46 @@ public class PraseMimeMessage{
     }
     /**
      *解析邮件，把得到的邮件内容保存到一个StringBuffer对象中，解析邮件
-     *主要是根据MimeType类型的不同执行不同的操作，一步一步的解析
+     主要是根据MimeType类型的不同执行不同的操作，一步一步的解析             同时去除内容重复的问题
      */
-    public void getMailContent(Part part)throws Exception{
-        String contenttype=part.getContentType();
-        int nameindex=contenttype.indexOf("name");
-        boolean conname=false;
-        if(nameindex!=-1)conname=true;
-        if(part.isMimeType("text/plain")&&!conname){
-            bodytext.append((String)part.getContent());
-        }else if(part.isMimeType("text/html")&&!conname){
-            bodytext.append((String)part.getContent());
+    public void getMailContent(Part part,boolean flag)throws Exception{
+        String contentType=part.getContentType();
+        int nameindex = contentType.indexOf("name");
+        boolean conname = false;
+        if (nameindex != -1)
+            conname = true;
+        if (part.isMimeType("text/plain") && !conname&&flag) {
+            bodytext.append((String) part.getContent());
+            flag=false;
+        } else if (part.isMimeType("text/html") && !conname&&flag==false) {
+            bodytext.append((String) part.getContent());
         }
-        else if(part.isMimeType("multipart/*")){
-            Multipart multipart=(Multipart)part.getContent();
-            int counts=multipart.getCount();
-            for(int i=0;i<counts;i++){
-                getMailContent(multipart.getBodyPart(i));
+        else if (part.isMimeType("multipart/*")) {
+            Multipart multipart = (Multipart) part.getContent();
+            int counts = multipart.getCount();
+            for (int i = 0; i < counts; i++) {
+                getMailContent(multipart.getBodyPart(i),flag);
             }
-        }else if(part.isMimeType("message/rfc822")){
-            getMailContent((Part)part.getContent());
+        }else if (part.isMimeType("message/rfc822")) {
+            getMailContent((Part) part.getContent(),flag);
+        }else {
         }
-        else{}
     }
+
+    public boolean checkHasHtml(Multipart part) throws MessagingException, IOException{
+        boolean hasHtml = false;
+        int count = part.getCount();
+        for(int i = 0 ; i < count ; i++ ){
+            Part bodyPart = part.getBodyPart(i);
+            if (bodyPart.isMimeType("text/html")) {
+                hasHtml = true;
+                break;
+            }
+        }
+        return hasHtml;
+    }
+
+
     /**
      *获得邮件正文内容
      */
@@ -164,7 +182,7 @@ public class PraseMimeMessage{
     /**
      *判断此邮件是否需要回执，如果需要回执返回"true",否则返回"false"
 
-     * @throws MessagingException */
+     * @throws javax.mail.MessagingException */
     public boolean getReplySign() throws MessagingException{
         boolean replysign=false;
         String needreply[]=mimeMessage.getHeader("Disposition-Notification-To");
@@ -175,14 +193,14 @@ public class PraseMimeMessage{
     }
     /**
      *获得此邮件的Message-ID
-     * @throws MessagingException */
+     * @throws javax.mail.MessagingException */
     public String getMessageId() throws MessagingException{
         return mimeMessage.getMessageID();
     }
 
     /**
      *【判断此邮件是否已读，如果未读返回返回false,反之返回true
-     * @throws MessagingException */
+     * @throws javax.mail.MessagingException */
     public boolean isNew() throws MessagingException{
         boolean isnew =false;
         Flags flags=((Message)mimeMessage).getFlags();
@@ -197,7 +215,7 @@ public class PraseMimeMessage{
     }
     /**
      *判断此邮件是否包含附件
-     * @throws MessagingException */
+     * @throws javax.mail.MessagingException */
     public boolean isContainAttach(Part part) throws Exception{
         boolean attachflag=false;
         String contentType=part.getContentType();
@@ -225,8 +243,8 @@ public class PraseMimeMessage{
     /**
      *【保存附件】
      * @throws Exception
-     * @throws IOException
-     * @throws MessagingException
+     * @throws java.io.IOException
+     * @throws javax.mail.MessagingException
      * @throws Exception */
     public void saveAttachMent(Part part) throws Exception {
         String fileName="";
@@ -249,7 +267,10 @@ public class PraseMimeMessage{
                     fileName=mpart.getFileName();
                     if((fileName!=null)){
                         fileName=MimeUtility.decodeText(fileName);
-                        saveFile(fileName,mpart.getInputStream());
+                        if(fileName!=null && fileName!=""){
+                            saveFile(fileName,mpart.getInputStream());
+                        }
+
                     }
                 }
             }
@@ -312,27 +333,65 @@ public class PraseMimeMessage{
         } catch (Exception e) {
             // TODO: handle exception
         }finally{
-            bos.close();
-            bis.close();
+            if(bos!=null){
+                bos.close();
+                bis.close();
+            }
+
         }
     }
     /**
      *PraseMimeMessage类测试
 
      * @throws Exception */
-    public List<MailInfo> test(String username1,String password1,String port1,String host1) throws Exception {
+    public List<MailInfo> test(String username1,String password1,String port1,String host1,String state) throws Exception {
         List<MailInfo> list=new ArrayList<>();
+        final String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
+        Properties props = System.getProperties();
         String host=host1;
         String username=username1;
         String password=password1;
-        Properties props=new Properties();
-        Session session=Session.getDefaultInstance(props,null);
-        Store store=session.getStore("imap");
-        store.connect(host,username,password);
-        Folder folder=store.getFolder("INBOX");
-        folder.open(Folder.READ_ONLY);
-        Message message[]=folder.getMessages();
+        int j=username.indexOf("qq");
+        Message message[]=null;
         PraseMimeMessage pmm=null;
+        if(j>0){
+            port1="993";
+            props.setProperty("mail.imap.socketFactory.class", SSL_FACTORY);
+            props.setProperty("mail.imap.socketFactory.port",port1);
+            props.setProperty("mail.store.protocol","imap");
+            props.setProperty("mail.imap.host", username);
+            props.setProperty("mail.imap.port", port1);
+            props.setProperty("mail.imap.auth.login.disable", "true");
+            Session session = Session.getDefaultInstance(props);
+            Store store = session.getStore("imap");  // 使用imap会话机制，连接服务器
+            store.connect(host,username,password);
+            if(StringUtils.equals(state,"SENT")){
+                Folder folder=store.getFolder("已发送");
+                folder.open(Folder.READ_ONLY);
+                message=folder.getMessages();
+            } else if(StringUtils.equals(state,"INBOX")){
+                Folder folder=store.getFolder(state);
+                folder.open(Folder.READ_ONLY);
+                message=folder.getMessages();
+            }
+        }else{
+            Properties prop=new Properties();
+            Session session=Session.getDefaultInstance(prop,null);
+            Store stor = session.getStore("imap");
+            stor.connect(host, username, password);
+            if(StringUtils.equals(state,"SENT")){
+                Folder folder=stor.getFolder("已发送");
+                folder.open(Folder.READ_WRITE);
+                message=folder.getMessages();
+            } else if(StringUtils.equals(state,"INBOX")){
+                Folder folder=stor.getFolder(state);
+                folder.open(Folder.READ_WRITE);
+                message=folder.getMessages();
+                int messageCount = folder.getMessageCount();
+                System.out.println(messageCount+"------------------------------------------");
+            }
+        }
+
         for (int i = 0; i < message.length; i++) {
             System.out.println("****************************************第"+(i+1)+"封邮件**********************************");
             pmm=new PraseMimeMessage((MimeMessage)message[i]);
@@ -346,11 +405,20 @@ public class PraseMimeMessage{
             System.out.println("抄送地址 :"+pmm.getMailAddress("CC"));
             System.out.println("密送地址 :"+pmm.getMailAddress("BCC"));
             System.out.println("邮件ID :"+i+":"+pmm.getMessageId());
-            pmm.getMailContent((Part)message[i]);  //根据内容的不同解析邮件
+
+            String contentType=message[i].getContentType();
+            if(contentType.startsWith("text/plain")){
+                pmm.getMailContent((Part)message[i],true);
+            }
+            else {
+                pmm.getMailContent((Part) message[i], false);
+            }
+
             pmm.setAttachPath("c:/tmp/mail");  //设置邮件附件的保存路径
             pmm.saveAttachMent((Part)message[i]); //保存附件
             System.out.println("邮件正文 :"+pmm.getBodyText());
             System.out.println("是否已读 :"+pmm.isNew());
+
             MailInfo mailInfo=new MailInfo();
             mailInfo.setContent(pmm.getBodyText());
             SimpleDateFormat sdf=new SimpleDateFormat();
@@ -363,8 +431,10 @@ public class PraseMimeMessage{
             mailInfo.setUID(pmm.getMessageId());
             mailInfo.setReceiverNames(pmm.getMailAddress("TO").replace("\"", ""));
             list.add(mailInfo);
+
             System.out.println("*********************************第"+(i+1)+"封邮件结束*************************************");
         }
+
         return list;
     }
 }
