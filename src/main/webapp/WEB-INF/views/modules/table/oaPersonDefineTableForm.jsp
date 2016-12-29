@@ -6,6 +6,7 @@
 	<title>自定义数据源管理</title>
 	<meta name="decorator" content="default"/>
 	<script type="text/javascript">
+        var validator ;
         jQuery.validator.addMethod("existed",function(value, element) {
             return this.optional(element) || notExisted(value);
         },"关键字已存在");
@@ -19,7 +20,7 @@
             return true;
         }
 		$(document).ready(function() {
-			$("#inputForm").validate({
+            validator = $("#inputForm").validate({
                 rules: {
                     tableName: {remote: "${ctx}/table/oaPersonDefineTable/checkTableName?oldTableName=" + encodeURIComponent('${oaPersonDefineTable.tableName}')}
                 },
@@ -124,6 +125,7 @@
                 try {
                     $.get('${ctx}/table/oaPersonDefineTable/getShortPinYin?str='+val,function(str){
                         $('#' + prefix + 'columnName').val(str.toUpperCase())
+                        validator.form()
                     })
                 } catch (e) {
                     obj.val('')
