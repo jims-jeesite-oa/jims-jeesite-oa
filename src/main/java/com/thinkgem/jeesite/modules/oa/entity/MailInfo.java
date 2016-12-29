@@ -105,7 +105,6 @@ public class MailInfo extends DataEntity<MailInfo> {
 		super(id);
 	}
 
-	@Length(min=1, max=64, message="邮件主题长度必须介于 1 和 64 之间")
 	public String getTheme() {
 		return theme;
 	}

@@ -1,5 +1,6 @@
 package com.thinkgem.jeesite.modules.oa.web;
 
+import javax.mail.internet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -26,6 +27,7 @@ import com.thinkgem.jeesite.modules.oa.entity.MailInfo;
 import com.thinkgem.jeesite.modules.oa.service.MailInfoService;
 
 import java.io.File;
+import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -37,10 +39,6 @@ import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
 import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
 import java.util.Date;
 
 /**
@@ -565,7 +563,7 @@ public class MailInfoController extends BaseController {
 
 
     //含附件信息
-    private static Message getMessage2(Session session, MailInfo mailInfo, String username) throws MessagingException{
+    private static Message getMessage2(Session session, MailInfo mailInfo, String username) throws Exception{
         Message message = new MimeMessage(session);
         message.setFrom(new InternetAddress(username));
         message.setRecipients(Message.RecipientType.TO,
@@ -578,10 +576,10 @@ public class MailInfoController extends BaseController {
         Multipart multipart = new MimeMultipart();
         multipart.addBodyPart(messageBodyPart);
         messageBodyPart = new MimeBodyPart();
-        String filename = "f:/1.txt";
+        String filename = "D:/jeesite"+ URLDecoder.decode(mailInfo.getFiles().replace("|",""),"utf-8");
         DataSource source = new FileDataSource(filename);
         messageBodyPart.setDataHandler(new DataHandler(source));
-        messageBodyPart.setFileName(filename);
+        messageBodyPart.setFileName(MimeUtility.encodeText(filename));
         multipart.addBodyPart(messageBodyPart);
         message.setContent(multipart);
         return message;

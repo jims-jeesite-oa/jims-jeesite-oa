@@ -416,8 +416,11 @@ public class PraseMimeMessage{
 
             pmm.setAttachPath("c:/tmp/mail");  //设置邮件附件的保存路径
             pmm.saveAttachMent((Part)message[i]); //保存附件
+
+
             System.out.println("邮件正文 :"+pmm.getBodyText());
             System.out.println("是否已读 :"+pmm.isNew());
+            System.out.println("附件路径 :"+pmm.getAttachPath());
 
             MailInfo mailInfo=new MailInfo();
             mailInfo.setContent(pmm.getBodyText());
