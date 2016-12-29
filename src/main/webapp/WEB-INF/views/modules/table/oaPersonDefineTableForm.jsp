@@ -6,8 +6,19 @@
 	<title>自定义数据源管理</title>
 	<meta name="decorator" content="default"/>
 	<script type="text/javascript">
+        jQuery.validator.addMethod("existed",function(value, element) {
+            return this.optional(element) || notExisted(value);
+        },"关键字已存在");
+        function notExisted(v) {
+            var len = $('#oaPersonDefineTableColumnList .keyTD input').length;
+            var temp = 0;
+            for(var i = 0; i < len; i++) {
+                if($('#oaPersonDefineTableColumnList .keyTD input:eq(' + i +')').val() == v) temp++;
+                if(temp == 2) return false;
+            }
+            return true;
+        }
 		$(document).ready(function() {
-			//$("#name").focus();
 			$("#inputForm").validate({
                 rules: {
                     tableName: {remote: "${ctx}/table/oaPersonDefineTable/checkTableName?oldTableName=" + encodeURIComponent('${oaPersonDefineTable.tableName}')}
@@ -54,6 +65,7 @@
                 $(list+idx+'_columnComment').attr('disabled',true)
                 $(list+idx+'_columnType').attr('disabled',true)
                 $(list+idx+'_tableStatus').attr('disabled',true)
+                $(list+idx+'_columnName').attr('disabled',true)
             } else {
                 changeColumnType('oaPersonDefineTableColumnList' + idx + '_columnType','oaPersonDefineTableColumnList' + idx + '_tableStatus')
             }
@@ -106,6 +118,18 @@
             }
         }
 
+        function initPY(prefix,val) {
+            var obj = $('#' + prefix + 'columnName')
+            if(!obj || obj.val() == '' && val && val != '') {
+                try {
+                    $.get('${ctx}/table/oaPersonDefineTable/getShortPinYin?str='+val,function(str){
+                        $('#' + prefix + 'columnName').val(str.toUpperCase())
+                    })
+                } catch (e) {
+                    obj.val('')
+                }
+            }
+        }
 	</script>
 </head>
 <body>
@@ -146,6 +170,7 @@
                 <thead>
                     <tr>
                         <th class="hide"></th>
+                        <th>关键字</th>
                         <th>数据列名</th>
                         <th>数据类型</th>
                         <th>数据长度</th>
@@ -169,10 +194,12 @@
                     <td class="hide">
                         <input id="oaPersonDefineTableColumnList{{idx}}_id" name="oaPersonDefineTableColumnList[{{idx}}].id" type="hidden" value="{{row.id}}"/>
                         <input id="oaPersonDefineTableColumnList{{idx}}_delFlag" name="oaPersonDefineTableColumnList[{{idx}}].delFlag" type="hidden" value="0"/>
-                        <input id="oaPersonDefineTableColumnList{{idx}}_columnName" name="oaPersonDefineTableColumnList[{{idx}}].columnName" type="hidden" value="{{row.columnName}}"/>
+                    </td>
+                    <td nowrap="nowrap" class="keyTD">
+                        <input id="oaPersonDefineTableColumnList{{idx}}_columnName" name="oaPersonDefineTableColumnList[{{idx}}].columnName" type="text" value="{{row.columnName}}" maxlength="200" class="input-small required abc startEn existed" cssStyle="text-transform:uppercase" onkeyup="this.value=this.value.toUpperCase()"/>
                     </td>
                     <td nowrap="nowrap">
-                        <input id="oaPersonDefineTableColumnList{{idx}}_columnComment" name="oaPersonDefineTableColumnList[{{idx}}].columnComment" type="text" value="{{row.columnComment}}" maxlength="200" class="input-small required"/>
+                        <input onblur="initPY('oaPersonDefineTableColumnList{{idx}}_',this.value)" id="oaPersonDefineTableColumnList{{idx}}_columnComment" name="oaPersonDefineTableColumnList[{{idx}}].columnComment" type="text" value="{{row.columnComment}}" maxlength="200" class="input-small required"/>
                     </td>
                     <td>
                         <select id="oaPersonDefineTableColumnList{{idx}}_columnType" name="oaPersonDefineTableColumnList[{{idx}}].columnType" data-value="{{row.columnType}}" class="input-small " onchange="changeColumnType(this.id,'oaPersonDefineTableColumnList{{idx}}_tableStatus')">

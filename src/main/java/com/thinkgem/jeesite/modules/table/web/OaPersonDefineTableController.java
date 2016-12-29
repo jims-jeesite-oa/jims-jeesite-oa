@@ -6,6 +6,8 @@ package com.thinkgem.jeesite.modules.table.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.github.stuxuhai.jpinyin.PinyinException;
+import com.github.stuxuhai.jpinyin.PinyinHelper;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -97,6 +99,25 @@ public class OaPersonDefineTableController extends BaseController {
             return "true";
         }
         return "false";
+    }
+
+    /**
+     * 获取拼音首字母
+     * @param str
+     * @return
+     */
+    @ResponseBody
+    @RequiresPermissions("table:oaPersonDefineTable:edit")
+    @RequestMapping(value = "getShortPinYin")
+    public String getShortPinYin(String str) {
+        if(StringUtils.isNotBlank(str)){
+            try {
+                return PinyinHelper.getShortPinyin(str);
+            } catch (PinyinException e) {
+                e.printStackTrace();
+            }
+        }
+        return "";
     }
 
 }

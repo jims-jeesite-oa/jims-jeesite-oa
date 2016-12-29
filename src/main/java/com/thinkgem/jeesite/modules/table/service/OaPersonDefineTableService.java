@@ -54,7 +54,7 @@ public class OaPersonDefineTableService extends CrudService<OaPersonDefineTableD
             isNew = true;
         }
 		super.save(oaPersonDefineTable);
-        int index = Integer.valueOf(oaPersonDefineTableColumnDao.getMaxColumnIndex());
+//        int index = Integer.valueOf(oaPersonDefineTableColumnDao.getMaxColumnIndex());
 
 		for (OaPersonDefineTableColumn oaPersonDefineTableColumn : oaPersonDefineTable.getOaPersonDefineTableColumnList()){
 			if (oaPersonDefineTableColumn.getId() == null){
@@ -62,9 +62,9 @@ public class OaPersonDefineTableService extends CrudService<OaPersonDefineTableD
 			}
 			if (OaPersonDefineTableColumn.DEL_FLAG_NORMAL.equals(oaPersonDefineTableColumn.getDelFlag())){
                 //字段为空时默认 COL+序列
-                if(StringUtils.isBlank(oaPersonDefineTableColumn.getColumnName())) {
-                    oaPersonDefineTableColumn.setColumnName("COL" + ++index);
-                }
+//                if(StringUtils.isBlank(oaPersonDefineTableColumn.getColumnName())) {
+//                    oaPersonDefineTableColumn.setColumnName("COL" + ++index);
+//                }
                 if (StringUtils.isBlank(oaPersonDefineTableColumn.getId())){
 					oaPersonDefineTableColumn.setTable(oaPersonDefineTable);
 					oaPersonDefineTableColumn.preInsert();
