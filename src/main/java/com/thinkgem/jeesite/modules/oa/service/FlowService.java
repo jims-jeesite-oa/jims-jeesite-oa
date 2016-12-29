@@ -153,14 +153,14 @@ public class FlowService extends CrudService<FlowDao, FlowData> {
 	 */
 	@Transactional(readOnly = false)
 	public void save(FlowData flowData) {
-
+        Map<String, Object> vars = handlerVar(flowData.getTableName(),flowData.getDatas());
 		// 申请发起
 		if (StringUtils.isBlank(flowData.getId())){
             flowData.preInsert();
 			insertTable(flowData);
 			// 启动流程
-			actTaskService.startProcess(flowData.getFlowFlag(), flowData.getTableName(), flowData.getId(),"自定义流程");
 
+			actTaskService.startProcess(flowData.getFlowFlag(), flowData.getTableName(), flowData.getId(),"自定义流程",vars);
 		}
 		// 重新编辑申请
 		else{
@@ -172,7 +172,6 @@ public class FlowService extends CrudService<FlowDao, FlowData> {
             flowData.getAct().setComment(("yes".equals(flowData.getAct().getFlag())?"[重申] ":"[销毁] ")+flowData.getAct().getComment());
 
 			// 完成流程任务
-			Map<String, Object> vars = Maps.newHashMap();
 			vars.put("pass", "yes".equals(flowData.getAct().getFlag())? "1" : "0");
 			actTaskService.complete(flowData.getAct().getTaskId(), flowData.getAct().getProcInsId(), flowData.getAct().getComment(), "自定义流程", vars);
             if("yes".equals(flowData.getAct().getFlag())) {
@@ -320,5 +319,18 @@ public class FlowService extends CrudService<FlowDao, FlowData> {
         }
         if(sql != null) return sql.toString();
         return null;
+    }
+
+    private Map<String, Object> handlerVar(String tableName,Map<String,Object> datas) {
+        Map<String, Object> vars = Maps.newHashMap();
+        if(StringUtils.isNotBlank(tableName) && datas != null && datas.keySet().size() > 0) {
+            List<OaPersonDefineTableColumn> columns = oaPersonDefineTableColumnDao.getColumns(tableName);
+            if (columns != null && columns.size() > 0) {
+                for (OaPersonDefineTableColumn column : columns) {
+                    vars.put(column.getColumnName(),datas.get(column.getColumnName()));
+                }
+            }
+        }
+        return vars;
     }
 }
