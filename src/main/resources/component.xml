@@ -150,11 +150,11 @@
             </script>
         ]]></content>
     </component>
-    <!--角色选择-->
+    <!--职务选择-->
     <component>
         <value>selectRole</value>
         <type>controlType</type>
-        <name>角色选择</name>
+        <name>职务选择</name>
         <content><![CDATA[
             <div class="input-append">
                 <input id="${colName}" name="${colName}" readonly="readonly" type="text" value="${colValue}"/>
@@ -249,6 +249,17 @@
             ${colValue}
         ]]></content>
         <initMethod>com.thinkgem.jeesite.modules.form.util.InitUtils.getUserOffice</initMethod>
+    </component>
+    <!--当前用户角色-->
+    <component>
+        <value>currentUserRoles</value>
+        <type>controlType</type>
+        <name>当前用户角色</name>
+        <content><![CDATA[
+            <input name="${colName}" type="hidden" value="${colValue}"/>
+            ${colValue}
+        ]]></content>
+        <initMethod>com.thinkgem.jeesite.modules.form.util.InitUtils.getUserRoles</initMethod>
     </component>
     <!--当前日期-->
     <component>

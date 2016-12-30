@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.Lists;
 import com.thinkgem.jeesite.modules.table.utils.JdbcUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,7 +51,7 @@ public class OaPersonDefineTableService extends CrudService<OaPersonDefineTableD
 	@Transactional(readOnly = false)
 	public void save(OaPersonDefineTable oaPersonDefineTable) {
         boolean isNew = false;
-        if(oaPersonDefineTable.getIsNewRecord()) {
+        if(oaPersonDefineTable.getIsNewRecord() || "reset".equals(oaPersonDefineTable.getUpdateType())) {
             isNew = true;
         }
 		super.save(oaPersonDefineTable);
@@ -110,8 +111,12 @@ public class OaPersonDefineTableService extends CrudService<OaPersonDefineTableD
         oaPersonDefineTableDao.executeSql(sql);
     }
 
-    public void destroyTable (String tableName) {
-
+    public List<OaPersonDefineTableColumn> getDbColumns(String tableName) {
+        List<OaPersonDefineTableColumn> columns = oaPersonDefineTableColumnDao.getColumns(tableName);
+        if(columns == null) {
+            columns = Lists.newArrayList();
+        }
+        return columns;
     }
 
     private String getDeleteTableSql(String tableName){

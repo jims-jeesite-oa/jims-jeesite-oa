@@ -67,6 +67,7 @@
 				</td>
 				<shiro:hasPermission name="table:oaPersonDefineTable:edit"><td>
     				<a href="${ctx}/table/oaPersonDefineTable/form?id=${oaPersonDefineTable.id}">修改</a>
+					<a href="${ctx}/table/oaPersonDefineTable/form?updateType=reset&id=${oaPersonDefineTable.id}" onclick="return confirmx('字段重置将删除所有数据表内数据，确定要重置吗？', this.href)">字段重置</a>
 					<a href="${ctx}/table/oaPersonDefineTable/delete?id=${oaPersonDefineTable.id}" onclick="return confirmx('确认要删除该自定义数据源吗？', this.href)">删除</a>
 				</td></shiro:hasPermission>
 			</tr>

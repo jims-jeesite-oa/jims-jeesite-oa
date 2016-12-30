@@ -251,7 +251,7 @@ public class FlowController extends BaseController {
                     if("text".equals(column.getControlTypeId()) || "number".equals(column.getControlTypeId())){
                         content = content.replace("<input ", "<input style='width:98%;padding-left:0;padding-right:0;margin:0;border:0;'");
                     } else if("textarea".equals(column.getControlTypeId())) {
-                        content = content.replace("<textarea ", "<textarea style='width:99%;height:99%;padding:0;margin:0;'");
+                        content = content.replace("<textarea ", "<textarea style='width:99%;height:99%;padding:0;margin:0;border:0;'");
                     }
                 } else {
                     content = "${" + column.getColumnName() + "}";
