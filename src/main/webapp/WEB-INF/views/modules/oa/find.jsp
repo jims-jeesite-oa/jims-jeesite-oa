@@ -79,11 +79,13 @@
 
         //返回
         function hostory(state) {
-            if(state!=null && state!=''){
-                window.location.href = '${ctx}/oa/mailInfo/listBySend?state=' + state;
-            } else{
+            var flag = document.getElementById("flag").value;
+            if (flag != null && flag != "") {
                 window.location.href = '${ctx}/oa/mailInfo/findOut?state=' + state;
+            } else {
+                window.location.href = '${ctx}/oa/mailInfo/listBySend?state=' + state;
             }
+
 
         }
 
@@ -99,6 +101,7 @@
 <body>
 <div style="background-color: #ffffff">
     <form:form modelAttribute="mailInfo" action="" method="post" id="form1">
+        <input type="hidden" id="flag" value="${mailInfo.flag}">
         <table style="margin-left: 5px;margin-top: 5px;width: 99%">
             <tr>
                 <td colspan="2" align="center">
@@ -108,11 +111,11 @@
             </tr>
             <tr class="findTr">
                 <td colspan="2" style="">　　
-                <c:if test="${not empty mailInfo.theme}">
-                    ${mailInfo.theme}
-                </c:if>
+                    <c:if test="${not empty mailInfo.theme}">
+                        ${mailInfo.theme}
+                    </c:if>
                     <c:if test="${empty mailInfo.theme}">
-                       <font style="font-weight: bold" color="black" >(无主题)</font>
+                        <font style="font-weight: bold" color="black">(无主题)</font>
                     </c:if>
                 </td>
             </tr>
@@ -138,7 +141,7 @@
 
             <tr style="height: 160px;">
                 <td colspan="2" style="padding-left: 25px" valign="top">　　
-                   <div>${mailInfo.content}</div>
+                    <div>${mailInfo.content}</div>
                 </td>
             </tr>
             <tr class="findAd">

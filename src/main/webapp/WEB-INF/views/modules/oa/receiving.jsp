@@ -45,13 +45,8 @@
 
                 var uid = $(this).attr("data-id")
                 var name = $(this).attr("data-drop")
-                var state=document.getElementById("state").value
-//                var receiveNames = $(this).attr("data-count")
-//                var time = $(this).attr("data-items")
-//                var d = new Date(time)
-//                var date1 = d.pattern("yyyy-MM-dd HH:mm:ss");
-//                var content=$(this).attr("data-content");
-                window.location.href = '${ctx}/oa/mailInfo/findMail?id=' + uid + "&name=" + name+'&state='+state;
+                var state = document.getElementById("state").value
+                window.location.href = '${ctx}/oa/mailInfo/findMail?id=' + uid + "&name=" + name + '&state=' + state;
             })
 
             //格式化日期
@@ -122,18 +117,35 @@
             var checked = false;
             var chestr = "";
             var ids = document.getElementsByName("checkbox");
-            for (var i = 0; i < ids.length; i++) {
-                if (ids[i].checked) {
-                    checked = true;
-                    chestr += ids[i].value + ",";
+            var mailUID = document.getElementsByName("checkbox1");
+            if (mailUID != null && mailUID != "") {
+                for (var i = 0; i < mailUID.length; i++) {
+                    if (mailUID[i].checked) {
+                        checked = true;
+                        chestr += mailUID[i].value + ",";
+                    }
+                }
+            } else {
+                for (var i = 0; i < ids.length; i++) {
+                    if (ids[i].checked) {
+                        checked = true;
+                        chestr += ids[i].value + ",";
+                    }
                 }
             }
+
             if (!checked) {
                 document.getElementById("ss").innerHTML = "<div style='color: #ffffff;background-color: #EF8F00;width: 135px;height: 20px;text-align: center;'>未选中任何邮件</div>";
                 return;
             }
-            form1.action = '${ctx}/oa/mailInfo/move?ids=' + chestr + '&state=INBOX';
-            form1.submit();
+            if (mailUID != null && mailUID != "") {
+                alert(chestr)
+                form1.action = '${ctx}/oa/mailInfo/deleteMail?ids=' + chestr + '&state=INBOX';
+                form1.submit();
+            } else {
+                form1.action = '${ctx}/oa/mailInfo/move?ids=' + chestr + '&state=INBOX';
+                form1.submit();
+            }
         }
 
         //已读邮件
@@ -220,7 +232,7 @@
         function find(state) {
             var flag = document.getElementById("type").value
             if (flag == "1") {
-                form1.action = '${ctx}/oa/mailInfo/findOut?state='+state;
+                form1.action = '${ctx}/oa/mailInfo/findOut?state=' + state;
                 form1.submit();
             } else {
                 form1.action = '${ctx}/oa/mailInfo/listBySend?state=INBOX';
@@ -305,7 +317,8 @@
                                           htmlEscape="true"/>
                         </form:select>
                         <input type="hidden" id="state" value="${mailInfo.state}">
-                        <input id="btnSubmit" class="btn btn-primary" type="button" value="查询" onclick="find('${mailInfo.state}')"/>
+                        <input id="btnSubmit" class="btn btn-primary" type="button" value="查询"
+                               onclick="find('${mailInfo.state}')"/>
                     </form:form>
                 </td>
                 <td>
@@ -332,7 +345,8 @@
                     <tr>
                         <td colspan="6" valign="center" rowspan="2">
                             <div align="center"
-                                 style="text-align: center;height: 50px;font-size: 20px;padding-top: 20px">没有邮件${page.mail}
+                                 style="text-align: center;height: 50px;font-size: 20px;padding-top: 20px">
+                                没有邮件${page.mail}
                             </div>
                         </td>
                     </tr>
@@ -343,9 +357,11 @@
                     <c:forEach items="${page.list}" var="mailInfo">
 
                         <c:if test="${mailInfo.flag eq 1}">
-                            <tr class="reOut" data-id="${mailInfo.UID}" data-drop="${mailInfo.name}">
+                            <%--<input type="hidden" id="flag" value="${mailInfo.flag}">--%>
+                            <tr class="reOut" data-id="${mailInfo.UID}" data-drop="${mailInfo.name}"
+                                data-on="${mailInfo.flag}">
                                 <td class="reCheckbox">
-                                    <input type="checkbox" name="checkbox" value="${mailInfo.id}" class="checkOut">
+                                    <input type="checkbox" name="checkbox1" value="${mailInfo.UID}" class="checkOut">
                                 </td>
                                 <td style=" width: 25px ;" align="left">
                                     <c:if test="${mailInfo.readMark eq 'true'}">
