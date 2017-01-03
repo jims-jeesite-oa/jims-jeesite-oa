@@ -27,7 +27,9 @@ public class OaPersonDefineTable extends DataEntity<OaPersonDefineTable> {
 	private String isMaster;		// 是否主表
 	private String isDetail;		// 是否从表
 	private List<OaPersonDefineTableColumn> oaPersonDefineTableColumnList = Lists.newArrayList();		// 子表列表
-	
+
+    private String updateType;   // 修改类型
+
 	public OaPersonDefineTable() {
 		super();
 	}
@@ -105,4 +107,12 @@ public class OaPersonDefineTable extends DataEntity<OaPersonDefineTable> {
 	public void setOaPersonDefineTableColumnList(List<OaPersonDefineTableColumn> oaPersonDefineTableColumnList) {
 		this.oaPersonDefineTableColumnList = oaPersonDefineTableColumnList;
 	}
+
+    public String getUpdateType() {
+        return updateType;
+    }
+
+    public void setUpdateType(String updateType) {
+        this.updateType = updateType;
+    }
 }

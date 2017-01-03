@@ -124,11 +124,10 @@
 		WHERE id = #{id}
 	</update>
 	
-	<update id="delete">
-		UPDATE oa_person_define_table SET 
-			del_flag = #{DEL_FLAG_DELETE}
+	<delete id="delete">
+		DELETE FROM oa_person_define_table
 		WHERE id = #{id}
-	</update>
+	</delete>
 
     <select id="findByTableName" resultType="OaPersonDefineTable">
         SELECT

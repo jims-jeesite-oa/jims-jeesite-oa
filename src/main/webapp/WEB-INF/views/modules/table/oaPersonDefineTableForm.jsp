@@ -6,6 +6,8 @@
 	<title>自定义数据源管理</title>
 	<meta name="decorator" content="default"/>
 	<script type="text/javascript">
+        var updateFlag = '${oaPersonDefineTable.updateType}';
+        var validator ;
         jQuery.validator.addMethod("existed",function(value, element) {
             return this.optional(element) || notExisted(value);
         },"关键字已存在");
@@ -13,13 +15,14 @@
             var len = $('#oaPersonDefineTableColumnList .keyTD input').length;
             var temp = 0;
             for(var i = 0; i < len; i++) {
-                if($('#oaPersonDefineTableColumnList .keyTD input:eq(' + i +')').val() == v) temp++;
+                if($('.keyTD input:eq(' + i +')').val() == v
+                        && !$('.keyTD:eq(' + i +')').parent().hasClass('error')) temp++;
                 if(temp == 2) return false;
             }
             return true;
         }
 		$(document).ready(function() {
-			$("#inputForm").validate({
+            validator = $("#inputForm").validate({
                 rules: {
                     tableName: {remote: "${ctx}/table/oaPersonDefineTable/checkTableName?oldTableName=" + encodeURIComponent('${oaPersonDefineTable.tableName}')}
                 },
@@ -61,7 +64,7 @@
 					}
 				}
 			});
-            if(row.id) {
+            if(row.id && updateFlag != 'reset') {
                 $(list+idx+'_columnComment').attr('disabled',true)
                 $(list+idx+'_columnType').attr('disabled',true)
                 $(list+idx+'_tableStatus').attr('disabled',true)
@@ -81,10 +84,12 @@
 				delFlag.val("1");
 				$(obj).html("&divide;").attr("title", "撤销删除");
 				$(obj).parent().parent().addClass("error");
+                validator.form()
 			}else if(delFlag.val() == "1"){
 				delFlag.val("0");
 				$(obj).html("&times;").attr("title", "删除");
 				$(obj).parent().parent().removeClass("error");
+                validator.form()
 			}
 		}
         function changeAudit(id,val){
@@ -124,6 +129,7 @@
                 try {
                     $.get('${ctx}/table/oaPersonDefineTable/getShortPinYin?str='+val,function(str){
                         $('#' + prefix + 'columnName').val(str.toUpperCase())
+                        validator.form()
                     })
                 } catch (e) {
                     obj.val('')
@@ -140,8 +146,9 @@
             <shiro:hasPermission name="table:oaPersonDefineTable:edit">${not empty oaPersonDefineTable.id?'修改':'添加'}</shiro:hasPermission><shiro:lacksPermission name="table:oaPersonDefineTable:edit">查看</shiro:lacksPermission>
         </li>
     </ul>
-	<form:form id="inputForm" modelAttribute="oaPersonDefineTable" action="${ctx}/table/oaPersonDefineTable/save" method="post" class="form-horizontal">
-		<form:hidden path="id"/>
+    <form:form id="inputForm" modelAttribute="oaPersonDefineTable" action="${ctx}/table/oaPersonDefineTable/save" method="post" class="form-horizontal">
+        <form:hidden path="id"/>
+        <form:hidden path="updateType"/>
 		<sys:message content="${message}"/>
         <fieldset>
             <legend>基本信息</legend>

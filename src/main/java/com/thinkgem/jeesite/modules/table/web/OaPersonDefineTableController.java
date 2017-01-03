@@ -95,7 +95,7 @@ public class OaPersonDefineTableController extends BaseController {
     public String checkTableName(String oldTableName, String tableName) {
         if (tableName !=null && tableName.equals(oldTableName)) {
             return "true";
-        } else if (tableName !=null && oaPersonDefineTableService.findByTableName(tableName, null) == null) {
+        } else if (tableName !=null && oaPersonDefineTableService.getDbColumns(tableName).size() < 1) {
             return "true";
         }
         return "false";
