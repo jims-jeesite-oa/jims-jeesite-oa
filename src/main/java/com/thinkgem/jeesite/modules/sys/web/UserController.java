@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
 
+import com.thinkgem.jeesite.modules.oa.entity.MailInfo;
+import com.thinkgem.jeesite.modules.oa.service.MailInfoService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -49,6 +51,9 @@ public class UserController extends BaseController {
 
 	@Autowired
 	private SystemService systemService;
+
+    @Autowired
+    private MailInfoService mailInfoService;
 	
 	@ModelAttribute
 	public User get(@RequestParam(required=false) String id) {
@@ -98,9 +103,14 @@ public class UserController extends BaseController {
 	@RequiresPermissions("sys:user:edit")
 	@RequestMapping(value = "save")
 	public String save(User user, HttpServletRequest request, Model model, RedirectAttributes redirectAttributes) {
+        String flag=user.getFlag();
 		if(Global.isDemoMode()){
 			addMessage(redirectAttributes, "演示模式，不允许操作！");
-			return "redirect:" + adminPath + "/sys/user/list?repage";
+            if(StringUtils.equals(flag,"0")){
+                return "redirect:" + adminPath + "/sys/user/phone?repage";
+            } else{
+                return "redirect:" + adminPath + "/sys/user/list?repage";
+            }
 		}
 		// 修正引用赋值问题，不知道为何，Company和Office引用的一个实例地址，修改了一个，另外一个跟着修改。
 		user.setCompany(new Office(request.getParameter("company.id")));
@@ -133,7 +143,11 @@ public class UserController extends BaseController {
 			//UserUtils.getCacheMap().clear();
 		}
 		addMessage(redirectAttributes, "保存用户'" + user.getLoginName() + "'成功");
-		return "redirect:" + adminPath + "/sys/user/list?repage";
+        if(StringUtils.equals(flag,"0")){
+            return "redirect:" + adminPath + "/sys/user/phone?repage";
+        } else{
+            return "redirect:" + adminPath + "/sys/user/list?repage";
+        }
 	}
 	
 	@RequiresPermissions("sys:user:edit")
@@ -371,6 +385,18 @@ public class UserController extends BaseController {
             mapList.add(map);
         }
         return mapList;
+    }
+
+
+
+    @RequiresPermissions("sys:user:view")
+    @RequestMapping(value = "phone")
+    public String findUserList(User user,HttpServletRequest request, HttpServletResponse response, Model model) {
+        String companyId= UserUtils.getUser().getCompany().getId();
+        user.setCompanyId(companyId);
+        Page<User> page = mailInfoService.findPage1(new Page<User>(request, response), user);
+        model.addAttribute("page", page);
+        return "modules/oa/user";
     }
     
 //	@InitBinder
