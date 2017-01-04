@@ -459,6 +459,7 @@ public class ActTaskService extends BaseService {
 	 */
 	@Transactional(readOnly = false)
 	public void claim(String taskId, String userId){
+        taskService.setVariable(taskId,"userId",userId);
 		taskService.claim(taskId, userId);
 	}
 	
