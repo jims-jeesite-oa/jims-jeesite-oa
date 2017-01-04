@@ -21,18 +21,35 @@
         }
         //发送
         function send() {
-            var theme=document.getElementById("theme").value
-            if(theme.length>240){
+
+            var theme = document.getElementById("theme").value
+            if (theme.length > 240) {
                 document.getElementById("ss").innerHTML = "<div style='color: #ffffff;background-color: #EF8F00;width: 190px;height: 20px;text-align: center;'>主题长度不能超过120个中文字符</div>";
                 return;
-            } else{
-                var rr=document.getElementById("rr").value
-                if(rr!=null && rr !=""){
-                    form1.action = '${ctx}/oa/mailInfo/sendOut';
-                    form1.submit();
-                } else{
-                    form1.action = '${ctx}/oa/mailInfo/send';
-                    form1.submit();
+            } else {
+                var rr = document.getElementById("rr").value
+                if (rr != null && rr != "") {
+                    if(theme!=null && theme!=""){
+                        form1.action = '${ctx}/oa/mailInfo/sendOut';
+                        form1.submit();
+                    }else{
+                        if (confirm('您的邮件没有填写主题，您确定要发送吗？')) {
+                            form1.action = '${ctx}/oa/mailInfo/sendOut';
+                            form1.submit();
+                        }
+                    }
+
+                } else {
+                    if(theme!=null && theme!=""){
+                        form1.action = '${ctx}/oa/mailInfo/send';
+                        form1.submit();
+                    }else{
+                        if (confirm('您的邮件没有填写主题，您确定要发送吗？')) {
+                            form1.action = '${ctx}/oa/mailInfo/send';
+                            form1.submit();
+                        }
+                    }
+
                 }
             }
 
@@ -55,7 +72,7 @@
             <td colspan="2" style="padding-left: 15px;">写信</td>
         </tr>
         <tr>
-            <td  style="padding-left: 69px ; padding-top: 7px">
+            <td style="padding-left: 69px ; padding-top: 7px">
                 <input type="submit" class="btn btn-success" value="发送" onclick="send()">　
                 <input type="submit" class="btn btn-success" value="存草稿" onclick="deleteBy()">
             </td>
@@ -73,7 +90,7 @@
                 <td class="td">
                     <div class="controls">
                         <form:input path="outSide" htmlEscape="true" type="text"
-                                    style="width:800px;" id="rr" ></form:input>
+                                    style="width:800px;" id="rr"></form:input>
                     </div>
             </tr>
             <tr>
@@ -81,8 +98,10 @@
                 <td class="td">
                     <div class="controls">
                         <sys:treeselect id="receiverId" name="receiverId"
-                                        value="${mailInfo.receiverId}" labelName="name" labelValue="${mailInfo.receiverNames}"
-                                        title="用户" url="/sys/office/treeData?type=3" cssClass="input-xxlarge required" notAllowSelectParent="true" checked="true" cssStyle="width:800px"/>
+                                        value="${mailInfo.receiverId}" labelName="name"
+                                        labelValue="${mailInfo.receiverNames}"
+                                        title="用户" url="/sys/office/treeData?type=3" cssClass="input-xxlarge required"
+                                        notAllowSelectParent="true" checked="true" cssStyle="width:800px"/>
                         <span class="help-inline"><font color="red">*</font> </span>
                     </div>
             </tr>
@@ -91,7 +110,8 @@
                 <td class="td">
                         <sys:treeselect id="ccId" name="ccId"
                                         value="${mailInfo.ccId}" labelName="name" labelValue="${mailInfo.ccNames}"
-                                        title="用户" url="/sys/office/treeData?type=3" cssClass="input-xxlarge required" notAllowSelectParent="true" checked="true" cssStyle="width:800px"/>
+                                        title="用户" url="/sys/office/treeData?type=3" cssClass="input-xxlarge required"
+                                        notAllowSelectParent="true" checked="true" cssStyle="width:800px"/>
                     <span class="help-inline"><font color="red">*</font> </span>
             </tr>
             <tr>

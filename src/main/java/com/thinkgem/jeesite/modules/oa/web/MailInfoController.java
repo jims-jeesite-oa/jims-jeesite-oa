@@ -1,10 +1,15 @@
 package com.thinkgem.jeesite.modules.oa.web;
 
+import javax.mail.internet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.sun.mail.imap.IMAPFolder;
+import com.sun.mail.imap.IMAPStore;
+import com.sun.mail.imap.protocol.FLAGS;
 import com.thinkgem.jeesite.modules.oa.entity.MailAccount;
 import com.thinkgem.jeesite.modules.oa.service.MailAccountService;
+import com.thinkgem.jeesite.modules.oa.units.ComparatorMail;
 import com.thinkgem.jeesite.modules.sys.entity.Office;
 import com.thinkgem.jeesite.modules.sys.entity.User;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
@@ -26,6 +31,7 @@ import com.thinkgem.jeesite.modules.oa.entity.MailInfo;
 import com.thinkgem.jeesite.modules.oa.service.MailInfoService;
 
 import java.io.File;
+import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -37,10 +43,6 @@ import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
 import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
 import java.util.Date;
 
 /**
@@ -523,10 +525,13 @@ public class MailInfoController extends BaseController {
                 mailInfo.setContent(StringEscapeUtils.unescapeHtml4(
                         mailInfo.getContent().replace("\"", "")));
             }
-            if (mailInfo.getFiles() != null) {
-                send(getMessage2(session, mailInfo, mailAccounts.get(0).getUsername()));
-            } else {
-                send(getMessage3(session, mailInfo, mailAccounts.get(0).getUsername()));
+            //发送邮件
+            send(getMessage2(session, mailInfo, mailAccounts.get(0).getUsername()), session);
+            //发送成功后   将发送成功的邮件保存在已发送的文件中
+            int j=mailAccounts.get(0).getMailAccept().indexOf("qq");
+            if(j>0){
+                saveSendEmail(mailAccounts.get(0).getMailAccept(), mailAccounts.get(0).getUsername(), mailAccounts.get(0).getPassword(),
+                        getMessage2(session, mailInfo, mailAccounts.get(0).getUsername()));
             }
             return "modules/oa/success";
         } else {
@@ -565,7 +570,7 @@ public class MailInfoController extends BaseController {
 
 
     //含附件信息
-    private static Message getMessage2(Session session, MailInfo mailInfo, String username) throws MessagingException{
+    private static Message getMessage2(Session session, MailInfo mailInfo, String username) throws Exception {
         Message message = new MimeMessage(session);
         message.setFrom(new InternetAddress(username));
         message.setRecipients(Message.RecipientType.TO,
@@ -573,25 +578,61 @@ public class MailInfoController extends BaseController {
         message.setSubject(mailInfo.getTheme());
         BodyPart messageBodyPart = new MimeBodyPart();
 
-        messageBodyPart.setContent(mailInfo.getContent(),"text/html");
+        messageBodyPart.setContent(mailInfo.getContent(), "text/html;charset=utf8");
 
         Multipart multipart = new MimeMultipart();
         multipart.addBodyPart(messageBodyPart);
         messageBodyPart = new MimeBodyPart();
-        String filename = "f:/1.txt";
-        DataSource source = new FileDataSource(filename);
-        messageBodyPart.setDataHandler(new DataHandler(source));
-        messageBodyPart.setFileName(filename);
-        multipart.addBodyPart(messageBodyPart);
+        if (StringUtils.isNotEmpty(mailInfo.getFiles())) {
+            String filename = "D:/jeesite" + URLDecoder.decode(mailInfo.getFiles().replace("|", ""), "utf-8");
+            DataSource source = new FileDataSource(filename);
+            messageBodyPart.setDataHandler(new DataHandler(source));
+            messageBodyPart.setFileName(MimeUtility.encodeText(filename));
+            multipart.addBodyPart(messageBodyPart);
+        }
         message.setContent(multipart);
+        message.setFlag(FLAGS.Flag.RECENT, true);
+        message.saveChanges();
         return message;
+    }
+
+    public void saveSendEmail(String host, String username, String password, Message message) throws Exception {
+        final String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
+        Properties props = System.getProperties();
+        String port1 = "993";
+        props.setProperty("mail.imap.socketFactory.class", SSL_FACTORY);
+        props.setProperty("mail.imap.socketFactory.port", port1);
+        props.setProperty("mail.store.protocol", "imap");
+        props.setProperty("mail.imap.host", username);
+        props.setProperty("mail.imap.port", port1);
+        props.setProperty("mail.imap.auth.login.disable", "true");
+        Session session = Session.getDefaultInstance(props);
+        Store store = session.getStore("imap");  // 使用imap会话机制，连接服务器
+        store.connect(host, username, password);
+
+        Folder folder = (Folder) store.getFolder("已发送");
+        if (!folder.exists()) {
+            folder.create(Folder.HOLDS_MESSAGES);
+        }
+        folder.open(Folder.READ_WRITE);
+        try {
+            folder.appendMessages(new Message[]{message});
+            message.setFlag(FLAGS.Flag.RECENT, true);
+            message.saveChanges();
+        } catch (Exception ignore) {
+            System.out.println("error processing message " + ignore.getMessage());
+        } finally {
+            store.close();
+        }
+
     }
 
 
     //发送
-    private static void send(Message message) {
+    private void send(Message message, Session session) {
         try {
             Transport.send(message);
+            //保存邮件到已发送邮件夹
             System.out.println("Sent message successfully....");
         } catch (MessagingException e) {
             throw new RuntimeException(e);
@@ -616,6 +657,8 @@ public class MailInfoController extends BaseController {
                 List<MailInfo> list = praseMimeMessage.test(mailAccounts.get(0).getUsername(), mailAccounts.get(0).getPassword(),
                         mailAccounts.get(0).getPort(), mailAccounts.get(0).getMailAccept(), state);
                 Page<MailInfo> page = mailInfoService.findPage(new Page<MailInfo>(request, response), mailInfo);
+                ComparatorMail comparator=new ComparatorMail();
+                Collections.sort(list, comparator);
                 page.setCount(list.size());
                 page.setList(list);
                 model.addAttribute("page", page);
@@ -631,6 +674,10 @@ public class MailInfoController extends BaseController {
                 List<MailInfo> list = praseMimeMessage.test(mailAccounts.get(0).getUsername(), mailAccounts.get(0).getPassword(),
                         mailAccounts.get(0).getPort(), mailAccounts.get(0).getMailAccept(), state);
                 Page<MailInfo> page = mailInfoService.findPage(new Page<MailInfo>(request, response), mailInfo);
+
+
+                ComparatorMail comparator=new ComparatorMail();
+                Collections.sort(list, comparator);
                 page.setCount(list.size());
                 page.setList(list);
                 model.addAttribute("page", page);
@@ -676,6 +723,7 @@ public class MailInfoController extends BaseController {
                         mailInfo.setTheme(list.get(i).getTheme());
                         mailInfo.setName(list.get(i).getName());
                         mailInfo.setTime(list.get(i).getTime());
+                        mailInfo.setFlag("1");
                         mailInfo.setReceiverNames(list.get(i).getReceiverNames());
                         model.addAttribute("mailInfo", mailInfo);
                     }
@@ -688,11 +736,39 @@ public class MailInfoController extends BaseController {
                     mailInfo.setTheme(list.get(i).getTheme());
                     mailInfo.setName(list.get(i).getName());
                     mailInfo.setTime(list.get(i).getTime());
+                    mailInfo.setFlag("1");
                     mailInfo.setReceiverNames(list.get(i).getReceiverNames());
                     model.addAttribute("mailInfo", mailInfo);
                 }
             }
         }
+        return "modules/oa/find";
+    }
+
+
+    /**
+     * 删除外部邮件的内容
+     *
+     * @param mailInfo
+     * @param model
+     * @param
+     * @param
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = {"deleteMail", ""})
+    public String deleteMail(MailInfo mailInfo, Model model, String ids, String name, String state) throws Exception {
+        MailAccount mailAccount = new MailAccount();
+        mailAccount.setLoginId(UserUtils.getUser().getId());
+        List<MailAccount> mailAccounts = mailAccountService.findList(mailAccount);
+        PraseMimeMessage praseMimeMessage = new PraseMimeMessage();
+        if (ids != null && ids != "") {
+            ids = StringEscapeUtils.unescapeHtml4(ids).replace("\"", "");
+            ids = ids.substring(0, ids.length() - 1);
+        }
+        List<MailInfo> list = praseMimeMessage.mail(mailAccounts.get(0).getUsername(), mailAccounts.get(0).getPassword(),
+                mailAccounts.get(0).getPort(), mailAccounts.get(0).getMailAccept(), state, ids);
+
         return "modules/oa/find";
     }
 

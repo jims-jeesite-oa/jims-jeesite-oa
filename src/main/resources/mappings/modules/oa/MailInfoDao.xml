@@ -87,7 +87,7 @@
 				ORDER BY ${page.orderBy}
 			</when>
 			<otherwise>
-				ORDER BY a.update_date DESC
+				ORDER BY a.time DESC
 			</otherwise>
 		</choose>
 	</select>
