@@ -659,6 +659,7 @@ public class MailInfoController extends BaseController {
                 Page<MailInfo> page = mailInfoService.findPage(new Page<MailInfo>(request, response), mailInfo);
                 ComparatorMail comparator=new ComparatorMail();
                 Collections.sort(list, comparator);
+
                 page.setCount(list.size());
                 page.setList(list);
                 model.addAttribute("page", page);
@@ -678,6 +679,8 @@ public class MailInfoController extends BaseController {
 
                 ComparatorMail comparator=new ComparatorMail();
                 Collections.sort(list, comparator);
+
+
                 page.setCount(list.size());
                 page.setList(list);
                 model.addAttribute("page", page);
@@ -721,6 +724,7 @@ public class MailInfoController extends BaseController {
 
                         mailInfo.setContent(list.get(i).getContent());
                         mailInfo.setTheme(list.get(i).getTheme());
+                        mailInfo.setFiles(list.get(i).getFiles());
                         mailInfo.setName(list.get(i).getName());
                         mailInfo.setTime(list.get(i).getTime());
                         mailInfo.setFlag("1");
@@ -734,6 +738,7 @@ public class MailInfoController extends BaseController {
                     System.out.println(list.get(i).getUID());
                     mailInfo.setContent(list.get(i).getContent());
                     mailInfo.setTheme(list.get(i).getTheme());
+                    mailInfo.setFiles(list.get(i).getFiles());
                     mailInfo.setName(list.get(i).getName());
                     mailInfo.setTime(list.get(i).getTime());
                     mailInfo.setFlag("1");

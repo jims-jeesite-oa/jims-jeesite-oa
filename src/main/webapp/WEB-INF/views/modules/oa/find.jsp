@@ -80,7 +80,7 @@
         //返回
         function hostory(state) {
             var flag = document.getElementById("flag").value;
-            if (flag != null && flag != "") {
+            if (flag==1) {
                 window.location.href = '${ctx}/oa/mailInfo/findOut?state=' + state;
             } else {
                 window.location.href = '${ctx}/oa/mailInfo/listBySend?state=' + state;
@@ -102,7 +102,50 @@
 <div style="background-color: #ffffff">
     <form:form modelAttribute="mailInfo" action="" method="post" id="form1">
         <input type="hidden" id="flag" value="${mailInfo.flag}">
+
         <table style="margin-left: 5px;margin-top: 5px;width: 99%">
+            <tr style="background-color: #C1D9F3;height: 35px">
+                <td colspan="2" style="padding-left: 5px">
+                    <input type="button" value="返回" class="btn" onclick="hostory('${mailInfo.state}')">
+                    <input type="button" value="彻底删除" class="btn" onclick="deleteBy('${mailInfo.state}')">
+
+                    <div class="btn-group">
+                        <a class="btn dropdown-toggle " data-toggle="dropdown" href="#">
+                            标记为
+                            <span class="caret">
+                            </span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" onclick="read('${mailInfo.state}')">&nbsp; &nbsp;<img
+                                    style="width:26px;height: 19px;"
+                                    src="${ctxStatic}/tree/css/mailCss/img/mail020.png">已读邮件</a>
+                            </li>
+                            <li><a href="#" onclick="unread('${mailInfo.state}')">&nbsp; &nbsp;<img
+                                    style="width:26px;height: 19px;"
+                                    src="${ctxStatic}/tree/css/mailCss/img/mail010.png">未读邮件
+                            </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="btn-group">
+                        <a class="btn dropdown-toggle " data-toggle="dropdown" href="#">
+                            移动到
+                            <span class="caret">
+                            </span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" onclick="inbox('${mailInfo.state}')">&nbsp; &nbsp;<img
+                                    style="width:26px;height: 19px;"
+                                    src="${ctxStatic}/tree/css/mailCss/img/mail020.png">收件箱 </a>
+                            </li>
+                            <li><a href="#" onclick="send('${mailInfo.state}')">&nbsp; &nbsp;<img
+                                    style="width:26px;height: 19px;"
+                                    src="${ctxStatic}/tree/css/mailCss/img/mail020.png">已发送 </a>
+                            </li>
+                        </ul>
+                    </div>
+                </td>
+            </tr>
             <tr>
                 <td colspan="2" align="center">
                     <div id="ss"></div>

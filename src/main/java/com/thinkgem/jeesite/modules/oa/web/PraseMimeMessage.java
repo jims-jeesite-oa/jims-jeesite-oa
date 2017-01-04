@@ -191,7 +191,7 @@ public class PraseMimeMessage {
      * @throws javax.mail.MessagingException
      */
     public boolean getReplySign() throws MessagingException {
-        boolean replysign = false;
+            boolean replysign = false;
         String needreply[] = mimeMessage.getHeader("Disposition-Notification-To");
         if (needreply != null) {
             replysign = true;
@@ -264,7 +264,7 @@ public class PraseMimeMessage {
      * @throws javax.mail.MessagingException
      * @throws Exception
      */
-    public void saveAttachMent(Part part) throws Exception {
+    public String saveAttachMent(Part part) throws Exception {
         String fileName = "";
         if (part.isMimeType("multipart/*")) {
             Multipart mp = (Multipart) part.getContent();
@@ -293,6 +293,8 @@ public class PraseMimeMessage {
         } else if (part.isMimeType("message/rfc822")) {
             saveAttachMent((Part) part.getContent());
         }
+
+        return fileName;
     }
 
     /**
@@ -404,8 +406,6 @@ public class PraseMimeMessage {
                 Folder folder = stor.getFolder(state);
                 folder.open(Folder.READ_WRITE);
                 message = folder.getMessages();
-                int messageCount = folder.getMessageCount();
-                System.out.println(messageCount + "------------------------------------------");
             }
         }
         for (int i = 0; i < message.length; i++) {
@@ -429,9 +429,12 @@ public class PraseMimeMessage {
                 pmm.getMailContent((Part) message[i], false);
             }
 
-            pmm.setAttachPath("c:/tmp/mail");  //设置邮件附件的保存路径
-            pmm.saveAttachMent((Part) message[i]); //保存附件
-
+            File file=new File("d:\\jeesite\\userfiles");
+            if(!file.exists()){
+                file.mkdirs();
+            }
+            pmm.setAttachPath(file.toString());
+            String filename= pmm.saveAttachMent((Part)message[i]);
 
             System.out.println("邮件正文 :" + pmm.getBodyText());
             System.out.println("是否已读 :" + pmm.isNew());
@@ -439,6 +442,7 @@ public class PraseMimeMessage {
 
             MailInfo mailInfo = new MailInfo();
             mailInfo.setContent(pmm.getBodyText());
+            mailInfo.setFiles("/userfiles/"+filename);
             SimpleDateFormat sdf = new SimpleDateFormat();
             Date date = message[i].getSentDate();
             mailInfo.setTime(date);

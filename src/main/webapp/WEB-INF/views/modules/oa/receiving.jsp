@@ -250,10 +250,20 @@
         function page(n, s) {
             $("#pageNo").val(n);
             $("#pageSize").val(s);
-            form1.action = '${ctx}/oa/mailInfo/listBySend?state=INBOX';
-            $("#form1").submit();
+
+            var flag=document.getElementById("flag").value
+            alert(flag)
+            if(flag==0){
+                form1.action = '${ctx}/oa/mailInfo/listBySend?state=INBOX';
+                $("#form1").submit();
+            }else{
+                form1.action = '${ctx}/oa/mailInfo/findMail?state=INBOX';
+                $("#form1").submit();
+            }
+
             return false;
         }
+
 
     </script>
 </head>
@@ -263,6 +273,7 @@
                class="form-horizontal">
         <input id="pageNo" name="pageNo" type="hidden" value="${page.pageNo}"/>
         <input id="pageSize" name="pageSize" type="hidden" value="${page.pageSize}"/>
+        <input id="flag" name="flag" type="hidden" value="${mailInfo.flag}"/>
         <table class="table">
             <tr class="tr1">
                 <td colspan="2" style="padding-left: 15px">收件箱 (<font>共 </font>&nbsp;${page.count} &nbsp;封,其中 <font
@@ -386,7 +397,7 @@
                             </tr>
                         </c:if>
                         <c:if test="${mailInfo.flag eq 0}">
-                            <tr class="reTr" data-id="${mailInfo.id}">
+                            <tr class="reTr" data-id="${mailInfo.id}"  data-on="${mailInfo.flag}">
                                 <td class="reCheckbox">
                                     <input type="checkbox" name="checkbox" value="${mailInfo.id}" class="check">
                                 </td>
