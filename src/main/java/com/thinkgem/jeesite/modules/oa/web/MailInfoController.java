@@ -584,7 +584,7 @@ public class MailInfoController extends BaseController {
         multipart.addBodyPart(messageBodyPart);
         messageBodyPart = new MimeBodyPart();
         if (StringUtils.isNotEmpty(mailInfo.getFiles())) {
-            String filename = "D:/jeesite" + URLDecoder.decode(mailInfo.getFiles().replace("|", ""), "utf-8");
+            String filename = Global.getUserfilesBaseDir() + URLDecoder.decode(mailInfo.getFiles().replace("|", ""), "utf-8");
             DataSource source = new FileDataSource(filename);
             messageBodyPart.setDataHandler(new DataHandler(source));
             messageBodyPart.setFileName(MimeUtility.encodeText(filename));

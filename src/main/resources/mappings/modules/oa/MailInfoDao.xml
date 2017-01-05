@@ -44,11 +44,23 @@
 
     <select id="getPhone" resultType="User">
         SELECT
-        *
-        FROM sys_user s
-        where
+        s.*,o.name as officeName
+        FROM sys_user s,sys_office o
+        where  s.office_id=o.id
         <if test="companyId !=null and companyId !=''">
-              s.company_id=#{companyId}
+           and s.company_id=#{companyId}
+        </if>
+        <if test="loginName != null and loginName != ''">
+            AND s.login_name like
+            <if test="dbName == 'oracle'">'%'||#{loginName}||'%'</if>
+            <if test="dbName == 'mssql'">'%'+#{loginName}+'%'</if>
+            <if test="dbName == 'mysql'">CONCAT('%', #{loginName}, '%')</if>
+        </if>
+        <if test="name != null and name != ''">
+            AND s.name like
+            <if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+            <if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+            <if test="dbName == 'mysql'">CONCAT('%', #{name}, '%')</if>
         </if>
         and  s.del_flag='0'
     </select>
