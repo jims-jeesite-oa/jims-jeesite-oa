@@ -519,7 +519,7 @@ public class MailInfoController extends BaseController {
         MailAccount mailAccount = new MailAccount();
         mailAccount.setLoginId(UserUtils.getUser().getId());
         List<MailAccount> mailAccounts = mailAccountService.findList(mailAccount);
-        if (mailAccounts.size() > 0) {
+        if (mailAccounts.size() > 0 && mailAccounts.get(0).getUsername()!=null && mailAccounts.get(0).getPassword()!=null) {
             Session session = getSession(mailAccounts.get(0).getMailSend(), mailAccounts.get(0).getUsername(), mailAccounts.get(0).getPassword(), mailAccounts.get(0).getPort());
             if (mailInfo.getContent() != null) {
                 mailInfo.setContent(StringEscapeUtils.unescapeHtml4(
@@ -653,7 +653,7 @@ public class MailInfoController extends BaseController {
         PraseMimeMessage praseMimeMessage = new PraseMimeMessage();
 
         if (StringUtils.equals(state, "SENT")) {
-            if (mailAccounts.size() > 0) {
+            if (mailAccounts.size() > 0 && mailAccounts.get(0).getUsername()!=null && mailAccounts.get(0).getPassword()!=null) {
                 List<MailInfo> list = praseMimeMessage.test(mailAccounts.get(0).getUsername(), mailAccounts.get(0).getPassword(),
                         mailAccounts.get(0).getPort(), mailAccounts.get(0).getMailAccept(), state);
                 Page<MailInfo> page = mailInfoService.findPage(new Page<MailInfo>(request, response), mailInfo);
@@ -671,7 +671,7 @@ public class MailInfoController extends BaseController {
             }
             return "modules/oa/sent";
         } else if (StringUtils.equals(state, "INBOX")) {
-            if (mailAccounts.size() > 0) {
+            if (mailAccounts.size() > 0 && mailAccounts.get(0).getUsername()!=null && mailAccounts.get(0).getPassword()!=null) {
                 List<MailInfo> list = praseMimeMessage.test(mailAccounts.get(0).getUsername(), mailAccounts.get(0).getPassword(),
                         mailAccounts.get(0).getPort(), mailAccounts.get(0).getMailAccept(), state);
                 Page<MailInfo> page = mailInfoService.findPage(new Page<MailInfo>(request, response), mailInfo);
@@ -711,17 +711,31 @@ public class MailInfoController extends BaseController {
         MailAccount mailAccount = new MailAccount();
         mailAccount.setLoginId(UserUtils.getUser().getId());
         List<MailAccount> mailAccounts = mailAccountService.findList(mailAccount);
-        PraseMimeMessage praseMimeMessage = new PraseMimeMessage();
-        List<MailInfo> list = praseMimeMessage.test(mailAccounts.get(0).getUsername(), mailAccounts.get(0).getPassword(),
-                mailAccounts.get(0).getPort(), mailAccounts.get(0).getMailAccept(), state);
+        if(mailAccounts.size()>0 && mailAccounts.get(0).getUsername()!=null && mailAccounts.get(0).getPassword()!=null){
+            PraseMimeMessage praseMimeMessage = new PraseMimeMessage();
+            List<MailInfo> list = praseMimeMessage.test(mailAccounts.get(0).getUsername(), mailAccounts.get(0).getPassword(),
+                    mailAccounts.get(0).getPort(), mailAccounts.get(0).getMailAccept(), state);
+            if (id != null && id != "") {
+                id = StringEscapeUtils.unescapeHtml4(id).replace("\"", "");
+                if (StringUtils.isEmpty(id)) {
+                    name = StringEscapeUtils.unescapeHtml4(name).replace("\"", "");
+                    for (int i = 0; i < list.size(); i++) {
+                        if (StringUtils.equals(name, list.get(i).getName())) {
 
-        if (id != null && id != "") {
-            id = StringEscapeUtils.unescapeHtml4(id).replace("\"", "");
-            if (StringUtils.isEmpty(id)) {
-                name = StringEscapeUtils.unescapeHtml4(name).replace("\"", "");
+                            mailInfo.setContent(list.get(i).getContent());
+                            mailInfo.setTheme(list.get(i).getTheme());
+                            mailInfo.setFiles(list.get(i).getFiles());
+                            mailInfo.setName(list.get(i).getName());
+                            mailInfo.setTime(list.get(i).getTime());
+                            mailInfo.setFlag("1");
+                            mailInfo.setReceiverNames(list.get(i).getReceiverNames());
+                            model.addAttribute("mailInfo", mailInfo);
+                        }
+                    }
+                }
                 for (int i = 0; i < list.size(); i++) {
-                    if (StringUtils.equals(name, list.get(i).getName())) {
-
+                    if (StringUtils.equals(id, list.get(i).getUID())) {
+                        System.out.println(list.get(i).getUID());
                         mailInfo.setContent(list.get(i).getContent());
                         mailInfo.setTheme(list.get(i).getTheme());
                         mailInfo.setFiles(list.get(i).getFiles());
@@ -733,20 +747,8 @@ public class MailInfoController extends BaseController {
                     }
                 }
             }
-            for (int i = 0; i < list.size(); i++) {
-                if (StringUtils.equals(id, list.get(i).getUID())) {
-                    System.out.println(list.get(i).getUID());
-                    mailInfo.setContent(list.get(i).getContent());
-                    mailInfo.setTheme(list.get(i).getTheme());
-                    mailInfo.setFiles(list.get(i).getFiles());
-                    mailInfo.setName(list.get(i).getName());
-                    mailInfo.setTime(list.get(i).getTime());
-                    mailInfo.setFlag("1");
-                    mailInfo.setReceiverNames(list.get(i).getReceiverNames());
-                    model.addAttribute("mailInfo", mailInfo);
-                }
-            }
         }
+
         return "modules/oa/find";
     }
 

@@ -71,3 +71,15 @@ website:	http://code.google.com/p/jquerytree/
     font-weight: bold;
 }
 
+.mailTd{
+    width:150px;
+    text-align: center;
+}
+.mail1Td{
+    text-align: right;
+}
+
+.mailTr{
+    height: 30px;
+}
+

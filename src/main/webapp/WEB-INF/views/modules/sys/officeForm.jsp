@@ -37,7 +37,7 @@
 		<form:hidden path="id"/>
 		<sys:message content="${message}"/>
 		<div class="control-group">
-			<label class="control-label">上级机构:</label>
+			<label class="control-label">上级部门:</label>
 			<div class="controls">
                 <sys:treeselect id="office" name="parent.id" value="${office.parent.id}" labelName="parent.name" labelValue="${office.parent.name}"
 					title="机构" url="/sys/office/treeData" extId="${office.id}" cssClass="" allowClear="${office.currentUser.admin}"/>
@@ -51,20 +51,20 @@
 			</div>
 		</div>
 		<div class="control-group">
-			<label class="control-label">机构名称:</label>
+			<label class="control-label">部门名称:</label>
 			<div class="controls">
 				<form:input path="name" htmlEscape="false" maxlength="50" class="required"/>
 				<span class="help-inline"><font color="red">*</font> </span>
 			</div>
 		</div>
 		<div class="control-group">
-			<label class="control-label">机构编码:</label>
+			<label class="control-label">部门编码:</label>
 			<div class="controls">
 				<form:input path="code" htmlEscape="false" maxlength="50"/>
 			</div>
 		</div>
 		<div class="control-group">
-			<label class="control-label">机构类型:</label>
+			<label class="control-label">部门类型:</label>
 			<div class="controls">
 				<form:select path="type" class="input-medium">
 					<form:options items="${fns:getDictList('sys_office_type')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
@@ -72,7 +72,7 @@
 			</div>
 		</div>
 		<div class="control-group">
-			<label class="control-label">机构级别:</label>
+			<label class="control-label">部门级别:</label>
 			<div class="controls">
 				<form:select path="grade" class="input-medium">
 					<form:options items="${fns:getDictList('sys_office_grade')}" itemLabel="label" itemValue="value" htmlEscape="false"/>

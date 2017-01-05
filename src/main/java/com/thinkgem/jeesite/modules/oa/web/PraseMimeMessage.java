@@ -1,6 +1,7 @@
 package com.thinkgem.jeesite.modules.oa.web;
 
 import com.sun.mail.imap.IMAPFolder;
+import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.modules.oa.entity.MailInfo;
 
@@ -409,6 +410,7 @@ public class PraseMimeMessage {
             }
         }
         for (int i = 0; i < message.length; i++) {
+            System.out.println("****************************************第"+(i+1)+"封邮件**********************************");
             pmm = new PraseMimeMessage((MimeMessage) message[i]);
             pmm.setDateFormat("yy年MM月dd日 HH:mm");
 
@@ -419,15 +421,30 @@ public class PraseMimeMessage {
                 pmm.getMailContent((Part) message[i], false);
             }
 
-            File file=new File("d:\\jeesite\\userfiles");
+            File file=new File(Global.getUserfilesBaseDir()+"\\userfiles");
             if(!file.exists()){
                 file.mkdirs();
             }
-            pmm.setAttachPath(file.toString());
-            String filename= pmm.saveAttachMent((Part)message[i]);
             MailInfo mailInfo = new MailInfo();
             mailInfo.setContent(pmm.getBodyText());
-            mailInfo.setFiles("/userfiles/"+filename);
+            pmm.setAttachPath(file.toString());
+
+            boolean f=  pmm.isContainAttach((Part)message[i]);
+            if(f==true) {
+                String filename= pmm.saveAttachMent((Part)message[i]);
+                mailInfo.setFiles("/userfiles/"+filename);
+            }
+            System.out.println("主题 :"+pmm.getSubject());
+            System.out.println("发送时间 :"+pmm.getSendDate());
+            System.out.println("是否回执 :"+pmm.getReplySign());
+            System.out.println("是否包含附件 :"+pmm.isContainAttach((Part)message[i]));
+            System.out.println("发件人 :"+pmm.getFrom1());
+            System.out.println("收件人 :"+pmm.getMailAddress("TO"));
+            System.out.println("抄送地址 :"+pmm.getMailAddress("CC"));
+            System.out.println("密送地址 :"+pmm.getMailAddress("BCC"));
+            System.out.println("邮件ID :"+i+":"+pmm.getMessageId()) ;
+            System.out.println("邮件正文 :"+pmm.getBodyText());
+            System.out.println("是否已读 :"+pmm.isNew());
             SimpleDateFormat sdf = new SimpleDateFormat();
             Date date = message[i].getSentDate();
             mailInfo.setTime(date);
@@ -438,6 +455,7 @@ public class PraseMimeMessage {
             mailInfo.setReceiverNames(pmm.getMailAddress("TO").replace("\"", ""));
             mailInfo.setFlag("1");
             list.add(mailInfo);
+            System.out.println("*********************************第"+(i+1)+"封邮件结束*************************************");
         }
 
         return list;

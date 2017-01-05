@@ -102,11 +102,65 @@
                 </td>
                 <td style="text-align:left">
                     <input type="submit" class="btn btn-primary" value="保存">　
+                    <a href="#myModal" role="button" class="btn btn-primary" data-toggle="modal">查看帮助</a>
                 </td>
             </tr>
         </form:form>
     </table>
 </div>
 
+
+
+
+<!-- Modal -->
+<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="myModalLabel">邮箱账户设置帮助</h3>
+    </div>
+    <div class="modal-body">
+        <%--<p>One fine body…</p>--%>
+        <table>
+            <tr>
+                <td class="mailTd" colspan="2" style="padding-left: 80px;font-size: 15px;color: #317EAC;font-weight: bold">公司邮箱</td>
+                <td class="mailTd" style="font-size: 15px;color: #317EAC;font-weight: bold">QQ邮箱</td>
+                <td class="mailTd" style="font-size: 15px;color: #317EAC;font-weight: bold">163邮箱</td>
+            </tr>
+            <tr class="mailTr">
+                <td class="mail1Td">端口号:</td>
+                <td class="mailTd">465</td>
+                <td class="mailTd">25</td>
+                <td class="mailTd">25</td>
+            </tr>
+            <tr class="mailTr">
+                <td class="mail1Td">接收服务器:</td>
+                <td class="mailTd">imap.exmail.qq.com</td>
+                <td class="mailTd">imap.qq.com</td>
+                <td class="mailTd">imap.163.com</td>
+            </tr>
+            <tr class="mailTr">
+                <td class="mail1Td">发送服务器:</td>
+                <td class="mailTd">smtp.exmail.qq.com</td>
+                <td class="mailTd">smtp.qq.com</td>
+                <td class="mailTd">smtp.163.com</td>
+            </tr>
+            <tr class="mailTr">
+                <td class="mail1Td">用户名:</td>
+                <td class="mailTd">邮箱登录名</td>
+                <td class="mailTd">邮箱登录名</td>
+                <td class="mailTd">邮箱登录名</td>
+            </tr>
+            <tr class="mailTr">
+                <td class="mail1Td" style="color: red; font-weight: bold">密码:</td>
+                <td class="mailTd">开启imap的密码</td>
+                <td class="mailTd">开启imap的密码</td>
+                <td class="mailTd">开启imap的密码</td>
+            </tr>
+        </table>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+    </div>
+</div>
 </body>
 </html>

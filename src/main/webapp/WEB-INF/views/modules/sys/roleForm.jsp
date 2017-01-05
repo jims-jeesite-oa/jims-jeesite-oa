@@ -2,7 +2,7 @@
 <%@ include file="/WEB-INF/views/include/taglib.jsp"%>
 <html>
 <head>
-	<title>角色管理</title>
+	<title>职务管理</title>
 	<meta name="decorator" content="default"/>
 	<%@include file="/WEB-INF/views/include/treeview.jsp" %>
 	<script type="text/javascript">
@@ -14,7 +14,7 @@
 					enname: {remote: "${ctx}/sys/role/checkEnname?oldEnname=" + encodeURIComponent("${role.enname}")}
 				},
 				messages: {
-					name: {remote: "角色名已存在"},
+					name: {remote: "职务名已存在"},
 					enname: {remote: "英文名已存在"}
 				},
 				submitHandler: function(form){
@@ -108,14 +108,14 @@
 		<form:hidden path="id"/>
 		<sys:message content="${message}"/>
 		<div class="control-group">
-			<label class="control-label">归属机构:</label>
+			<label class="control-label">归属部门:</label>
 			<div class="controls">
                 <sys:treeselect id="office" name="office.id" value="${role.office.id}" labelName="office.name" labelValue="${role.office.name}"
 					title="机构" url="/sys/office/treeData" cssClass="required"/>
 			</div>
 		</div>
 		<div class="control-group">
-			<label class="control-label">角色名称:</label>
+			<label class="control-label">职务名称:</label>
 			<div class="controls">
 				<input id="oldName" name="oldName" type="hidden" value="${role.name}">
 				<form:input path="name" htmlEscape="false" maxlength="50" class="required"/>
@@ -131,18 +131,18 @@
 			</div>
 		</div>
 		<div class="control-group">
-			<label class="control-label">角色类型:</label>
+			<label class="control-label">职务类型:</label>
 			<div class="controls"><%--
 				<form:input path="roleType" htmlEscape="false" maxlength="50" class="required"/>
 				<span class="help-inline" title="activiti有3种预定义的组类型：security-role、assignment、user 如果使用Activiti Explorer，需要security-role才能看到manage页签，需要assignment才能claim任务">
 					工作流组用户组类型（security-role：管理员、assignment：可进行任务分配、user：普通用户）</span> --%>
 				<form:select path="roleType" class="input-medium">
 					<form:option value="assignment">任务分配</form:option>
-					<form:option value="security-role">管理角色</form:option>
-					<form:option value="user">普通角色</form:option>
+					<form:option value="security-role">管理职务</form:option>
+					<form:option value="user">普通职务</form:option>
 				</form:select>
 				<span class="help-inline" title="activiti有3种预定义的组类型：security-role、assignment、user 如果使用Activiti Explorer，需要security-role才能看到manage页签，需要assignment才能claim任务">
-					工作流组用户组类型（任务分配：assignment、管理角色：security-role、普通角色：user）</span>
+					工作流组用户组类型（任务分配：assignment、管理职务：security-role、普通职务：user）</span>
 			</div>
 		</div>
 		<div class="control-group">
@@ -151,7 +151,7 @@
 				<form:select path="sysData">
 					<form:options items="${fns:getDictList('yes_no')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
 				</form:select>
-				<span class="help-inline">“是”代表此数据只有超级管理员能进行修改，“否”则表示拥有角色修改人员的权限都能进行修改</span>
+				<span class="help-inline">“是”代表此数据只有超级管理员能进行修改，“否”则表示拥有职务修改人员的权限都能进行修改</span>
 			</div>
 		</div>
 		<div class="control-group">
@@ -173,7 +173,7 @@
 			</div>
 		</div>
 		<div class="control-group">
-			<label class="control-label">角色授权:</label>
+			<label class="control-label">职务授权:</label>
 			<div class="controls">
 				<div id="menuTree" class="ztree" style="margin-top:3px;float:left;"></div>
 				<form:hidden path="menuIds"/>
