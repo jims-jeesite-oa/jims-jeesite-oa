@@ -2467,6 +2467,7 @@ create table SYS_USER
   office_id   VARCHAR2(64) not null,
   login_name  VARCHAR2(100) not null,
   password    VARCHAR2(100) not null,
+  grade       VARCHAR2(100) not null,
   no          VARCHAR2(100),
   name        VARCHAR2(100) not null,
   email       VARCHAR2(200),

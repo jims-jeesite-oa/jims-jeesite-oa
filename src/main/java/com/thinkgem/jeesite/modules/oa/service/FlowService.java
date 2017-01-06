@@ -11,6 +11,7 @@ import com.thinkgem.jeesite.modules.oa.dao.FlowDao;
 import com.thinkgem.jeesite.modules.oa.entity.FlowData;
 import com.thinkgem.jeesite.modules.oa.units.OConvertUtils;
 import com.thinkgem.jeesite.modules.sys.entity.Role;
+import com.thinkgem.jeesite.modules.sys.entity.User;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import com.thinkgem.jeesite.modules.table.dao.OaPersonDefineTableColumnDao;
 import com.thinkgem.jeesite.modules.table.dao.OaPersonDefineTableDao;
@@ -153,7 +154,9 @@ public class FlowService extends CrudService<FlowDao, FlowData> {
 	 */
 	@Transactional(readOnly = false)
 	public void save(FlowData flowData) {
+        User user= UserUtils.getUser();
         Map<String, Object> vars = handlerVar(flowData.getTableName(),flowData.getDatas());
+          vars.put("PostGrade",user.getGrade());
 		// 申请发起
 		if (StringUtils.isBlank(flowData.getId())){
             flowData.preInsert();

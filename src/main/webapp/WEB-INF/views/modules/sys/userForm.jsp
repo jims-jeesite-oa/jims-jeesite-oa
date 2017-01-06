@@ -138,6 +138,16 @@
 				</form:select>
 			</div>
 		</div>
+        <div class="control-group">
+            <label class="control-label">职务级别:</label>
+            <div class="controls">
+                <form:select path="grade" class="input-xlarge">
+                    <form:option value="" label="请选择"/>
+                    <form:options items="${fns:getDictList('post_grade')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+                </form:select>
+                <span class="help-inline"><font color="red">*</font>
+            </div>
+        </div>
 		<div class="control-group">
 			<label class="control-label">用户角色:</label>
 			<div class="controls">

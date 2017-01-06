@@ -35,6 +35,7 @@ public class User extends DataEntity<User> {
     private String loginName;// 登录名
     private String password;// 密码
     private String no;        // 工号
+    private String grade;    //职务级别
     private String name;    // 姓名
     private String email;    // 邮箱
     private String phone;    // 电话
@@ -118,6 +119,14 @@ public class User extends DataEntity<User> {
 
     public void setOfficeName(String officeName) {
         this.officeName = officeName;
+    }
+
+    public String getGrade() {
+        return grade;
+    }
+
+    public void setGrade(String grade) {
+        this.grade = grade;
     }
 
     @SupCol(isUnique = "true", isHide = "true")
