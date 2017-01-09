@@ -157,6 +157,7 @@ public class FlowService extends CrudService<FlowDao, FlowData> {
         User user= UserUtils.getUser();
         Map<String, Object> vars = handlerVar(flowData.getTableName(),flowData.getDatas());
           vars.put("PostGrade",user.getGrade());
+          vars.put("parentId",user.getLeaderShip());
 		// 申请发起
 		if (StringUtils.isBlank(flowData.getId())){
             flowData.preInsert();

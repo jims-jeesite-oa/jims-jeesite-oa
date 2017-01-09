@@ -145,7 +145,19 @@
                     <form:option value="" label="请选择"/>
                     <form:options items="${fns:getDictList('post_grade')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
                 </form:select>
-                <span class="help-inline"><font color="red">*</font>
+                <span class="help-inline"><font color="red">*</font></span>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label">直属领导:</label>
+            <div class="controls">
+                <sys:treeselect id="leaderShip" name="leaderShip"
+                                value="${user.leaderShip}" labelName=""
+                                labelValue="${user.leaderName}"
+                                title="用户" url="/sys/office/treeData?type=3" cssClass="input-xxlarge required"
+                                notAllowSelectParent="true"  cssStyle="width:210px"/>
+                <span class="help-inline"><font color="red">*</font> </span>
             </div>
         </div>
 		<div class="control-group">

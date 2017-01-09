@@ -80,7 +80,8 @@
 		a.update_by AS "updateBy.id",
 		a.update_date,
 		a.del_flag,
-		a.grade
+		a.grade,
+		a.leader_ship
     </sql>
     
     <sql id="userJoins">
@@ -218,7 +219,8 @@
 			login_flag, 
 			photo, 
 			del_flag,
-            grade
+            grade,
+            leader_ship
 		) VALUES (
 			#{id}, 
 			#{company.id}, 
@@ -239,7 +241,8 @@
 			#{loginFlag}, 
 			#{photo}, 
 			#{delFlag},
-			#{grade}
+			#{grade},
+			#{leaderShip}
 		)
 	</insert>
 	
@@ -261,7 +264,8 @@
 			remarks = #{remarks},
 			login_flag = #{loginFlag},
 			photo = #{photo},
-            grade=#{grade}
+            grade=#{grade},
+            leader_ship=#{leaderShip}
 		WHERE id = #{id}
 	</update>
 	

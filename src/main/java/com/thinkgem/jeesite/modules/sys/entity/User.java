@@ -47,6 +47,7 @@ public class User extends DataEntity<User> {
     private String photo;    // 头像
     private String officeName;
     private String flag;   //标记
+    private String leaderShip;   //直属领导
 
     private String companyId;
 
@@ -57,6 +58,7 @@ public class User extends DataEntity<User> {
     private Date oldLoginDate;    // 上次登陆日期
 
     private Role role;    // 根据角色查询用户条件
+    private String leaderName;  //直属领导的名字
 
     private List<Role> roleList = Lists.newArrayList(); // 拥有角色列表
 
@@ -109,6 +111,14 @@ public class User extends DataEntity<User> {
         return loginFlag;
     }
 
+    public String getLeaderName() {
+        return leaderName;
+    }
+
+    public void setLeaderName(String leaderName) {
+        this.leaderName = leaderName;
+    }
+
     public void setLoginFlag(String loginFlag) {
         this.loginFlag = loginFlag;
     }
@@ -127,6 +137,14 @@ public class User extends DataEntity<User> {
 
     public void setGrade(String grade) {
         this.grade = grade;
+    }
+
+    public String getLeaderShip() {
+        return leaderShip;
+    }
+
+    public void setLeaderShip(String leaderShip) {
+        this.leaderShip = leaderShip;
     }
 
     @SupCol(isUnique = "true", isHide = "true")
