@@ -63,6 +63,14 @@
             <if test="dbName == 'mysql'">CONCAT('%', #{name}, '%')</if>
         </if>
         and  s.del_flag='0'
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+                ORDER BY  s.no
+            </otherwise>
+        </choose>
     </select>
 
     <select id="getById" resultType="User">

@@ -44,7 +44,7 @@
                 document.getElementById("ss").innerHTML = "<div style='color: #ffffff;background-color: #EF8F00;width: 135px;height: 20px;text-align: center;'>未选中任何邮件</div>";
                 return;
             }
-            window.location.href="${ctx}/oa/mailInfo/phoneWrite?ids="+chestr;
+            window.location.href = "${ctx}/oa/mailInfo/phoneWrite?ids=" + chestr;
         }
         //循环定时删除
         window.setInterval(show, 5000);
@@ -53,12 +53,22 @@
         }
 
 
+        function page(n, s) {
+            $("#pageNo").val(n);
+            $("#pageSize").val(s);
+            form1.action = '${ctx}/oa/mailInfo/phone';
+            $("#form1").submit();
+            return false;
+        }
+
     </script>
 </head>
 <body>
 
 <div style="background-color: #ffffff">
     <form:form modelAttribute="user" action="" method="post" id="form1" class="form-horizontal">
+        <input id="pageNo" name="pageNo" type="hidden" value="${page.pageNo}"/>
+        <input id="pageSize" name="pageSize" type="hidden" value="${page.pageSize}"/>
         <table class="table">
             <tr class="tr1">
                 <td colspan="3" style="padding-left: 15px;">联系人 (全部)</td>
@@ -101,7 +111,7 @@
                             ${fns:abbr(user.email,50)}
                     </td>
                     <td style="width:15%;">
-                        ${user.phone}
+                            ${user.phone}
                     </td>
                     <td style="width: 15%">
 
