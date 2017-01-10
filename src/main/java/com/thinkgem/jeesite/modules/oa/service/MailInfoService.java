@@ -59,22 +59,30 @@ public class MailInfoService extends CrudService<MailInfoDao, MailInfo> {
         }
         String[] receivers = receiverStr.split(",");
         for(String receiver : receivers){
+            mailInfo.setReceiverId(receiver);
             mailInfo.setOwnId(receiver);
             mailInfo.setReadMark("0");
             mailInfo.setState("INBOX");
             mailInfo.setId(null);
             super.save(mailInfo);
         }
-        mailInfo.setOwnId(mailInfo.getSenderId());
-        mailInfo.setReadMark("1");
-        mailInfo.setState("SENT");
-        if(id!=null){
-            mailInfo.setId(id);
-        }else {
-            mailInfo.setId(null);
+
+
+        for(String  receiver : receivers){
+            mailInfo.setReceiverId(receiver);
+            mailInfo.setOwnId(mailInfo.getSenderId());
+            mailInfo.setReadMark("1");
+            mailInfo.setState("SENT");
+            if(id!=null){
+                mailInfo.setId(id);
+            }else {
+                mailInfo.setId(null);
+            }
+            super.save(mailInfo);
         }
 
-		super.save(mailInfo);
+
+
 	}
 
     @Transactional(readOnly = false)

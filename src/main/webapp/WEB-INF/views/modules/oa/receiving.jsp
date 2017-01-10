@@ -49,6 +49,18 @@
                 window.location.href = '${ctx}/oa/mailInfo/findMail?id=' + uid + "&name=" + name + '&state=' + state;
             })
 
+
+            $("#checkall").click(
+                    function(){
+                        if(this.checked){
+                            $("input[name='checkbox']").each(function(){this.checked=true;});
+                        }else{
+                            $("input[name='checkbox']").each(function(){this.checked=false;});
+                        }
+                    }
+            );
+
+
             //格式化日期
             Date.prototype.pattern = function (fmt) {
                 var o = {
@@ -117,35 +129,18 @@
             var checked = false;
             var chestr = "";
             var ids = document.getElementsByName("checkbox");
-            var mailUID = document.getElementsByName("checkbox1");
-            if (mailUID != null && mailUID != "") {
-                for (var i = 0; i < mailUID.length; i++) {
-                    if (mailUID[i].checked) {
-                        checked = true;
-                        chestr += mailUID[i].value + ",";
-                    }
-                }
-            } else {
-                for (var i = 0; i < ids.length; i++) {
-                    if (ids[i].checked) {
-                        checked = true;
-                        chestr += ids[i].value + ",";
-                    }
+            for (var i = 0; i < ids.length; i++) {
+                if (ids[i].checked) {
+                    checked = true;
+                    chestr += ids[i].value + ",";
                 }
             }
-
             if (!checked) {
                 document.getElementById("ss").innerHTML = "<div style='color: #ffffff;background-color: #EF8F00;width: 135px;height: 20px;text-align: center;'>未选中任何邮件</div>";
                 return;
             }
-            if (mailUID != null && mailUID != "") {
-                alert(chestr)
-                form1.action = '${ctx}/oa/mailInfo/deleteMail?ids=' + chestr + '&state=INBOX';
-                form1.submit();
-            } else {
-                form1.action = '${ctx}/oa/mailInfo/move?ids=' + chestr + '&state=INBOX';
-                form1.submit();
-            }
+            form1.action = '${ctx}/oa/mailInfo/move?ids=' + chestr + '&state=INBOX';
+            form1.submit();
         }
 
         //已读邮件
@@ -265,6 +260,8 @@
         }
 
 
+
+
     </script>
 </head>
 <body>
@@ -340,8 +337,8 @@
         <table style="width:100%; ">
             <thead>
             <tr>
-                <th></th>
-                <th></th>
+                <th align="left"><input id="checkall" type="checkbox"> </th>
+                <th align="left"><img src="${ctxStatic}/tree/css/mailCss/img/mail020.png"/></th>
                 <th align="left">发件人</th>
                 <th align="left">主题</th>
                 <th align="left">时间</th>

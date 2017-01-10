@@ -26,6 +26,16 @@
                 }
             });
 
+            $("#checkall").click(
+                    function(){
+                        if(this.checked){
+                            $("input[name='checkbox']").each(function(){this.checked=true;});
+                        }else{
+                            $("input[name='checkbox']").each(function(){this.checked=false;});
+                        }
+                    }
+            );
+
         });
 
 
@@ -40,6 +50,7 @@
                     chestr += ids[i].value + ",";
                 }
             }
+            chestr=chestr.substring(0,chestr.length-1)
             if (!checked) {
                 document.getElementById("ss").innerHTML = "<div style='color: #ffffff;background-color: #EF8F00;width: 135px;height: 20px;text-align: center;'>未选中任何邮件</div>";
                 return;
@@ -85,8 +96,8 @@
         <table style="width:100%; ">
             <thead>
             <tr>
-                <th></th>
-                <th></th>
+                <th align="left"><input id="checkall" type="checkbox"> </th>
+                <th align="left"></th>
                 <th align="left">姓名</th>
                 <th align="left">邮箱</th>
                 <th align="left">电话</th>

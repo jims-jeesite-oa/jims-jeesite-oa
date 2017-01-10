@@ -35,6 +35,16 @@
                 var id = $(this).attr("data-id")
                 window.location.href = '${ctx}/oa/mailInfo/draftsById?id=' + id
             })
+
+            $("#checkall").click(
+                    function(){
+                        if(this.checked){
+                            $("input[name='checkbox']").each(function(){this.checked=true;});
+                        }else{
+                            $("input[name='checkbox']").each(function(){this.checked=false;});
+                        }
+                    }
+            );
         });
 
 
@@ -167,8 +177,8 @@
         <table style="width:100%; ">
             <thead>
             <tr>
-                <th></th>
-                <th></th>
+                <th align="left"><input id="checkall" type="checkbox"> </th>
+                <th align="left"><img src="${ctxStatic}/tree/css/mailCss/img/mail040.png"/></th>
                 <th align="left">收件人</th>
                 <th align="left">主题</th>
                 <th align="left">时间</th>
