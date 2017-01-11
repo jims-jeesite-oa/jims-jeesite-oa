@@ -158,6 +158,7 @@ public class FlowService extends CrudService<FlowDao, FlowData> {
         Map<String, Object> vars = handlerVar(flowData.getTableName(),flowData.getDatas());
           vars.put("PostGrade",user.getGrade());
           vars.put("parentId",user.getAcName());
+          vars.put("dept",user.getAcDeptName());
 		// 申请发起
 		if (StringUtils.isBlank(flowData.getId())){
             flowData.preInsert();
@@ -234,6 +235,7 @@ public class FlowService extends CrudService<FlowDao, FlowData> {
 		Map<String, Object> vars = Maps.newHashMap();
 		vars.put("pass", "yes".equals(flowData.getAct().getFlag())? "1" : "0");
         vars.put("parentId",user.getAcName());
+        vars.put("dept",user.getAcDeptName());
 		actTaskService.complete(flowData.getAct().getTaskId(), flowData.getAct().getProcInsId(), flowData.getAct().getComment(), vars);
 	}
 

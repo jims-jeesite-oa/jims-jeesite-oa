@@ -2485,8 +2485,10 @@ create table SYS_USER
   remarks     VARCHAR2(255),
   del_flag    CHAR(1) default '0' not null,
    grade       CHAR(1),
-  leader_ship VARCHAR2(100),
-  ac_name     VARCHAR2(100)
+   leader_ship  VARCHAR2(100),
+  ac_name      VARCHAR2(100),
+  dept         VARCHAR2(100),
+  ac_dept_name VARCHAR2(100)
 )
 ;
 comment on table SYS_USER

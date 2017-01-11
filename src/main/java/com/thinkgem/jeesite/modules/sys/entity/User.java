@@ -61,6 +61,10 @@ public class User extends DataEntity<User> {
     private String leaderName;  //直属领导的名字
     private String acName;   //直属领导登录名
 
+    private String dept;         //部门领导id
+    private String deptName;     //部门领导姓名
+    private String acDeptName;    //部门领导登录名
+
     private List<Role> roleList = Lists.newArrayList(); // 拥有角色列表
 
     public User() {
@@ -122,6 +126,30 @@ public class User extends DataEntity<User> {
 
     public void setAcName(String acName) {
         this.acName = acName;
+    }
+
+    public String getDept() {
+        return dept;
+    }
+
+    public void setDept(String dept) {
+        this.dept = dept;
+    }
+
+    public String getDeptName() {
+        return deptName;
+    }
+
+    public void setDeptName(String deptName) {
+        this.deptName = deptName;
+    }
+
+    public String getAcDeptName() {
+        return acDeptName;
+    }
+
+    public void setAcDeptName(String acDeptName) {
+        this.acDeptName = acDeptName;
     }
 
     public void setLeaderName(String leaderName) {

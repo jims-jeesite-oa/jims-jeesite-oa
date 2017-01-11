@@ -160,6 +160,17 @@
                 <span class="help-inline"><font color="red">*</font> </span>
             </div>
         </div>
+        <div class="control-group">
+            <label class="control-label">部门领导:</label>
+            <div class="controls">
+                <sys:treeselect id="dept" name="dept"
+                                value="${user.dept}" labelName=""
+                                labelValue="${user.deptName}"
+                                title="用户" url="/sys/office/treeData?type=3" cssClass="input-xxlarge required"
+                                notAllowSelectParent="true"  cssStyle="width:210px"/>
+                <span class="help-inline"><font color="red">*</font> </span>
+            </div>
+        </div>
 		<div class="control-group">
 			<label class="control-label">用户角色:</label>
 			<div class="controls">

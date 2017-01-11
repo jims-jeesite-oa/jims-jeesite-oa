@@ -82,7 +82,9 @@
 		a.del_flag,
 		a.grade,
 		a.leader_ship,
-		a.ac_name
+		a.ac_name,
+		a.dept,
+		a.ac_dept_name
     </sql>
     
     <sql id="userJoins">
@@ -222,7 +224,9 @@
 			del_flag,
             grade,
             leader_ship,
-            ac_name
+            ac_name,
+            dept,
+            ac_dept_name
 		) VALUES (
 			#{id}, 
 			#{company.id}, 
@@ -245,7 +249,9 @@
 			#{delFlag},
 			#{grade},
 			#{leaderShip},
-			#{acName}
+			#{acName},
+			#{dept},
+			#{acDeptName}
 		)
 	</insert>
 	
@@ -269,7 +275,9 @@
 			photo = #{photo},
             grade=#{grade},
             leader_ship=#{leaderShip},
-            ac_name=#{acName}
+            ac_name=#{acName},
+            dept=#{dept},
+            ac_dept_name=#{acDeptName}
 		WHERE id = #{id}
 	</update>
 	

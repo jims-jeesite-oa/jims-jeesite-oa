@@ -99,6 +99,10 @@ public class UserController extends BaseController {
             User user1= systemService.getUser(user.getLeaderShip());
             user.setLeaderName(user1.getName());
         }
+        if(StringUtils.isNotEmpty(user.getDept())){
+            User user1= systemService.getUser(user.getDept());
+            user.setDeptName(user1.getName());
+        }
 		model.addAttribute("user", user);
 		model.addAttribute("allRoles", systemService.findAllRole());
 		return "modules/sys/userForm";
@@ -142,6 +146,9 @@ public class UserController extends BaseController {
 
         User user1=UserUtils.get(user.getLeaderShip());
         user.setAcName(user1.getLoginName());
+
+        User user2=UserUtils.get(user.getDept());
+        user.setAcDeptName(user2.getLoginName());
 
 		// 保存用户信息
 		systemService.saveUser(user);
