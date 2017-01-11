@@ -155,10 +155,9 @@ public class FlowService extends CrudService<FlowDao, FlowData> {
 	@Transactional(readOnly = false)
 	public void save(FlowData flowData) {
         User user= UserUtils.getUser();
-        User user1= UserUtils.get(user.getLeaderShip());
         Map<String, Object> vars = handlerVar(flowData.getTableName(),flowData.getDatas());
           vars.put("PostGrade",user.getGrade());
-          vars.put("parentId",user1.getLoginName());
+          vars.put("parentId",user.getAcName());
 		// 申请发起
 		if (StringUtils.isBlank(flowData.getId())){
             flowData.preInsert();
@@ -202,6 +201,7 @@ public class FlowService extends CrudService<FlowDao, FlowData> {
 	 */
 	@Transactional(readOnly = false)
 	public void auditSave(FlowData flowData) {
+        User user= UserUtils.getUser();
 		// 设置意见
         flowData.getAct().setComment(("yes".equals(flowData.getAct().getFlag())?"[同意] ":"[驳回] ")+flowData.getAct().getComment());
         flowData.preUpdate();
@@ -233,6 +233,7 @@ public class FlowService extends CrudService<FlowDao, FlowData> {
 		// 提交流程任务
 		Map<String, Object> vars = Maps.newHashMap();
 		vars.put("pass", "yes".equals(flowData.getAct().getFlag())? "1" : "0");
+        vars.put("parentId",user.getAcName());
 		actTaskService.complete(flowData.getAct().getTaskId(), flowData.getAct().getProcInsId(), flowData.getAct().getComment(), vars);
 	}
 

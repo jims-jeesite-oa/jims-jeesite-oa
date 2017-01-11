@@ -139,6 +139,10 @@ public class UserController extends BaseController {
 			}
 		}
 		user.setRoleList(roleList);
+
+        User user1=UserUtils.get(user.getLeaderShip());
+        user.setAcName(user1.getLoginName());
+
 		// 保存用户信息
 		systemService.saveUser(user);
 		// 清除当前用户缓存

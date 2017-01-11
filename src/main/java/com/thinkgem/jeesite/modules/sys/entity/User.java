@@ -59,6 +59,7 @@ public class User extends DataEntity<User> {
 
     private Role role;    // 根据角色查询用户条件
     private String leaderName;  //直属领导的名字
+    private String acName;   //直属领导登录名
 
     private List<Role> roleList = Lists.newArrayList(); // 拥有角色列表
 
@@ -113,6 +114,14 @@ public class User extends DataEntity<User> {
 
     public String getLeaderName() {
         return leaderName;
+    }
+
+    public String getAcName() {
+        return acName;
+    }
+
+    public void setAcName(String acName) {
+        this.acName = acName;
     }
 
     public void setLeaderName(String leaderName) {

@@ -2483,7 +2483,10 @@ create table SYS_USER
   update_by   VARCHAR2(64) not null,
   update_date DATE not null,
   remarks     VARCHAR2(255),
-  del_flag    CHAR(1) default '0' not null
+  del_flag    CHAR(1) default '0' not null,
+   grade       CHAR(1),
+  leader_ship VARCHAR2(100),
+  ac_name     VARCHAR2(100)
 )
 ;
 comment on table SYS_USER
