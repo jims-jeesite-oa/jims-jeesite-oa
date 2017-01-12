@@ -137,8 +137,11 @@ public class FlowController extends BaseController {
 
     @RequestMapping(value = "saveAudit")
     public String saveAudit(FlowData flowData, Model model,HttpServletResponse response) {
+        if(StringUtils.isEmpty(flowData.getAct().getComment())) {
+            flowData.getAct().setComment("归档");
+        }
         if (StringUtils.isBlank(flowData.getAct().getFlag())
-                || StringUtils.isBlank(flowData.getAct().getComment())){
+                || StringUtils.isEmpty(flowData.getAct().getComment())){
             addMessage(model, "请填写审核意见。");
             form(flowData, model,response);
         }
@@ -254,7 +257,23 @@ public class FlowController extends BaseController {
                         content = content.replace("<textarea ", "<textarea style='width:99%;height:99%;padding:0;margin:0;border:0;'");
                     }
                 } else {
-                    content = "${" + column.getColumnName() + "}";
+                    Map<String,Object> columnMap = new HashMap<>();
+                    if(StringUtils.equals(column.getColumnComment(),"实际开始时间") || StringUtils.equals(column.getColumnComment(),"实际结束时间")
+                            ||StringUtils.equals(column.getColumnComment(),"记录加班小时")){
+                        columnMap.put("value",column.getControlTypeId());
+                        columnMap.put("columnName",column.getColumnName());
+                        if(ComponentUtils.chargeMoreData(column.getControlTypeId())) {
+                            columnMap.put("optData", DictUtils.getDictList(column.getRemarks()));
+                        }
+                        content = ComponentUtils.initComponent(columnMap,init);
+                        if("text".equals(column.getControlTypeId()) || "number".equals(column.getControlTypeId())){
+                            content = content.replace("<input ", "<input style='width:98%;padding-left:0;padding-right:0;margin:0;border:0;'");
+                        } else if("textarea".equals(column.getControlTypeId())) {
+                            content = content.replace("<textarea ", "<textarea style='width:99%;height:99%;padding:0;margin:0;border:0;'");
+                        }
+                    }else{
+                        content = "${" + column.getColumnName() + "}";
+                    }
                 }
                 tableContent=tableContent.replace("[" + column.getColumnComment() + "]",content);
             }

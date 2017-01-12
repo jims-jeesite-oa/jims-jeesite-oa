@@ -404,11 +404,13 @@
 		<input type="hidden" id="flag" name="act.flag" value="${act.flag}"/>
         <input type="hidden" name="tableName" value="${tableName}"/>
 		<sys:message content="${message}"/>
+
 		<fieldset>
 			<legend>${act.taskName}</legend>
             <table class="table-form">
                 $flowTableInfo$
             </table>
+            <#if act.taskDefKey != 'apply_end'>
             <legend>您的意见</legend>
             <table class="table-form">
                 <tr>
@@ -417,10 +419,12 @@
 					</td>
 				</tr>
             </table>
+            </#if>
 		</fieldset>
+
 		<div class="form-actions">
 		    <#if act.taskDefKey = 'apply_end'>
-                  <input id="btnSubmit" class="btn btn-primary" type="submit" value="兑 现" onclick="$('#flag').val('yes')"/>&nbsp;
+                  <input id="btnSubmit" class="btn btn-primary" type="submit" value="归 档" onclick="$('#flag').val('yes')"/>&nbsp;
             <#else>
               <input id="btnSubmit" class="btn btn-primary" type="submit" value="同 意" onclick="$('#flag').val('yes')"/>&nbsp;
                 <input id="btnSubmit" class="btn btn-inverse" type="submit" value="驳 回" onclick="$('#flag').val('no')"/>&nbsp;
