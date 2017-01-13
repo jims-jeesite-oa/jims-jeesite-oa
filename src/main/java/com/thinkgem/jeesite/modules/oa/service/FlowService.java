@@ -210,7 +210,7 @@ public class FlowService extends CrudService<FlowDao, FlowData> {
 		String taskDefKey = flowData.getAct().getTaskDefKey();
 
 		// 审核环节
-		if (taskDefKey.startsWith("audit")){
+		if (taskDefKey.startsWith("audit") || "apply_execute".equals(taskDefKey)){
             OaPersonDefineTable table = oaPersonDefineTableDao.findByTableName(flowData.getTableName(), null);
             OaPersonDefineTableColumn param = new OaPersonDefineTableColumn(table);
             param.setIsAudit("1");

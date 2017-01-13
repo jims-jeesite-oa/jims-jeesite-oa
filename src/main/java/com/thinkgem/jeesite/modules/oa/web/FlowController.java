@@ -80,7 +80,7 @@ public class FlowController extends BaseController {
                     view = "flowForm";
                 }
                 // 审核
-                else if (taskDefKey.startsWith("audit") || "apply_end".equals(taskDefKey)) {
+                else if (taskDefKey.startsWith("audit") || "apply_end".equals(taskDefKey) || "apply_execute".equals(taskDefKey)) {
                     view = "flowAudit";
                 }
                 flow.setDatas(flowService.getOneInfo(paramMap));
@@ -137,9 +137,12 @@ public class FlowController extends BaseController {
 
     @RequestMapping(value = "saveAudit")
     public String saveAudit(FlowData flowData, Model model,HttpServletResponse response) {
-        if(StringUtils.isEmpty(flowData.getAct().getComment())) {
+        if(StringUtils.isEmpty(flowData.getAct().getComment()) && StringUtils.equals(flowData.getAct().getTaskDefKey(), "apply_end")) {
             flowData.getAct().setComment("归档");
         }
+        /*else if(StringUtils.isEmpty(flowData.getAct().getComment())){
+            flowData.getAct().setComment("执行");
+        }*/
         if (StringUtils.isBlank(flowData.getAct().getFlag())
                 || StringUtils.isEmpty(flowData.getAct().getComment())){
             addMessage(model, "请填写审核意见。");

@@ -423,12 +423,15 @@
 		</fieldset>
 
 		<div class="form-actions">
-		    <#if act.taskDefKey = 'apply_end'>
-                  <input id="btnSubmit" class="btn btn-primary" type="submit" value="归 档" onclick="$('#flag').val('yes')"/>&nbsp;
-            <#else>
-              <input id="btnSubmit" class="btn btn-primary" type="submit" value="同 意" onclick="$('#flag').val('yes')"/>&nbsp;
-                <input id="btnSubmit" class="btn btn-inverse" type="submit" value="驳 回" onclick="$('#flag').val('no')"/>&nbsp;
-            </#if>
+		          <#if act.taskDefKey = 'apply_end'>
+                     <input id="btnSubmit" class="btn btn-primary" type="submit" value="归 档" onclick="$('#flag').val('yes')"/>&nbsp;
+                  <#elseif act.taskDefKey = 'apply_execute'>
+                      <input id="btnSubmit" class="btn btn-primary" type="submit" value="执 行" onclick="$('#flag').val('yes')"/>&nbsp;
+                  <#else>
+                    <input id="btnSubmit" class="btn btn-primary" type="submit" value="同 意" onclick="$('#flag').val('yes')"/>&nbsp;
+                    <input id="btnSubmit" class="btn btn-inverse" type="submit" value="驳 回" onclick="$('#flag').val('no')"/>&nbsp;
+                  </#if>
+
 			<input id="btnCancel" class="btn" type="button" value="返 回" onclick="history.go(-1)"/>
 		</div>
 		<legend>流转信息</legend>
