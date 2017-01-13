@@ -17,6 +17,7 @@ import com.thinkgem.jeesite.modules.table.dao.OaPersonDefineTableColumnDao;
 import com.thinkgem.jeesite.modules.table.dao.OaPersonDefineTableDao;
 import com.thinkgem.jeesite.modules.table.entity.OaPersonDefineTable;
 import com.thinkgem.jeesite.modules.table.entity.OaPersonDefineTableColumn;
+import org.activiti.engine.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -235,7 +236,6 @@ public class FlowService extends CrudService<FlowDao, FlowData> {
 		Map<String, Object> vars = Maps.newHashMap();
 		vars.put("pass", "yes".equals(flowData.getAct().getFlag())? "1" : "0");
         vars.put("parentId",user.getAcName());
-        vars.put("dept",user.getAcDeptName());
 		actTaskService.complete(flowData.getAct().getTaskId(), flowData.getAct().getProcInsId(), flowData.getAct().getComment(), vars);
 	}
 

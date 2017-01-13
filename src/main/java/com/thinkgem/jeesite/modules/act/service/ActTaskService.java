@@ -101,7 +101,8 @@ public class ActTaskService extends BaseService {
 	
 	/**
 	 * 获取待办列表
-	 * @param procDefKey 流程定义标识
+     *  procDefKey 流程定义标识
+	 * @param
 	 * @return
 	 */
 	public List<Act> todoList(Act act){
@@ -173,8 +174,9 @@ public class ActTaskService extends BaseService {
 	
 	/**
 	 * 获取已办任务
+     * procDefKey 流程定义标识
 	 * @param page
-	 * @param procDefKey 流程定义标识
+	 * @param
 	 * @return
 	 */
 	public Page<Act> historicList(Page<Act> page, Act act){
@@ -325,13 +327,14 @@ public class ActTaskService extends BaseService {
 		}
 	    
 	    page.setCount(processDefinitionQuery.count());
-	    
+	    List<Object[]> list=new ArrayList<>();
 	    List<ProcessDefinition> processDefinitionList = processDefinitionQuery.listPage(page.getFirstResult(), page.getMaxResults());
 	    for (ProcessDefinition processDefinition : processDefinitionList) {
 	      String deploymentId = processDefinition.getDeploymentId();
 	      Deployment deployment = repositoryService.createDeploymentQuery().deploymentId(deploymentId).singleResult();
-	      page.getList().add(new Object[]{processDefinition, deployment});
+            list.add(new Object[]{processDefinition, deployment});
 	    }
+        page.setList(list);
 		return page;
 	}
 	
