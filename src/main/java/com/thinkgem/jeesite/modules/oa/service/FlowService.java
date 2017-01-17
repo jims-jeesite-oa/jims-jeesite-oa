@@ -235,7 +235,7 @@ public class FlowService extends CrudService<FlowDao, FlowData> {
 		// 提交流程任务
 		Map<String, Object> vars = Maps.newHashMap();
 		vars.put("pass", "yes".equals(flowData.getAct().getFlag())? "1" : "0");
-        vars.put("parentId",user.getAcName());
+//        vars.put("parentId",user.getAcName());
 		actTaskService.complete(flowData.getAct().getTaskId(), flowData.getAct().getProcInsId(), flowData.getAct().getComment(), vars);
 	}
 
