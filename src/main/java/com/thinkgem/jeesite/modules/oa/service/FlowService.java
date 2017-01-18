@@ -23,6 +23,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.beans.PropertyDescriptor;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -335,7 +337,9 @@ public class FlowService extends CrudService<FlowDao, FlowData> {
             List<OaPersonDefineTableColumn> columns = oaPersonDefineTableColumnDao.getColumns(tableName);
             if (columns != null && columns.size() > 0) {
                 for (OaPersonDefineTableColumn column : columns) {
-                    vars.put(column.getColumnName(),datas.get(column.getColumnName()));
+                    if(column.getIsProcess()!=null){
+                        vars.put(column.getColumnName(),datas.get(column.getColumnName()));
+                    }
                 }
             }
         }
