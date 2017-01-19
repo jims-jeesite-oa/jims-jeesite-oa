@@ -96,7 +96,7 @@ public class FlowService extends CrudService<FlowDao, FlowData> {
     public void updateTable(FlowData flowData) {
         String tableName = flowData.getTableName();
         Map<String, Object> data = flowData.getDatas();
-        OaPersonDefineTable defineTable = oaPersonDefineTableDao.findByTableName(tableName, UserUtils.getUser().getOffice().getId());
+        OaPersonDefineTable defineTable = oaPersonDefineTableDao.findByTableName(tableName,null);
         if (defineTable != null && data != null && StringUtils.isNotBlank(tableName)) {
             List<OaPersonDefineTableColumn> columns = oaPersonDefineTableColumnDao.findColumnListByTableId(defineTable.getId());
             dataAdapter(columns, data);
@@ -183,25 +183,47 @@ public class FlowService extends CrudService<FlowDao, FlowData> {
             if (flowData.getAct().getComment() == null) {
                 flowData.getAct().setComment("");
             }
-            flowData.getAct().setComment(("yes".equals(flowData.getAct().getFlag()) ? "[重申] " : "[销毁] ") + flowData.getAct().getComment());
-
-            // 完成流程任务
-            vars.put("pass", "yes".equals(flowData.getAct().getFlag()) ? "1" : "0");
-            actTaskService.complete(flowData.getAct().getTaskId(), flowData.getAct().getProcInsId(), flowData.getAct().getComment(), "自定义流程", vars);
-            if ("yes".equals(flowData.getAct().getFlag())) {
+            if((flowData.getAct().getTaskDefKey()).startsWith("edit")) {
+                flowData.getAct().setComment(("yes".equals(flowData.getAct().getFlag()) ? "[编辑] " : "[驳回] ") + flowData.getAct().getComment());
                 OaPersonDefineTable table = oaPersonDefineTableDao.findByTableName(flowData.getTableName(), null);
                 OaPersonDefineTableColumn param = new OaPersonDefineTableColumn(table);
                 param.setIsAudit("1");
                 List<OaPersonDefineTableColumn> columns = oaPersonDefineTableColumnDao.findList(param);
-                StringBuilder sb = new StringBuilder("update " + flowData.getTableName() + " set ");
-                String split = "";
                 for (OaPersonDefineTableColumn column : columns) {
-                    sb.append(split + column.getColumnName() + "=''");
-                    split = ",";
+                    if (flowData.getAct().getTaskDefKey().equals(column.getAuditPost()) || flowData.getAct().getTaskDefKey().startsWith("edit")) {
+                        String sql = "update " + flowData.getTableName() + " set "
+                                + column.getColumnName() + "='" + flowData.getAct().getComment()
+                                + "' where id='" + flowData.getId() + "'";
+                        oaPersonDefineTableDao.executeSql(sql);
+                        break;
+                    }
                 }
-                sb.append(" where id='" + flowData.getId() + "'");
-                oaPersonDefineTableDao.executeSql(sb.toString());
+
+                Map<String, Object> var = Maps.newHashMap();
+                var.put("pass", "yes".equals(flowData.getAct().getFlag()) ? "1" : "0");
+                actTaskService.complete(flowData.getAct().getTaskId(), flowData.getAct().getProcInsId(), flowData.getAct().getComment(), var);
+            }else{
+                flowData.getAct().setComment(("yes".equals(flowData.getAct().getFlag()) ? "[重申] " : "[销毁] ") + flowData.getAct().getComment());
+
+                // 完成流程任务
+                vars.put("pass", "yes".equals(flowData.getAct().getFlag()) ? "1" : "0");
+                actTaskService.complete(flowData.getAct().getTaskId(), flowData.getAct().getProcInsId(), flowData.getAct().getComment(), "自定义流程", vars);
+                if ("yes".equals(flowData.getAct().getFlag())) {
+                    OaPersonDefineTable table = oaPersonDefineTableDao.findByTableName(flowData.getTableName(), null);
+                    OaPersonDefineTableColumn param = new OaPersonDefineTableColumn(table);
+                    param.setIsAudit("1");
+                    List<OaPersonDefineTableColumn> columns = oaPersonDefineTableColumnDao.findList(param);
+                    StringBuilder sb = new StringBuilder("update " + flowData.getTableName() + " set ");
+                    String split = "";
+                    for (OaPersonDefineTableColumn column : columns) {
+                        sb.append(split + column.getColumnName() + "=''");
+                        split = ",";
+                    }
+                    sb.append(" where id='" + flowData.getId() + "'");
+                    oaPersonDefineTableDao.executeSql(sb.toString());
+                }
             }
+
         }
     }
 

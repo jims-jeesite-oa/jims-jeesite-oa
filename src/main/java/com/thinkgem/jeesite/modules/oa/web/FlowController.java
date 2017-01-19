@@ -76,7 +76,7 @@ public class FlowController extends BaseController {
                     view = "flowView";
                 }
                 // 修改环节
-                else if ("modify".equals(taskDefKey)) {
+                else if ("modify".equals(taskDefKey) || (taskDefKey).startsWith("edit")) {
                     view = "flowForm";
                 }
                 // 审核
@@ -260,7 +260,8 @@ public class FlowController extends BaseController {
                     } else if("textarea".equals(column.getControlTypeId())) {
                         content = content.replace("<textarea ", "<textarea style='width:99%;height:99%;padding:0;margin:0;border:0;'");
                     }
-                } else {
+                }
+                else {
                     Map<String,Object> columnMap = new HashMap<>();
                     if(StringUtils.equals(column.getColumnComment(),"实际开始时间") || StringUtils.equals(column.getColumnComment(),"实际结束时间")
                             ||StringUtils.equals(column.getColumnComment(),"记录加班小时")){
