@@ -30,6 +30,7 @@ import java.util.Map;
 
 /**
  * 审批Service
+ *
  * @author thinkgem
  * @version 2014-05-16
  */
@@ -37,8 +38,8 @@ import java.util.Map;
 @Transactional(readOnly = true)
 public class FlowService extends CrudService<FlowDao, FlowData> {
 
-	@Autowired
-	private ActTaskService actTaskService;
+    @Autowired
+    private ActTaskService actTaskService;
     @Autowired
     private OaPersonDefineTableDao oaPersonDefineTableDao;
     @Autowired
@@ -46,10 +47,11 @@ public class FlowService extends CrudService<FlowDao, FlowData> {
 
     /**
      * 表单添加
+     *
      * @param flowData
      * @throws Exception
      */
-    public void insertTable(FlowData flowData){
+    public void insertTable(FlowData flowData) {
         String tableName = flowData.getTableName();
         Map<String, Object> data = flowData.getDatas();
         OaPersonDefineTable defineTable = oaPersonDefineTableDao.findByTableName(tableName, null);
@@ -72,7 +74,7 @@ public class FlowService extends CrudService<FlowDao, FlowData> {
                 }
             }
             insertKey.append(",id,create_by,create_date,update_by,update_date,remarks,del_flag,proc_def_id");
-            insertValue.append(comma + handleSqlValue(flowData.getId(),"varchar2"))
+            insertValue.append(comma + handleSqlValue(flowData.getId(), "varchar2"))
                     .append(comma + handleSqlValue(flowData.getCreateBy(), "varchar2"))
                     .append(comma + handleSqlValue(DateUtils.formatDateTime(flowData.getCreateDate()), "date"))
                     .append(comma + handleSqlValue(flowData.getUpdateBy(), "varchar2"))
@@ -84,8 +86,10 @@ public class FlowService extends CrudService<FlowDao, FlowData> {
             oaPersonDefineTableDao.executeSql(sql);
         }
     }
+
     /**
      * 表单添加
+     *
      * @param flowData
      * @throws Exception
      */
@@ -117,27 +121,27 @@ public class FlowService extends CrudService<FlowDao, FlowData> {
         }
     }
 
-	public List<Map<String,Object>> getFlowInfo(Map<String,String> paramMap) {
+    public List<Map<String, Object>> getFlowInfo(Map<String, String> paramMap) {
         String sql = getSelectSql(paramMap);
-        if(StringUtils.isNotBlank(sql)) {
+        if (StringUtils.isNotBlank(sql)) {
             return oaPersonDefineTableDao.getFlowInfo(sql);
         }
-		return Lists.newArrayList();
-	}
+        return Lists.newArrayList();
+    }
 
-    public Page<Map<String,Object>> getPageFlowInfo(Page<FlowData> page,Map<String,String> paramMap){
+    public Page<Map<String, Object>> getPageFlowInfo(Page<FlowData> page, Map<String, String> paramMap) {
         FlowData flow = new FlowData();
         flow.setPage(page);
         flow.setSql(getSelectSql(paramMap));
-        List<Map<String,Object>> list = oaPersonDefineTableDao.getFlowInfo(flow);
-        Page<Map<String,Object>> result = new Page<>(page.getPageNo(),page.getPageSize(),page.getCount());
+        List<Map<String, Object>> list = oaPersonDefineTableDao.getFlowInfo(flow);
+        Page<Map<String, Object>> result = new Page<>(page.getPageNo(), page.getPageSize(), page.getCount());
         result.setList(list);
         return result;
     }
 
-    public Map<String,Object> getOneInfo(Map<String,String> paramMap) {
-        List<Map<String,Object>> infos = getFlowInfo(paramMap);
-        if(infos != null && infos.size() > 0) {
+    public Map<String, Object> getOneInfo(Map<String, String> paramMap) {
+        List<Map<String, Object>> infos = getFlowInfo(paramMap);
+        if (infos != null && infos.size() > 0) {
             return infos.get(0);
         }
         return Maps.newHashMap();
@@ -151,75 +155,78 @@ public class FlowService extends CrudService<FlowDao, FlowData> {
 //		return page;
 //	}
 //
-	/**
-	 * 审核新增或编辑
-	 * @param flowData
-	 */
-	@Transactional(readOnly = false)
-	public void save(FlowData flowData) {
-        User user= UserUtils.getUser();
-        Map<String, Object> vars = handlerVar(flowData.getTableName(),flowData.getDatas());
-          vars.put("PostGrade",user.getGrade());
-          vars.put("parentId",user.getAcName());
-          vars.put("dept",user.getAcDeptName());
-		// 申请发起
-		if (StringUtils.isBlank(flowData.getId())){
-            flowData.preInsert();
-			insertTable(flowData);
-			// 启动流程
 
-			actTaskService.startProcess(flowData.getFlowFlag(), flowData.getTableName(), flowData.getId(),"自定义流程",vars);
-		}
-		// 重新编辑申请
-		else{
+    /**
+     * 审核新增或编辑
+     *
+     * @param flowData
+     */
+    @Transactional(readOnly = false)
+    public void save(FlowData flowData) {
+        User user = UserUtils.getUser();
+        Map<String, Object> vars = handlerVar(flowData.getTableName(), flowData.getDatas());
+        vars.put("PostGrade", user.getGrade());
+        vars.put("parentId", user.getAcName());
+        vars.put("dept", user.getAcDeptName());
+        // 申请发起
+        if (StringUtils.isBlank(flowData.getId())) {
+            flowData.preInsert();
+            insertTable(flowData);
+            // 启动流程
+
+            actTaskService.startProcess(flowData.getFlowFlag(), flowData.getTableName(), flowData.getId(), "自定义流程", vars);
+        }
+        // 重新编辑申请
+        else {
             flowData.preUpdate();
-			updateTable(flowData);
-            if(flowData.getAct().getComment() == null) {
+            updateTable(flowData);
+            if (flowData.getAct().getComment() == null) {
                 flowData.getAct().setComment("");
             }
-            flowData.getAct().setComment(("yes".equals(flowData.getAct().getFlag())?"[重申] ":"[销毁] ")+flowData.getAct().getComment());
+            flowData.getAct().setComment(("yes".equals(flowData.getAct().getFlag()) ? "[重申] " : "[销毁] ") + flowData.getAct().getComment());
 
-			// 完成流程任务
-			vars.put("pass", "yes".equals(flowData.getAct().getFlag())? "1" : "0");
-			actTaskService.complete(flowData.getAct().getTaskId(), flowData.getAct().getProcInsId(), flowData.getAct().getComment(), "自定义流程", vars);
-            if("yes".equals(flowData.getAct().getFlag())) {
+            // 完成流程任务
+            vars.put("pass", "yes".equals(flowData.getAct().getFlag()) ? "1" : "0");
+            actTaskService.complete(flowData.getAct().getTaskId(), flowData.getAct().getProcInsId(), flowData.getAct().getComment(), "自定义流程", vars);
+            if ("yes".equals(flowData.getAct().getFlag())) {
                 OaPersonDefineTable table = oaPersonDefineTableDao.findByTableName(flowData.getTableName(), null);
                 OaPersonDefineTableColumn param = new OaPersonDefineTableColumn(table);
                 param.setIsAudit("1");
                 List<OaPersonDefineTableColumn> columns = oaPersonDefineTableColumnDao.findList(param);
                 StringBuilder sb = new StringBuilder("update " + flowData.getTableName() + " set ");
                 String split = "";
-                for(OaPersonDefineTableColumn column : columns) {
+                for (OaPersonDefineTableColumn column : columns) {
                     sb.append(split + column.getColumnName() + "=''");
                     split = ",";
                 }
                 sb.append(" where id='" + flowData.getId() + "'");
                 oaPersonDefineTableDao.executeSql(sb.toString());
             }
-		}
-	}
+        }
+    }
 
-	/**
-	 * 审核审批保存
-	 * @param flowData
-	 */
-	@Transactional(readOnly = false)
-	public void auditSave(FlowData flowData) {
-        User user= UserUtils.getUser();
-		// 设置意见
-        flowData.getAct().setComment(("yes".equals(flowData.getAct().getFlag())?"[同意] ":"[驳回] ")+flowData.getAct().getComment());
+    /**
+     * 审核审批保存
+     *
+     * @param flowData
+     */
+    @Transactional(readOnly = false)
+    public void auditSave(FlowData flowData) {
+        User user = UserUtils.getUser();
+        // 设置意见
+        flowData.getAct().setComment(("yes".equals(flowData.getAct().getFlag()) ? "[同意] " : "[驳回] ") + flowData.getAct().getComment());
         flowData.preUpdate();
-		// 对不同环节的业务逻辑进行操作
-		String taskDefKey = flowData.getAct().getTaskDefKey();
+        // 对不同环节的业务逻辑进行操作
+        String taskDefKey = flowData.getAct().getTaskDefKey();
 
-		// 审核环节
-		if (taskDefKey.startsWith("audit") || "apply_execute".equals(taskDefKey)){
+        // 审核环节
+        if (taskDefKey.startsWith("audit") || "apply_execute".equals(taskDefKey)) {
             OaPersonDefineTable table = oaPersonDefineTableDao.findByTableName(flowData.getTableName(), null);
             OaPersonDefineTableColumn param = new OaPersonDefineTableColumn(table);
             param.setIsAudit("1");
             List<OaPersonDefineTableColumn> columns = oaPersonDefineTableColumnDao.findList(param);
-            for(OaPersonDefineTableColumn column : columns) {
-                if(taskDefKey.equals(column.getAuditPost())) {
+            for (OaPersonDefineTableColumn column : columns) {
+                if (taskDefKey.equals(column.getAuditPost())) {
                     String sql = "update " + flowData.getTableName() + " set "
                             + column.getColumnName() + "='" + flowData.getAct().getComment()
                             + "' where id='" + flowData.getId() + "'";
@@ -228,64 +235,66 @@ public class FlowService extends CrudService<FlowDao, FlowData> {
                 }
             }
 
+        } else if ("apply_end".equals(taskDefKey)) {
         }
-		else if ("apply_end".equals(taskDefKey)){}
-		// 未知环节，直接返回
-		else{
-			return;
-		}
-		// 提交流程任务
-		Map<String, Object> vars = Maps.newHashMap();
-		vars.put("pass", "yes".equals(flowData.getAct().getFlag())? "1" : "0");
+        // 未知环节，直接返回
+        else {
+            return;
+        }
+        // 提交流程任务
+        Map<String, Object> vars = Maps.newHashMap();
+        vars.put("pass", "yes".equals(flowData.getAct().getFlag()) ? "1" : "0");
 //        vars.put("parentId",user.getAcName());
-		actTaskService.complete(flowData.getAct().getTaskId(), flowData.getAct().getProcInsId(), flowData.getAct().getComment(), vars);
-	}
+        actTaskService.complete(flowData.getAct().getTaskId(), flowData.getAct().getProcInsId(), flowData.getAct().getComment(), vars);
+    }
 
 
     /**
      * 数据类型适配-根据表单配置的字段类型将前台传递的值将map-value转换成相应的类型
+     *
      * @param columns
-     * @param data 数据
+     * @param data    数据
      */
-    private Map<String, Object> dataAdapter(List<OaPersonDefineTableColumn> columns,Map<String, Object> data) {
+    private Map<String, Object> dataAdapter(List<OaPersonDefineTableColumn> columns, Map<String, Object> data) {
         //step.2 迭代将要持久化的数据
-        for(OaPersonDefineTableColumn column : columns){
+        for (OaPersonDefineTableColumn column : columns) {
             //根据表单配置的字段名 获取 前台数据
             String columnName = column.getColumnName();
             Object beforeV = data.get(columnName);
             //如果值不为空
-            if(OConvertUtils.isNotEmpty(beforeV)){
+            if (OConvertUtils.isNotEmpty(beforeV)) {
                 //获取字段配置-字段类型
                 String type = column.getColumnType();
                 //根据类型进行值的适配
-                data.put(columnName,handleSqlValue(beforeV,type));
+                data.put(columnName, handleSqlValue(beforeV, type));
             }
         }
         return data;
     }
 
-    private String handleSqlValue(Object value,String type){
-        if(value == null) return null;
+    private String handleSqlValue(Object value, String type) {
+        if (value == null) return null;
         Object newV = "";
-        if("date".equalsIgnoreCase(type) || "datetime".equalsIgnoreCase(type)){
+        if ("date".equalsIgnoreCase(type) || "datetime".equalsIgnoreCase(type)) {
             newV = "to_date('" + String.valueOf(value) + "','yyyy-MM-dd HH24:mi:ss')";
-        }else if("number".equalsIgnoreCase(type)){
+        } else if ("number".equalsIgnoreCase(type)) {
             newV = new Double(0);
-            try{
+            try {
                 newV = Double.parseDouble(String.valueOf(value));
-            }catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-        } else if("varchar2".equalsIgnoreCase(type)) {
+        } else if ("varchar2".equalsIgnoreCase(type)) {
             newV = "'" + String.valueOf(value) + "'";
         } else {
             return null;
         }
         return String.valueOf(newV);
     }
+
     //判断key是否为表配置的属性
-    private boolean isContainsFieled(List<OaPersonDefineTableColumn> columns,String fieledName){
-        for(int i=0;i<columns.size();i++) {
+    private boolean isContainsFieled(List<OaPersonDefineTableColumn> columns, String fieledName) {
+        for (int i = 0; i < columns.size(); i++) {
             if (columns.get(i).getColumnName().equals(fieledName.toUpperCase())) {
                 return true;
             }
@@ -293,17 +302,17 @@ public class FlowService extends CrudService<FlowDao, FlowData> {
         return false;
     }
 
-    private String getSelectSql(Map<String,String> paramMap) {
+    private String getSelectSql(Map<String, String> paramMap) {
         String tableName = paramMap.get("tableName");
         String procInsId = paramMap.get("procInsId");
         String id = paramMap.get("id");
         String createBy = paramMap.get("createBy");
         String procDefId = paramMap.get("procDefId");
         StringBuilder sql = null;
-        OaPersonDefineTable defineTable = oaPersonDefineTableDao.findByTableName(tableName,null);
-        if(defineTable != null) {
+        OaPersonDefineTable defineTable = oaPersonDefineTableDao.findByTableName(tableName, null);
+        if (defineTable != null) {
             List<OaPersonDefineTableColumn> columns = oaPersonDefineTableColumnDao.findColumnListByTableId(defineTable.getId());
-            if(columns != null && columns.size() >0) {
+            if (columns != null && columns.size() > 0) {
                 sql = new StringBuilder("select id,proc_ins_id procInsId");
                 for (OaPersonDefineTableColumn column : columns) {
                     if ("DATE".equals(column.getColumnType().toUpperCase())) {
@@ -327,18 +336,25 @@ public class FlowService extends CrudService<FlowDao, FlowData> {
                 }
             }
         }
-        if(sql != null) return sql.toString();
+        if (sql != null) return sql.toString();
         return null;
     }
 
-    private Map<String, Object> handlerVar(String tableName,Map<String,Object> datas) {
+    private Map<String, Object> handlerVar(String tableName, Map<String, Object> datas) {
         Map<String, Object> vars = Maps.newHashMap();
-        if(StringUtils.isNotBlank(tableName) && datas != null && datas.keySet().size() > 0) {
+        if (StringUtils.isNotBlank(tableName) && datas != null && datas.keySet().size() < 65) {
             List<OaPersonDefineTableColumn> columns = oaPersonDefineTableColumnDao.getColumns(tableName);
             if (columns != null && columns.size() > 0) {
                 for (OaPersonDefineTableColumn column : columns) {
-                    if(column.getIsProcess()!=null){
-                        vars.put(column.getColumnName(),datas.get(column.getColumnName()));
+                    vars.put(column.getColumnName(), datas.get(column.getColumnName()));
+                }
+            }
+        } else {
+            List<OaPersonDefineTableColumn> columns = oaPersonDefineTableColumnDao.getColumns(tableName);
+            if (columns != null && columns.size() > 0) {
+                for (OaPersonDefineTableColumn column : columns) {
+                    if (column.getIsProcess() != null) {
+                        vars.put(column.getColumnName(), datas.get(column.getColumnName()));
                     }
                 }
             }

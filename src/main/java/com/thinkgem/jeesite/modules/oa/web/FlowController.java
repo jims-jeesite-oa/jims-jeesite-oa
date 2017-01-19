@@ -140,14 +140,15 @@ public class FlowController extends BaseController {
         if(StringUtils.isEmpty(flowData.getAct().getComment()) && StringUtils.equals(flowData.getAct().getTaskDefKey(), "apply_end")) {
             flowData.getAct().setComment("归档");
         }
-        /*else if(StringUtils.isEmpty(flowData.getAct().getComment())){
-            flowData.getAct().setComment("执行");
-        }*/
         if (StringUtils.isBlank(flowData.getAct().getFlag())
                 || StringUtils.isEmpty(flowData.getAct().getComment())){
             addMessage(model, "请填写审核意见。");
             form(flowData, model,response);
         }
+
+        String userId = UserUtils.getUser().getLoginName();//ObjectUtils.toString(UserUtils.getUser().getId());
+        actTaskService.claim(flowData.getAct().getTaskId(), userId);
+
         flowService.auditSave(flowData);
         return "redirect:" + adminPath + "/act/task/todo/";
     }
