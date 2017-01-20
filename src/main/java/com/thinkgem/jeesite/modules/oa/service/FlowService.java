@@ -97,8 +97,30 @@ public class FlowService extends CrudService<FlowDao, FlowData> {
         String tableName = flowData.getTableName();
         Map<String, Object> data = flowData.getDatas();
         OaPersonDefineTable defineTable = oaPersonDefineTableDao.findByTableName(tableName,null);
-        if (defineTable != null && data != null && StringUtils.isNotBlank(tableName)) {
+        if (defineTable != null && data != null && StringUtils.isNotBlank(tableName) && flowData.getAct().getTaskDefKey().startsWith("modify")) {
             List<OaPersonDefineTableColumn> columns = oaPersonDefineTableColumnDao.findColumnListByTableId(defineTable.getId());
+            dataAdapter(columns, data);
+            String comma = "";
+            StringBuffer updateValue = new StringBuffer();
+            for (Map.Entry<String, Object> entry : data.entrySet()) {
+                // 判断key是否为表配置的属性
+                if (isContainsFieled(columns, entry.getKey())) {
+                    updateValue.append(comma + entry.getKey() + "=");
+                    if (entry.getValue() != null && entry.getValue().toString().length() > 0) {
+                        updateValue.append(entry.getValue());
+                    } else {
+                        updateValue.append("null");
+                    }
+                    comma = ", ";
+                }
+            }
+            updateValue.append(comma + "update_by=" + handleSqlValue(flowData.getUpdateBy(), "varchar2"))
+                    .append(",update_date=" + handleSqlValue(flowData.getUpdateDate() == null ? null : DateUtils.formatDateTime(flowData.getUpdateDate()), "date"));
+            String sql = "UPDATE " + tableName + " SET " + updateValue + " where id='" + flowData.getId() + "'";
+            oaPersonDefineTableDao.executeSql(sql);
+        }else if(flowData.getAct().getTaskDefKey().startsWith("edit")){
+            OaPersonDefineTable defineTable1 = oaPersonDefineTableDao.findByTableName(tableName, null);
+            List<OaPersonDefineTableColumn> columns = oaPersonDefineTableColumnDao.findColumnListByTableId(defineTable1.getId());
             dataAdapter(columns, data);
             String comma = "";
             StringBuffer updateValue = new StringBuffer();
@@ -184,13 +206,15 @@ public class FlowService extends CrudService<FlowDao, FlowData> {
                 flowData.getAct().setComment("");
             }
             if((flowData.getAct().getTaskDefKey()).startsWith("edit")) {
+                String userId = UserUtils.getUser().getLoginName();//ObjectUtils.toString(UserUtils.getUser().getId());
+                actTaskService.claim(flowData.getAct().getTaskId(), userId);
                 flowData.getAct().setComment(("yes".equals(flowData.getAct().getFlag()) ? "[编辑] " : "[驳回] ") + flowData.getAct().getComment());
-                OaPersonDefineTable table = oaPersonDefineTableDao.findByTableName(flowData.getTableName(), null);
-                OaPersonDefineTableColumn param = new OaPersonDefineTableColumn(table);
-                param.setIsAudit("1");
-                List<OaPersonDefineTableColumn> columns = oaPersonDefineTableColumnDao.findList(param);
+                OaPersonDefineTable defineTable1 = oaPersonDefineTableDao.findByTableName(flowData.getTableName(), null);
+                List<OaPersonDefineTableColumn> columns = oaPersonDefineTableColumnDao.findColumnListByTableId(defineTable1.getId());
+//                param.setIsAudit("1");
+//                List<OaPersonDefineTableColumn> columns = oaPersonDefineTableColumnDao.findList(param);
                 for (OaPersonDefineTableColumn column : columns) {
-                    if (flowData.getAct().getTaskDefKey().equals(column.getAuditPost()) || flowData.getAct().getTaskDefKey().startsWith("edit")) {
+                    if (flowData.getAct().getTaskDefKey().equals(column.getAuditPost())) {
                         String sql = "update " + flowData.getTableName() + " set "
                                 + column.getColumnName() + "='" + flowData.getAct().getComment()
                                 + "' where id='" + flowData.getId() + "'";

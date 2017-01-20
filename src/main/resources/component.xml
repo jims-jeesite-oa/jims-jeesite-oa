@@ -343,7 +343,7 @@
 		<div class="form-actions">
             <#if act.taskDefKey = 'edit' || act.taskDefKey = 'edit1' || act.taskDefKey = 'edit2'  || act.taskDefKey = 'edit3'|| act.taskDefKey = 'edit4'
             || act.taskDefKey = 'edit5' || act.taskDefKey = 'edit6'>
-            <input id="btnSubmit" class="btn btn-primary" type="submit" value="保存" onclick="$('#flag').val('yes')"/>&nbsp;
+               <input id="btnSubmit" class="btn btn-primary" type="submit" value="保存" onclick="$('#flag').val('yes')"/>&nbsp;
             <#else>
             <input id="btnSubmit" class="btn btn-primary" type="submit" value="提交申请" onclick="$('#flag').val('yes')"/>&nbsp;
               <#if id?? && id != ''>
